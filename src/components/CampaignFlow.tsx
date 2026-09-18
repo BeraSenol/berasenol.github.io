@@ -33,6 +33,15 @@ const MAIL_EN = { cx: 438, cy: BOTTOM };
 const LEN_STRAIGHT = 45;
 const LEN_SPLIT = 104.01;
 
+/**
+ * One pen speed for every connector, in svg units per millisecond, so the short
+ * straight hops and the long split curves draw at the same rate instead of all
+ * taking the same time and making the curves look hurried. 45 units takes 310ms,
+ * the 104-unit curves take 717ms.
+ */
+const DRAW_SPEED = 0.145;
+const drawMs = (length: number) => Math.round(length / DRAW_SPEED);
+
 /** The steps the flow builds itself in. Each is the previous plus one thing. */
 const STEPS = {
   api: 1,
@@ -44,14 +53,19 @@ const STEPS = {
   mails: 7,
 } as const;
 
+/*
+ * Retimed around the draw durations: a step that follows a connector starts
+ * after that connector has finished drawing, so the script never lands while the
+ * arrow pointing at it is still halfway there.
+ */
 const TIMELINE: [number, number][] = [
-  [STEPS.api, 250],
-  [STEPS.firstArrow, 700],
-  [STEPS.script, 1100],
-  [STEPS.split, 1550],
-  [STEPS.audiences, 2050],
-  [STEPS.mailArrows, 2500],
-  [STEPS.mails, 3000],
+  [STEPS.api, 200],
+  [STEPS.firstArrow, 620],
+  [STEPS.script, 1000],
+  [STEPS.split, 1450],
+  [STEPS.audiences, 2250],
+  [STEPS.mailArrows, 2700],
+  [STEPS.mails, 3100],
 ];
 
 function squircle(
@@ -75,6 +89,44 @@ function squircle(
 
   return `${points.join("")}Z`;
 }
+
+/**
+ * Every connector, with the head it arrives under. Keeping the line and its head
+ * in one record is what lets the head wait for its own line: the delay is that
+ * line's own draw duration, not a number guessed once for all five.
+ */
+const CONNECTORS = [
+  {
+    d: "M86 160H131",
+    length: LEN_STRAIGHT,
+    at: STEPS.firstArrow,
+    head: { x: 131, y: 160 },
+  },
+  {
+    d: "M216 160C250 160 240 74 261 74",
+    length: LEN_SPLIT,
+    at: STEPS.split,
+    head: { x: 261, y: 74 },
+  },
+  {
+    d: "M216 160C250 160 240 246 261 246",
+    length: LEN_SPLIT,
+    at: STEPS.split,
+    head: { x: 261, y: 246 },
+  },
+  {
+    d: "M346 74H391",
+    length: LEN_STRAIGHT,
+    at: STEPS.mailArrows,
+    head: { x: 391, y: 74 },
+  },
+  {
+    d: "M346 246H391",
+    length: LEN_STRAIGHT,
+    at: STEPS.mailArrows,
+    head: { x: 391, y: 246 },
+  },
+];
 
 /** A right-pointing head. Every connector arrives horizontally, so none of these rotate. */
 function arrowHead(x: number, y: number, size = 9): string {
@@ -128,7 +180,9 @@ const groupThousands = (value: number) =>
  * unmount, and reduced motion gets the final number with no count at all.
  */
 function useCountUp(active: boolean, total: number, duration = 850) {
-  const [value, setValue] = useState(() => (prefersReducedMotion() ? total : 0));
+  const [value, setValue] = useState(() =>
+    prefersReducedMotion() ? total : 0,
+  );
   const frame = useRef(0);
 
   useEffect(() => {
@@ -156,12 +210,16 @@ function useCountUp(active: boolean, total: number, duration = 850) {
  *
  * Connectors draw with stroke-dashoffset. A dash pattern as long as the path
  * hides it completely at an offset of its own length, and animating the offset
- * to zero walks the visible part along the line, which is the only way to draw
- * an SVG stroke over time without JavaScript per frame.
+ * to zero walks the visible part along the line from its start point to its end
+ * point, which is the only way to draw an SVG stroke over time without running
+ * JavaScript every frame. The dash lengths are the paths' real lengths, so the
+ * gap covers the whole line and nothing is visible before the draw starts.
  */
 export function CampaignFlow() {
   const { ref, isVisible } = useReveal<HTMLDivElement>();
-  const [step, setStep] = useState(() => (prefersReducedMotion() ? STEPS.mails : 0));
+  const [step, setStep] = useState(() =>
+    prefersReducedMotion() ? STEPS.mails : 0,
+  );
   const count = useCountUp(isVisible, AUDIENCE_TOTAL);
 
   useEffect(() => {
@@ -176,11 +234,6 @@ export function CampaignFlow() {
   const nodeStyle = (at: number) => ({
     opacity: step >= at ? 1 : 0,
     transform: step >= at ? "scale(1)" : "scale(0.82)",
-  });
-
-  const lineStyle = (at: number, length: number) => ({
-    strokeDasharray: length,
-    strokeDashoffset: step >= at ? 0 : length,
   });
 
   return (
@@ -219,54 +272,40 @@ export function CampaignFlow() {
               fill="none"
               stroke={`url(#${FLOW_GRADIENT_ID})`}
               strokeWidth="3"
-              className="transition-[stroke-dashoffset] duration-[420ms] ease-out"
+              strokeLinecap="round"
             >
-              <path
-                d="M86 160H131"
-                style={lineStyle(STEPS.firstArrow, LEN_STRAIGHT)}
-              />
-              <path
-                d="M216 160C250 160 240 74 261 74"
-                style={lineStyle(STEPS.split, LEN_SPLIT)}
-              />
-              <path
-                d="M216 160C250 160 240 246 261 246"
-                style={lineStyle(STEPS.split, LEN_SPLIT)}
-              />
-              <path
-                d="M346 74H391"
-                style={lineStyle(STEPS.mailArrows, LEN_STRAIGHT)}
-              />
-              <path
-                d="M346 246H391"
-                style={lineStyle(STEPS.mailArrows, LEN_STRAIGHT)}
-              />
+              {CONNECTORS.map((line) => (
+                <path
+                  key={line.d}
+                  d={line.d}
+                  style={{
+                    strokeDasharray: line.length,
+                    strokeDashoffset: step >= line.at ? 0 : line.length,
+                    transitionProperty: "stroke-dashoffset",
+                    transitionDuration: `${drawMs(line.length)}ms`,
+                    // Linear, because a pen moving at a constant speed is the
+                    // whole illusion. Any easing makes the tip lurch.
+                    transitionTimingFunction: "linear",
+                  }}
+                />
+              ))}
             </g>
 
-            <g
-              fill={`url(#${FLOW_GRADIENT_ID})`}
-              className="transition-opacity duration-300 ease-out"
-            >
-              <path
-                d={arrowHead(131, 160)}
-                style={{ opacity: step >= STEPS.firstArrow ? 1 : 0 }}
-              />
-              <path
-                d={arrowHead(261, 74)}
-                style={{ opacity: step >= STEPS.split ? 1 : 0 }}
-              />
-              <path
-                d={arrowHead(261, 246)}
-                style={{ opacity: step >= STEPS.split ? 1 : 0 }}
-              />
-              <path
-                d={arrowHead(391, 74)}
-                style={{ opacity: step >= STEPS.mailArrows ? 1 : 0 }}
-              />
-              <path
-                d={arrowHead(391, 246)}
-                style={{ opacity: step >= STEPS.mailArrows ? 1 : 0 }}
-              />
+            <g fill={`url(#${FLOW_GRADIENT_ID})`}>
+              {CONNECTORS.map((line) => (
+                <path
+                  key={line.d}
+                  d={arrowHead(line.head.x, line.head.y)}
+                  className="transition-opacity duration-200 ease-out"
+                  style={{
+                    opacity: step >= line.at ? 1 : 0,
+                    // Starts 90ms before the line lands, so the head grows out of
+                    // the arriving tip instead of popping on after a pause.
+                    transitionDelay:
+                      step >= line.at ? `${drawMs(line.length) - 90}ms` : "0ms",
+                  }}
+                />
+              ))}
             </g>
 
             {[
