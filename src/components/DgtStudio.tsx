@@ -1,5 +1,6 @@
 import { Chessboard } from "./Chessboard";
 import {
+  DgtMark,
   MacOsMark,
   StockfishMark,
   SwiftDataMark,
@@ -22,9 +23,13 @@ const MARKS = [
   { label: "Swift", node: <SwiftMark className="h-10 w-auto rounded-[22%]" /> },
   { label: "SwiftUI", node: <SwiftUiMark className="h-10 w-auto" /> },
   { label: "SwiftData", node: <SwiftDataMark className="h-10 w-auto" /> },
-  { label: "Swift Testing", node: <SwiftTestingMark className="h-10 w-auto" /> },
+  {
+    label: "Swift Testing",
+    node: <SwiftTestingMark className="h-10 w-auto" />,
+  },
   { label: "Xcode", node: <XcodeMark className="h-10 w-auto" /> },
   { label: "Stockfish", node: <StockfishMark className="h-11 w-auto" /> },
+  { label: "DGT board", node: <DgtMark className="h-7 w-auto" /> },
 ];
 
 export function DgtStudio({ content }: { content: Content }) {

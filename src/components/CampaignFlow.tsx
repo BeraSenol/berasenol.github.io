@@ -268,12 +268,18 @@ export function CampaignFlow() {
           </defs>
 
           <g transform="translate(0 -22)">
-            <g
-              fill="none"
-              stroke={`url(#${FLOW_GRADIENT_ID})`}
-              strokeWidth="3"
-              strokeLinecap="round"
-            >
+            {/*
+             * Butt caps, the default, and deliberately not round ones. A cap is
+             * drawn beyond the path's endpoint, half the stroke width of it, so a
+             * round cap on a 3-unit stroke put a 1.5-unit nub past the start of
+             * every connector, which is exactly on the squircle's edge. The nodes
+             * are painted after the connectors and so are on top of them, but
+             * their fill is white at 5%, so the bright nub read straight through
+             * it and looked like the arrow was in front. A round cap also draws a
+             * full dot for a zero-length segment, which is what the dash-offset
+             * draw starts from, so each line popped a dot before it grew.
+             */}
+            <g fill="none" stroke={`url(#${FLOW_GRADIENT_ID})`} strokeWidth="3">
               {CONNECTORS.map((line) => (
                 <path
                   key={line.d}
