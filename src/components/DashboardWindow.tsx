@@ -4,25 +4,29 @@ import { WindowFrame } from "./WindowFrame";
 /**
  * The reporting dashboards, as a mock-up.
  *
- * The numbers are invented and deliberately round-ish: this stands for the
- * shape of what was built, not a screenshot of a real report, which is what the
- * caption under it says.
+ * The three rates are invented, which the section caption says. Everything else
+ * is a skeleton: this stands for the shape of what was built, not a screenshot
+ * of a real report, and a panel of invented sentences would be claiming more
+ * than a rectangle does.
  *
  * The bars grow from the baseline on reveal by animating scaleY against a
  * transform-origin at the bottom, which costs no layout: animating a height
  * would reflow the row on every frame.
  */
 const STATS = [
-  { label: "Open rate", value: "42.8%", delta: "+2.1 pts" },
-  { label: "Click rate", value: "11.3%", delta: "+0.6 pts" },
-  { label: "Buy rate", value: "3.6%", delta: "-0.2 pts" },
+  { label: "Open rate", value: "42.8%" },
+  { label: "Click rate", value: "11.3%" },
+  { label: "Buy rate", value: "3.6%" },
 ];
 
 const BARS = [38, 62, 47, 71, 55, 83, 66, 92, 74, 58];
 
 /**
  * What a contact-policy check turns up when two campaigns want the same people
- * on the same day. Severity drives the dot colour, and the order is worst first.
+ * on the same day. The dot carries the severity, which is the one thing a
+ * skeleton can still say, and the bar stands in for the message. Worst first,
+ * and the widths differ so the column reads as five different sentences rather
+ * than five copies of one.
  */
 const SEVERITY = {
   high: "bg-[#ff5f57]",
@@ -30,12 +34,12 @@ const SEVERITY = {
   low: "bg-ink/25",
 } as const;
 
-const CONFLICTS: { name: string; level: keyof typeof SEVERITY }[] = [
-  { name: "Audience overlap: NL and EN", level: "high" },
-  { name: "Contact pressure cap exceeded", level: "high" },
-  { name: "Send window collision", level: "medium" },
-  { name: "Suppression list not applied", level: "medium" },
-  { name: "Duplicate profiles in segment", level: "low" },
+const CONFLICTS: { width: number; level: keyof typeof SEVERITY }[] = [
+  { width: 88, level: "high" },
+  { width: 71, level: "high" },
+  { width: 94, level: "medium" },
+  { width: 62, level: "medium" },
+  { width: 80, level: "low" },
 ];
 
 function PanelTitle({ children }: { children: string }) {
@@ -53,7 +57,7 @@ export function DashboardWindow() {
     <div ref={ref}>
       <WindowFrame address="reporting">
         <div className="grid gap-4 sm:grid-cols-3">
-          {STATS.map(({ label, value, delta }) => (
+          {STATS.map(({ label, value }) => (
             <div
               key={label}
               className="rounded-lg border border-hairline bg-white/[0.02] p-4"
@@ -61,9 +65,6 @@ export function DashboardWindow() {
               <PanelTitle>{label}</PanelTitle>
               <p className="mt-2 text-xl font-semibold tabular-nums tracking-tight text-ink">
                 {value}
-              </p>
-              <p className="mt-1 text-xs tabular-nums text-ink-dim">
-                {delta} vs last send
               </p>
             </div>
           ))}
@@ -95,10 +96,10 @@ export function DashboardWindow() {
                 {CONFLICTS.length}
               </span>
             </div>
-            <ul className="mt-3 space-y-2.5">
-              {CONFLICTS.map(({ name, level }, index) => (
+            <ul className="mt-4 space-y-3.5">
+              {CONFLICTS.map(({ width, level }, index) => (
                 <li
-                  key={name}
+                  key={`${level}-${width}`}
                   // Each row fades up behind the one above it. The transition is
                   // on opacity and transform only, so the list never reflows.
                   className="flex items-center gap-2.5 transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.33,1,0.68,1)]"
@@ -113,9 +114,10 @@ export function DashboardWindow() {
                   <span
                     className={`h-1.5 w-1.5 shrink-0 rounded-full ${SEVERITY[level]}`}
                   />
-                  <span className="text-xs leading-snug text-ink-dim">
-                    {name}
-                  </span>
+                  <span
+                    className="h-2 rounded-full bg-ink/15"
+                    style={{ width: `${width}%` }}
+                  />
                 </li>
               ))}
             </ul>
