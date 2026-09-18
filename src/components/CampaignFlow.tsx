@@ -347,7 +347,7 @@ export function CampaignFlow() {
                 paths: [MAIL_PATH],
                 size: 22,
                 at: STEPS.mails,
-                label: null,
+                label: "NL",
               },
               {
                 node: MAIL_EN,
@@ -355,7 +355,7 @@ export function CampaignFlow() {
                 paths: [MAIL_PATH],
                 size: 22,
                 at: STEPS.mails,
-                label: null,
+                label: "EN",
               },
             ].map(({ node, art, paths, size, at, label }) => (
               <g
