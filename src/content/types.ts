@@ -19,7 +19,20 @@ export type Project = {
   href?: string;
 };
 
-export type ContactLink = { label: string; value: string; href?: string };
+/** Which glyph stands in for the row's label. */
+export type ContactIcon = "email" | "github" | "location";
+
+/**
+ * The label is no longer rendered as text, but it is still the row's name: it
+ * becomes the glyph's accessible name, so a screen reader reads "Email" where
+ * everyone else sees an envelope.
+ */
+export type ContactLink = {
+  icon: ContactIcon;
+  label: string;
+  value: string;
+  href?: string;
+};
 
 export type Content = {
   /** Goes into <html lang>, and into the hreflang pair. */

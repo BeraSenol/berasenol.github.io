@@ -1,6 +1,17 @@
 import memojiHeart from "../assets/memoji-heart.webp";
-import type { ContactLink } from "../content/types";
+import type { ContactIcon, ContactLink } from "../content/types";
+import { GitHubMark, LocationMark, MailMark } from "./Glyphs";
 import { Reveal } from "./Reveal";
+
+/*
+ * A complete lookup rather than a switch, holding the components themselves so
+ * each row can render its own with its own accessible label.
+ */
+const MARK: Record<ContactIcon, typeof MailMark> = {
+  email: MailMark,
+  github: GitHubMark,
+  location: LocationMark,
+};
 
 export function Contact({
   intro,
@@ -23,31 +34,46 @@ export function Contact({
 
         {/* A description list, because each row really is a term and its value. */}
         <dl className="mt-10 space-y-4">
-          {links.map((link) => (
-            <div
-              key={link.label}
-              className="flex flex-wrap items-baseline gap-x-6 gap-y-1 border-t border-hairline pt-4"
-            >
-              <dt className="w-28 shrink-0 text-sm text-ink-dim">
-                {link.label}
-              </dt>
-              <dd className="text-lg text-ink">
-                {link.href ? (
-                  <a
-                    href={link.href}
-                    {...(link.href.startsWith("http")
-                      ? { target: "_blank", rel: "noreferrer" }
-                      : {})}
-                    className="underline decoration-ink-dim/40 underline-offset-4 transition-colors hover:decoration-ink"
-                  >
-                    {link.value}
-                  </a>
-                ) : (
-                  link.value
-                )}
-              </dd>
-            </div>
-          ))}
+          {links.map((link) => {
+            const Mark = MARK[link.icon];
+
+            return (
+              <div
+                key={link.label}
+                /*
+                 * items-center, not items-baseline: an svg has no baseline of
+                 * its own, so a baseline-aligned flex box lines its bottom edge
+                 * up with the text baseline and the glyph reads low.
+                 */
+                className="flex flex-wrap items-center gap-x-6 gap-y-1 border-t border-hairline pt-4"
+              >
+                {/*
+                  A fixed column, because the three glyphs are different widths
+                  and the values have to start on the same line whichever row
+                  you are looking at. The label is still the row's name, it just
+                  reaches a screen reader now instead of the page.
+                */}
+                <dt className="w-8 shrink-0 text-ink-dim">
+                  <Mark className="h-[1.125rem] w-auto" label={link.label} />
+                </dt>
+                <dd className="text-lg text-ink">
+                  {link.href ? (
+                    <a
+                      href={link.href}
+                      {...(link.href.startsWith("http")
+                        ? { target: "_blank", rel: "noreferrer" }
+                        : {})}
+                      className="underline decoration-ink-dim/40 underline-offset-4 transition-colors hover:decoration-ink"
+                    >
+                      {link.value}
+                    </a>
+                  ) : (
+                    link.value
+                  )}
+                </dd>
+              </div>
+            );
+          })}
         </dl>
       </div>
 

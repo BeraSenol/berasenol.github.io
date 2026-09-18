@@ -110,16 +110,18 @@ export const en: Content = {
   },
   contactLinks: [
     {
+      icon: "email",
       label: "Email",
       value: "berasenol@icloud.com",
       href: "mailto:berasenol@icloud.com",
     },
     {
+      icon: "github",
       label: "GitHub",
       value: "github.com/BeraSenol",
       href: "https://github.com/BeraSenol",
     },
-    { label: "Based in", value: "Hasselt, Belgium" },
+    { icon: "location", label: "Based in", value: "Hasselt, Belgium" },
   ],
   memojiAlt: "Memoji of Bera Senol waving",
   nuggets: [

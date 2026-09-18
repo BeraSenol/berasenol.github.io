@@ -10,6 +10,7 @@ import {
   XcodeMark,
 } from "./TechMarks";
 import { Container } from "./Container";
+import { GitHubMark } from "./Glyphs";
 import type { Content } from "../content/types";
 import { Reveal } from "./Reveal";
 
@@ -29,7 +30,10 @@ const MARKS = [
   },
   { label: "Xcode", node: <XcodeMark className="h-10 w-auto" /> },
   { label: "Stockfish", node: <StockfishMark className="h-11 w-auto" /> },
-  { label: "DGT board", node: <DgtMark className="h-7 w-auto" /> },
+  {
+    label: "Digital Game Technology",
+    node: <DgtMark className="h-7 w-auto" />,
+  },
 ];
 
 export function DgtStudio({ content }: { content: Content }) {
@@ -84,8 +88,8 @@ export function DgtStudio({ content }: { content: Content }) {
                 rel="noreferrer"
                 className="mt-10 inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:border-white/40"
               >
+                <GitHubMark className="h-[18px] w-[18px] shrink-0" />
                 {dgt.ctaLabel}
-                <span aria-hidden="true">&rarr;</span>
               </a>
             </Reveal>
           </div>
