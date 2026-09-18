@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
  * Reveals an element the first time it scrolls into view.
  *
  * Returns a ref to attach to the element, and a boolean that flips to true
- * once — it never flips back, so scrolling up doesn't replay the animation.
+ * once; it never flips back, so scrolling up doesn't replay the animation.
  */
 export function useReveal<T extends HTMLElement>() {
   const ref = useRef<T>(null)

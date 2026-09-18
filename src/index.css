@@ -62,8 +62,205 @@
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/*
+ * Apple's big headlines interpolate opacity and translateY against SCROLL POSITION,
+ * not against a clock; inspecting apple.com shows transition-duration: 0s while the
+ * values change. CSS scroll-driven animations do exactly that natively, so the whole
+ * effect is declarative and runs off the main thread.
+ *
+ * Browsers without `animation-timeline` simply never enter this block and show the
+ * text normally, which is the correct fallback for a headline.
+ */
+@keyframes scrub-rise {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scrub-rise {
+      animation: scrub-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 8% cover 32%;
+    }
+  }
+}
+
+/*
+ * Gradient-filled headlines, the way Apple does it: a background image clipped to
+ * the glyphs, with the text fill made transparent and a plain `color` underneath
+ * as the fallback for anything that lacks -webkit-text-fill-color.
+ *
+ * The mechanism lives in .gradient-text once. The stops and the angle are custom
+ * properties, so a variant class only has to supply values, no duplicated
+ * background-clip plumbing, and a one-off can override --text-gradient-stops inline.
+ *
+ * Default angle is 180deg, not Apple's 90deg: a horizontal ramp is painted once
+ * across the element box, so on a heading that wraps, a short last line re-samples
+ * the light end and comes out paler than the line above it. Add .gradient-sweep to
+ * get their literal 90deg on a headline you know stays on one line.
+ */
+.gradient-text {
+  /*
+   * Round letters overshoot the cap line by a hair, the way every typeface draws
+   * them: measured here, O and S start 2 device pixels above D and T at 4x.
+   * .trim-cap ends the box exactly at the cap line, and a background is never
+   * painted outside the border box, so with background-clip: text that overshoot
+   * had no background to sample and came off flat. This pads the background box
+   * back up over it. Padding only, never a negative margin: the utility classes
+   * on these headings set margin-top, and one rule would silently win over the
+   * other.
+   */
+  padding-block-start: 0.06em;
+
+  background-image: linear-gradient(
+    var(--text-gradient-angle, 180deg),
+    var(--text-gradient-stops)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--color-ink);
+
+  /* M5, mint through slate. The default. */
+  --text-gradient-stops: #e4f6f0, #9dcfca 31%, #6b95ac 68%, #45657d;
+}
+
+/* M5 Pro, pale periwinkle into blue. */
+.gradient-pro {
+  --text-gradient-stops: #e1e5ff 7%, #83a0ef 80%;
+}
+
+/* M5 Max, blush into violet. */
+.gradient-max {
+  --text-gradient-stops: #ffe1fc 7%, #c683ef 79%;
+}
+
+/* Apple's literal angle. Single-line headlines only, see the note above. */
+.gradient-sweep {
+  --text-gradient-angle: 90deg;
+}
+
+/*
+ * Every line of text carries empty space above the capitals, half-leading plus the gap
+ * from the font's ascender to its cap height. It is why a heading whose BOX aligns
+ * with an image still looks a few pixels low, and why nudging with a margin only
+ * works for the font you measured.
+ *
+ * text-box trims that space away, so the element's box top IS the cap top. The
+ * alignment then holds for any font, size or line-height.
+ */
+@supports (text-box: trim-start cap alphabetic) {
+  .trim-cap {
+    text-box: trim-start cap alphabetic;
+  }
+}
+
+/*
+ * Orbit, a wide ellipse, not a circle.
+ *
+ * The squash is a scaleY on a wrapper OUTSIDE the rotation. That matters: scaling
+ * inside the rotating element would spin the ellipse itself, tilting the path. Out
+ * here the path stays a fixed wide ellipse and the labels travel along it.
+ *
+ * The cost is that everything inside is rendered vertically squashed, so each label
+ * carries the inverse scaleY to come back to normal. That cancels exactly, because
+ * by the time it applies the label box has already been un-rotated and is
+ * axis-aligned.
+ *
+ * Three animations, and two of them must stay locked together: the ring rotates one
+ * way while every label rotates the other at the same rate, so a label's position
+ * travels and its text stays level. Same duration AND same delay; if they drift,
+ * the text tumbles. The third is the entrance.
+ *
+ * The reduced-motion block near the top of this file collapses animation-duration,
+ * which parks every label at its resting angle instead of animating.
+ */
+@keyframes orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbit-counter {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+/* Out from behind the memoji: radius 0 to full, along its own angle. */
+@keyframes nugget-emerge {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--a)) translateX(0)
+      rotate(calc(-1 * var(--a))) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(var(--a)) translateX(var(--r))
+      rotate(calc(-1 * var(--a))) scale(1);
+  }
+}
+
+.orbit-squash {
+  /*
+   * Squash into a wide ellipse. --k is the ratio, set on the container so the
+   * unsquash below can be its exact inverse; hard-coding two numbers is how the
+   * text ends up subtly stretched.
+   *
+   * The ring turns, so every label eventually passes through bottom-centre, so the
+   * path must clear the centre block at EVERY angle, not just look right in one
+   * frame. Two boxes miss when |dx| >= (355+144)/2 or |dy| >= (373+59)/2, which
+   * makes the whole orbit safe when (249.5/A)^2 + (216/B)^2 <= 1. Measured from
+   * the rendered page; the radii on the container are the smallest that satisfy it.
+   */
+  transform: scaleY(var(--k));
+}
+
+.orbit-ring {
+  animation: orbit-spin 80s linear 1.9s infinite;
+}
+
+.orbit-upright {
+  animation: orbit-counter 80s linear 1.9s infinite;
+}
+
+.orbit-unsquash {
+  transform: scaleY(calc(1 / var(--k)));
+  transition:
+    transform 320ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 320ms ease;
+}
+
+/*
+ * Hover lifts the label under the cursor. The ring slowing to a stop is NOT here:
+ * animation-play-state is binary and can only snap. Easing it needs the playback
+ * rate ramped over time, which lives in NuggetOrbit.tsx.
+ *
+ * The scale composes with the unsquash rather than replacing it: scaleY(1/k) then
+ * scale(s), which after the wrapper's scaleY(k) comes out as a uniform scale(s).
+ * Writing plain `scale(s)` here would drop the unsquash and flatten the text.
+ */
+.orbit-slot:hover .orbit-unsquash {
+  transform: scaleY(calc(1 / var(--k))) scale(1.18);
+  color: var(--color-ink);
+}
+
+
+.orbit-slot {
+  animation: nugget-emerge 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
 }

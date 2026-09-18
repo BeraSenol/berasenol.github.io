@@ -5,15 +5,34 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Bera Senol — software engineer building for Apple platforms in Swift and SwiftUI."
-    />
+    <meta name="robots" content="noindex" />
+    <link rel="alternate" hreflang="en" href="https://berasenol.github.io/en/" />
+    <link rel="alternate" hreflang="nl" href="https://berasenol.github.io/nl/" />
+    <link rel="alternate" hreflang="x-default" href="https://berasenol.github.io/en/" />
     <title>Bera Senol</title>
+    <script>
+      // Doormat. Sends a visitor to their language, then gets out of the way.
+      // replace() rather than assign() so the back button doesn't bounce them here.
+      // No React, no bundle; this page must resolve before anything is downloaded.
+      (function () {
+        var supported = ['en', 'nl']
+        var preferred = (navigator.languages && navigator.languages.length
+          ? navigator.languages
+          : [navigator.language || 'en'])
+        var target = 'en'
+        for (var i = 0; i < preferred.length; i++) {
+          var base = String(preferred[i]).toLowerCase().split('-')[0]
+          if (supported.indexOf(base) !== -1) {
+            target = base
+            break
+          }
+        }
+        location.replace('/' + target + '/')
+      })()
+    </script>
+    <meta http-equiv="refresh" content="0; url=/en/" />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <p><a href="/en/">English</a> · <a href="/nl/">Nederlands</a></p>
   </body>
 </html>

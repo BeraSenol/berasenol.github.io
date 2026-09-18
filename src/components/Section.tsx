@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { Container } from './Container'
 import { Reveal } from './Reveal'
 
 type SectionProps = {
@@ -10,8 +11,8 @@ type SectionProps = {
 
 export function Section({ id, eyebrow, title, children }: SectionProps) {
   return (
-    <section id={id} className="border-t border-hairline px-6 py-28 sm:py-40">
-      <div className="mx-auto max-w-3xl">
+    <section id={id} className="border-t border-hairline py-28 sm:py-40">
+      <Container>
         <Reveal>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-dim">
             {eyebrow}
@@ -21,10 +22,13 @@ export function Section({ id, eyebrow, title, children }: SectionProps) {
           </h2>
         </Reveal>
 
-        <Reveal delay={150}>
-          <div className="mt-10 space-y-6 text-lg leading-relaxed text-ink-dim">{children}</div>
-        </Reveal>
-      </div>
+        {/*
+          Container sets the page measure. The reading measure belongs to whatever
+          is inside, because a section of prose and a section of lists want
+          different widths, so children are not wrapped in one here.
+        */}
+        <div className="mt-10">{children}</div>
+      </Container>
     </section>
   )
 }
