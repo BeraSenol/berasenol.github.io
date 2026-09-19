@@ -1,4 +1,4 @@
-import macbook from "../assets/macbook-screen.webp";
+import macbook from "../assets/macbook-app.webp";
 import { Chessboard } from "./Chessboard";
 import {
   DgtMark,
