@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import board from "../assets/chessboard.webp";
 import bB from "../assets/pieces/bB.svg";
 import bK from "../assets/pieces/bK.svg";
@@ -102,23 +102,38 @@ const MATE_MS = 700;
  */
 const MOVE_EASE = "cubic-bezier(0.34, 0, 0.2, 1)";
 
-/*
- * No will-change here, deliberately, and it is worth saying why it is absent
- * rather than leaving the next person to wonder.
+/**
+ * Where each piece ends up, keyed by where it started.
  *
- * It was on the four squares a piece leaves from, to hold those wrappers on
- * their own compositor layer across the end of the animation. It also left
- * exactly those four pieces rendering by a different path from the other
- * twenty-eight for the rest of the page's life: composited, rasterized into
- * their own texture, and positioned by a layer origin the browser is free to
- * snap, while their neighbours paint at subpixel positions inside the parent.
- * Four pieces that sit differently from the rest is worse than the thing it was
- * added for, and the spec says as much: will-change is for the run-up to a
- * change, not a permanent decoration.
+ * Every wrapper is positioned on its FINAL square, from the first paint, in the
+ * same percentage form as the twenty-eight pieces that never move. That is the
+ * hardcoded end point, and it is the piece's ordinary resting style rather than
+ * something an animation has to hold in place.
  *
- * The animation is a bare translate with no scale in it, which is the form the
- * compositor handles with no raster decision at all, and that half stays.
+ * This is what the last two attempts were missing, and the pair of symptoms is
+ * what gave it away. Promoting the movers to their own layer stopped the click
+ * but left those four sitting visibly off centre; taking the promotion away put
+ * them back on centre and brought the click back. Both readings are the same
+ * fact: the composited position and the painted position were not the same
+ * place. The offset came from animating a percentage. The wrapper is 56.328125
+ * pixels wide, so translate(700%) is 394.296875, but a compositor working in
+ * whole layout units resolves that against a rounded box and lands a couple of
+ * pixels away. With the promotion the piece stayed at the composited position
+ * forever, which reads as off centre. Without it, the piece sat at the
+ * composited position for the whole animation and jumped to the painted one at
+ * the end, which reads as a click. Multiply a rounding error by seven hundred
+ * percent and that is your few pixels.
+ *
+ * So nothing that moves is written as a percentage any more. The travel is an
+ * offset in pixels, measured from the board itself, and the resting place is
+ * the destination square. See the effect below for how the two meet.
  */
+const DESTINATION: ReadonlyMap<string, string> = new Map(
+  MOVES.map((move) => [move.from, move.to]),
+);
+
+/** Where a piece spends most of its life: its last square, or its only one. */
+const restSquare = (start: string) => DESTINATION.get(start) ?? start;
 
 type Scheduled = { from: string; to: string; start: number; duration: number };
 
@@ -216,7 +231,13 @@ export function Chessboard({ label }: { label: string }) {
   const squares = useRef(new Map<string, HTMLDivElement>());
   const glow = useRef<HTMLSpanElement>(null);
 
-  useEffect(() => {
+  /*
+   * useLayoutEffect, not useEffect, because this positions elements and has to
+   * do it before the browser paints. An effect runs after paint, which leaves
+   * one frame where a piece about to move is drawn on its destination square.
+   * The appearing delay hides that today; relying on it would be luck.
+   */
+  useLayoutEffect(() => {
     if (!isVisible) return;
 
     /*
@@ -233,22 +254,44 @@ export function Chessboard({ label }: { label: string }) {
       const node = squares.current.get(move.from);
       if (!node) continue;
 
+      /*
+       * One square, measured off the board rather than assumed: the wrapper is
+       * exactly 12.5% of the field, so its own width is the unit the whole
+       * board is drawn in. A board that has not been laid out yet has nothing
+       * to travel across, so the piece simply stays where it rests.
+       */
+      const size = node.getBoundingClientRect().width;
+      if (!size) continue;
+
+      /*
+       * The start point, as a pixel offset back from the destination. Pixels,
+       * not percentages, because that is the whole fix: an absolute number
+       * resolves to the same place for the compositor and for paint, so the
+       * position the piece travels through and the position it is painted at
+       * cannot disagree.
+       */
+      const dx = (fileOf(move.from) - fileOf(move.to)) * size;
+      const dy = (rankOf(move.from) - rankOf(move.to)) * size;
+
       running.push(
         node.animate(
-          [
-            { transform: squareTransform(move.from) },
-            { transform: squareTransform(move.to) },
-          ],
+          [{ translate: `${dx}px ${dy}px` }, { translate: "0px 0px" }],
           {
             duration: instant ? 0 : move.duration,
             delay: instant ? 0 : move.start,
             easing: MOVE_EASE,
             /*
-             * forwards, not both: during the delay the animation contributes
-             * nothing, so the piece sits on the square the inline transform put
-             * it on, and after it ends the animation holds the destination.
+             * backwards, and this is the part that matters. The animation moves
+             * the `translate` property, which composes on top of the wrapper's
+             * own `transform` instead of replacing it, so the two ends of the
+             * travel are: the offset, and nothing. A backwards fill applies the
+             * first keyframe during the delay, so the piece waits on its
+             * starting square, and applies nothing once it is over, so the piece
+             * falls back to its own style, which already puts it on the
+             * destination. There is no held value to hand back at the end,
+             * because the value before the handoff and after it are the same.
              */
-            fill: "forwards",
+            fill: "backwards",
           },
         ),
       );
@@ -318,7 +361,7 @@ export function Chessboard({ label }: { label: string }) {
                   else squares.current.delete(piece.square);
                 }}
                 className="absolute left-0 top-0 flex h-[12.5%] w-[12.5%] items-center justify-center"
-                style={{ transform: squareTransform(piece.square) }}
+                style={{ transform: squareTransform(restSquare(piece.square)) }}
               >
                 {piece.square === MATED_KING ? (
                   /*
