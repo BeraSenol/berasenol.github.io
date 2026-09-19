@@ -70,10 +70,6 @@ const rankOf = (square: string) => 8 - Number(square[1]);
 const squareTransform = (square: string) =>
   `translate(${fileOf(square) * 100}%, ${rankOf(square) * 100}%)`;
 
-/** The point halfway between two squares, in those same units. */
-const midpointTransform = (from: string, to: string) =>
-  `translate(${((fileOf(from) + fileOf(to)) / 2) * 100}%, ${((rankOf(from) + rankOf(to)) / 2) * 100}%)`;
-
 /* The last piece lands at 420 + 14 x 45, so the first move is a second after that. */
 const APPEAR_BASE = 420;
 const APPEAR_STEP = 45;
@@ -99,15 +95,34 @@ const FIRST_MOVE_MS = 2050;
 const MATE_DELAY_MS = 140;
 const MATE_MS = 700;
 
-/** How far the piece swells at the top of the lift. */
-const LIFT = 1.08;
-
 /*
  * Zero slope at both ends. A cubic-bezier's initial slope is y1/x1 and its
  * terminal slope is (1 - y2)/(1 - x2), so y1 = 0 and y2 = 1 make both of them
  * zero: the piece leaves from rest and arrives at rest instead of being flung.
  */
 const MOVE_EASE = "cubic-bezier(0.34, 0, 0.2, 1)";
+
+/**
+ * The squares a piece leaves from, so those four wrappers can be promoted to
+ * their own compositor layer for the whole life of the page rather than only
+ * while they are moving.
+ *
+ * This is the second half of the fix for the click that survived the rewrite.
+ * The geometry was already clean: the queen lands exactly on h4, her last
+ * frames move 0.49, 0.20 and 0.008 pixels, and every presented frame after
+ * that is byte identical. So what was left was not movement. A transform
+ * animation runs on the compositor, which rasterizes the element once and moves
+ * the texture; when the animation ends, that layer is thrown away and the
+ * element repaints into its parent. Same position, different rasterization, one
+ * frame apart, which the eye reads as the piece settling.
+ *
+ * will-change keeps the layer alive across that boundary, and the animation
+ * below is now a bare translate with no scale in it, so the compositor never
+ * has to choose a raster scale and the texture is identical before, during and
+ * after. That cost the lift, which is a fair trade for an arrival that does not
+ * snap; it can come back as a separate element if you want it.
+ */
+const MOVERS: ReadonlySet<string> = new Set(MOVES.map((move) => move.from));
 
 type Scheduled = { from: string; to: string; start: number; duration: number };
 
@@ -225,19 +240,8 @@ export function Chessboard({ label }: { label: string }) {
       running.push(
         node.animate(
           [
-            { transform: `${squareTransform(move.from)} scale(1)` },
-            /*
-             * Halfway along, at the top of the lift. The three positions are
-             * collinear and evenly spaced, so the travel is still a straight
-             * line at the eased rate and only the scale has a shape: it rises
-             * and falls in step with the piece, which is what reads as the piece
-             * being picked up rather than dragged across the board.
-             */
-            {
-              transform: `${midpointTransform(move.from, move.to)} scale(${LIFT})`,
-              offset: 0.5,
-            },
-            { transform: `${squareTransform(move.to)} scale(1)` },
+            { transform: squareTransform(move.from) },
+            { transform: squareTransform(move.to) },
           ],
           {
             duration: instant ? 0 : move.duration,
@@ -318,7 +322,12 @@ export function Chessboard({ label }: { label: string }) {
                   else squares.current.delete(piece.square);
                 }}
                 className="absolute left-0 top-0 flex h-[12.5%] w-[12.5%] items-center justify-center"
-                style={{ transform: squareTransform(piece.square) }}
+                style={{
+                  transform: squareTransform(piece.square),
+                  ...(MOVERS.has(piece.square)
+                    ? { willChange: "transform" }
+                    : {}),
+                }}
               >
                 {piece.square === MATED_KING ? (
                   /*
