@@ -66,9 +66,28 @@ const MATED_KING = "e1";
 const fileOf = (square: string) => square.charCodeAt(0) - 97;
 const rankOf = (square: string) => 8 - Number(square[1]);
 
-/** A square, as a transform on a box that is exactly one square wide. */
-const squareTransform = (square: string) =>
-  `translate(${fileOf(square) * 100}%, ${rankOf(square) * 100}%)`;
+/**
+ * A square, as a layout position rather than a transform.
+ *
+ * This is the last percentage to leave the moving parts, and it is the one that
+ * was still causing the click. The travel became pixels two attempts ago, but
+ * the wrapper's resting position was still transform: translate(700%, 400%),
+ * and a transform percentage is resolved by whoever is drawing the element. A
+ * compositor working in whole layout units resolves it against a rounded box
+ * and lands a couple of pixels from where paint puts it, so the moment the
+ * animation finished and the layer went away, the piece moved.
+ *
+ * left and top are resolved by layout instead, once, to a LayoutUnit both
+ * paths then agree on. The arithmetic is identical: 87.5% of the 450.625px
+ * field is 394.296875, and so was 700% of the 56.328125px wrapper. The
+ * difference is only who does the resolving, and that turns out to be the
+ * whole bug. At rest a piece now carries no transform at all, which is a thing
+ * worth asserting against: 32 of 32 should report transform: none.
+ */
+const squareStyle = (square: string) => ({
+  left: `${fileOf(square) * 12.5}%`,
+  top: `${rankOf(square) * 12.5}%`,
+});
 
 /* The last piece lands at 420 + 14 x 45, so the first move is a second after that. */
 const APPEAR_BASE = 420;
@@ -360,8 +379,8 @@ export function Chessboard({ label }: { label: string }) {
                   if (node) squares.current.set(piece.square, node);
                   else squares.current.delete(piece.square);
                 }}
-                className="absolute left-0 top-0 flex h-[12.5%] w-[12.5%] items-center justify-center"
-                style={{ transform: squareTransform(restSquare(piece.square)) }}
+                className="absolute flex h-[12.5%] w-[12.5%] items-center justify-center"
+                style={squareStyle(restSquare(piece.square))}
               >
                 {piece.square === MATED_KING ? (
                   /*
