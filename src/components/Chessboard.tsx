@@ -102,27 +102,23 @@ const MATE_MS = 700;
  */
 const MOVE_EASE = "cubic-bezier(0.34, 0, 0.2, 1)";
 
-/**
- * The squares a piece leaves from, so those four wrappers can be promoted to
- * their own compositor layer for the whole life of the page rather than only
- * while they are moving.
+/*
+ * No will-change here, deliberately, and it is worth saying why it is absent
+ * rather than leaving the next person to wonder.
  *
- * This is the second half of the fix for the click that survived the rewrite.
- * The geometry was already clean: the queen lands exactly on h4, her last
- * frames move 0.49, 0.20 and 0.008 pixels, and every presented frame after
- * that is byte identical. So what was left was not movement. A transform
- * animation runs on the compositor, which rasterizes the element once and moves
- * the texture; when the animation ends, that layer is thrown away and the
- * element repaints into its parent. Same position, different rasterization, one
- * frame apart, which the eye reads as the piece settling.
+ * It was on the four squares a piece leaves from, to hold those wrappers on
+ * their own compositor layer across the end of the animation. It also left
+ * exactly those four pieces rendering by a different path from the other
+ * twenty-eight for the rest of the page's life: composited, rasterized into
+ * their own texture, and positioned by a layer origin the browser is free to
+ * snap, while their neighbours paint at subpixel positions inside the parent.
+ * Four pieces that sit differently from the rest is worse than the thing it was
+ * added for, and the spec says as much: will-change is for the run-up to a
+ * change, not a permanent decoration.
  *
- * will-change keeps the layer alive across that boundary, and the animation
- * below is now a bare translate with no scale in it, so the compositor never
- * has to choose a raster scale and the texture is identical before, during and
- * after. That cost the lift, which is a fair trade for an arrival that does not
- * snap; it can come back as a separate element if you want it.
+ * The animation is a bare translate with no scale in it, which is the form the
+ * compositor handles with no raster decision at all, and that half stays.
  */
-const MOVERS: ReadonlySet<string> = new Set(MOVES.map((move) => move.from));
 
 type Scheduled = { from: string; to: string; start: number; duration: number };
 
@@ -322,12 +318,7 @@ export function Chessboard({ label }: { label: string }) {
                   else squares.current.delete(piece.square);
                 }}
                 className="absolute left-0 top-0 flex h-[12.5%] w-[12.5%] items-center justify-center"
-                style={{
-                  transform: squareTransform(piece.square),
-                  ...(MOVERS.has(piece.square)
-                    ? { willChange: "transform" }
-                    : {}),
-                }}
+                style={{ transform: squareTransform(piece.square) }}
               >
                 {piece.square === MATED_KING ? (
                   /*
