@@ -35,9 +35,11 @@ const SEVERITY = {
 } as const;
 
 const CONFLICTS: { width: number; level: keyof typeof SEVERITY }[] = [
-  { width: 88, level: "high" },
+  { width: 92, level: "high" },
+  { width: 90, level: "high" },
+  { width: 88, level: "medium" },
   { width: 71, level: "medium" },
-  { width: 94, level: "low" },
+  { width: 74, level: "low" },
 ];
 
 function PanelTitle({ children }: { children: string }) {

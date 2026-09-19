@@ -1,3 +1,4 @@
+import macbook from "../assets/macbook.webp";
 import { Chessboard } from "./Chessboard";
 import {
   DgtMark,
@@ -105,6 +106,70 @@ export function DgtStudio({ content }: { content: Content }) {
             <p className="mt-3 text-right text-xs text-ink-dim">
               {dgt.boardCaption}
             </p>
+
+            {/*
+              The run between the two, which is the whole point of the project:
+              a board on a table with a cable going to a Mac.
+
+              preserveAspectRatio="none" so the svg fills whatever width the
+              column has, with vector-effect="non-scaling-stroke" so the cable
+              keeps one thickness while it does. The viewBox is about the
+              proportions of the box at a desktop width, so the curve is only
+              mildly stretched away from it rather than designed for a square
+              and squashed.
+
+              The negative top margin pulls the svg back up to the board's
+              bottom edge, past the caption it would otherwise start below. It
+              runs down the left because the caption is set right, so the two
+              never meet. Both ends of the stroke fade out, so the cable emerges
+              from the dark under the board and disappears behind the lid rather
+              than stopping at a hard edge.
+            */}
+            <svg
+              viewBox="0 0 560 96"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+              className="pointer-events-none -mt-7 block h-24 w-full"
+            >
+              <defs>
+                <linearGradient
+                  id="dgt-cable"
+                  gradientUnits="userSpaceOnUse"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="96"
+                >
+                  <stop offset="0%" stopColor="#4a4a52" stopOpacity="0" />
+                  <stop offset="22%" stopColor="#4a4a52" stopOpacity="1" />
+                  <stop offset="80%" stopColor="#3c3c44" stopOpacity="1" />
+                  <stop offset="100%" stopColor="#3c3c44" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              <path
+                d="M120 0C120 34 126 52 150 64C176 77 206 82 232 96"
+                fill="none"
+                stroke="url(#dgt-cable)"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                vectorEffect="non-scaling-stroke"
+              />
+            </svg>
+
+            {/*
+              Decorative, so alt is empty: the paragraph beside it already says
+              the app is a native macOS one talking to a physical board, and a
+              screen reader gains nothing from being told there is a picture of
+              a laptop as well.
+            */}
+            <img
+              src={macbook}
+              alt=""
+              width={1400}
+              height={853}
+              loading="lazy"
+              className="block w-full"
+            />
           </Reveal>
         </div>
       </Container>
