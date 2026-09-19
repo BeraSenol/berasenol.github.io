@@ -1,4 +1,4 @@
-import macbook from "../assets/macbook-app.webp";
+import macbook from "../assets/macbook-dgt.webp";
 import { Chessboard } from "./Chessboard";
 import {
   DgtMark,
@@ -162,6 +162,13 @@ export function DgtStudio({ content }: { content: Content }) {
               described alt. The notch comes from the supplied mask: the glass
               is masked to that shape, so the screenshot stops at the notch and
               the lid's own black shows through it.
+
+              The screenshot's own top strip was black, because macOS blacks out
+              the menu bar for a full-screen app on a notched display. Accurate,
+              and it hid the notch: a black tab on a black strip is nothing, and
+              it read as a second bezel above the real one. That strip now
+              carries the first row of the app's chrome smeared upward, so the
+              notch has something to be seen against.
             */}
             <img
               src={macbook}
