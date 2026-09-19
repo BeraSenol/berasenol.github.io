@@ -89,6 +89,7 @@ export type Content = {
     ctaLabel: string;
     boardLabel: string;
     boardCaption: string;
+    screenAlt: string;
   };
   education: readonly Study[];
   projects: readonly Project[];

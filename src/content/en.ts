@@ -74,6 +74,8 @@ export const en: Content = {
     boardLabel:
       "A chessboard playing Fool\u2019s Mate, the shortest checkmate there is: 1.f3 e5 2.g4 Qh4 mate",
     boardCaption: "Fool\u2019s Mate. Four half-moves, and it is over.",
+    screenAlt:
+      "DGT Studio Pro on a MacBook, showing a game read off a DGT board with its PGN, opening and engine evaluation",
   },
   education: [
     {

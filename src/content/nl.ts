@@ -75,6 +75,8 @@ export const nl: Content = {
     boardLabel:
       "Een schaakbord dat het narrenmat speelt, het kortste schaakmat dat bestaat: 1.f3 e5 2.g4 Dh4 mat",
     boardCaption: "Narrenmat. Vier halve zetten en het is voorbij.",
+    screenAlt:
+      "DGT Studio Pro op een MacBook, met een partij die van een DGT-bord is gelezen, de PGN, de opening en de engine-evaluatie",
   },
   education: [
     {

@@ -1,4 +1,4 @@
-import macbook from "../assets/macbook.webp";
+import macbook from "../assets/macbook-screen.webp";
 import { Chessboard } from "./Chessboard";
 import {
   DgtMark,
@@ -157,14 +157,15 @@ export function DgtStudio({ content }: { content: Content }) {
             </svg>
 
             {/*
-              Decorative, so alt is empty: the paragraph beside it already says
-              the app is a native macOS one talking to a physical board, and a
-              screen reader gains nothing from being told there is a picture of
-              a laptop as well.
+              The screen carries the app itself now, composited into the glass
+              from a real screenshot, so this is no longer decorative and gets a
+              described alt. The notch comes from the supplied mask: the glass
+              is masked to that shape, so the screenshot stops at the notch and
+              the lid's own black shows through it.
             */}
             <img
               src={macbook}
-              alt=""
+              alt={dgt.screenAlt}
               width={1400}
               height={853}
               loading="lazy"
