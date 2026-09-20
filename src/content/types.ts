@@ -6,6 +6,8 @@
  * Dutch page. This is the whole reason the content lives in TypeScript and not
  * in JSON.
  */
+import type { LocaleCode } from "./locales";
+
 export type NuggetIcon = "note" | "leaf" | "star" | "cup" | "snap" | "japanese";
 
 export type Nugget = { icon: NuggetIcon; label: string };
@@ -36,9 +38,12 @@ export type ContactLink = {
 
 export type Content = {
   /** Goes into <html lang>, and into the hreflang pair. */
-  lang: "en" | "nl";
-  /** The other locale, for the switch in the header. */
-  alternate: { lang: "en" | "nl"; href: string; label: string; title: string };
+  lang: LocaleCode;
+  /**
+   * Accessible name for the header's language button. The list of languages
+   * itself lives in locales.ts, because it is the same on every page.
+   */
+  languageMenuLabel: string;
   meta: { title: string; description: string };
   splash: {
     role: string;

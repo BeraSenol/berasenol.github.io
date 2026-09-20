@@ -2,12 +2,7 @@ import type { Content } from "./types";
 
 export const nl: Content = {
   lang: "nl",
-  alternate: {
-    lang: "en",
-    href: "/en/",
-    label: "EN",
-    title: "View this page in English",
-  },
+  languageMenuLabel: "Taal wijzigen",
   meta: {
     title: "Bera Senol | Software Developer",
     description:

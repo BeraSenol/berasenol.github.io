@@ -1,3 +1,4 @@
+import { LanguageMenu } from "./LanguageMenu";
 import type { Content } from "../content/types";
 
 export function Header({ content }: { content: Content }) {
@@ -5,13 +6,16 @@ export function Header({ content }: { content: Content }) {
    * No nav links. About and Work went first, with their anchors; Contact has now
    * gone too, and the section it pointed at is the last thing on the page, so a
    * link that scrolls you to the bottom of a single page was doing very little.
-   * The bar keeps the name, which is the way back up, and the locale switch.
+   * The bar keeps the name, which is the way back up, and the language menu.
+   *
+   * The gutter classes are the same ladder Container uses, so the name lines up
+   * with every section heading below it at every width.
    */
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-hairline/80 bg-canvas/70 backdrop-blur-xl">
       <nav
         aria-label="Primary"
-        className="mx-auto flex h-12 w-full max-w-7xl items-center justify-between px-6"
+        className="flex h-12 w-full items-center justify-between px-6 sm:px-8 lg:px-12 xl:px-16"
       >
         <a
           href="#top"
@@ -19,24 +23,7 @@ export function Header({ content }: { content: Content }) {
         >
           Bera Senol
         </a>
-        <ul className="flex items-center gap-7">
-          <li>
-            {/*
-              A plain link to the other locale's URL, not a state toggle. The URL is
-              the source of truth, so the switch survives a reload and a paste.
-              hrefLang tells crawlers and assistive tech what is on the other end.
-            */}
-            <a
-              href={content.alternate.href}
-              hrefLang={content.alternate.lang}
-              lang={content.alternate.lang}
-              title={content.alternate.title}
-              className="rounded-full border border-white/15 px-2.5 py-1 text-xs font-medium text-ink-dim transition-colors hover:border-white/40 hover:text-ink"
-            >
-              {content.alternate.label}
-            </a>
-          </li>
-        </ul>
+        <LanguageMenu current={content.lang} label={content.languageMenuLabel} />
       </nav>
     </header>
   );

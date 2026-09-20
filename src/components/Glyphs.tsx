@@ -63,3 +63,28 @@ export function LocationMark({ className = "", label }: GlyphProps) {
     </svg>
   );
 }
+
+/**
+ * The disclosure chevron on the language button.
+ *
+ * Stroked rather than filled, unlike the marks above: those are traced artwork
+ * with a real outline, this is two straight lines, and a stroke keeps its
+ * weight even when the caller sizes it at 6px tall. Non-scaling stroke is not
+ * wanted here — it should thicken with the glyph if it is ever used larger.
+ */
+export function ChevronMark({ className = "", label }: GlyphProps) {
+  return (
+    <svg
+      viewBox="0 0 10 6"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...role(label)}
+    >
+      <path d="M1 1 5 5 9 1" />
+    </svg>
+  );
+}
