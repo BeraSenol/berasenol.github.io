@@ -1,0 +1,58 @@
+name: Deploy to GitHub Pages
+
+# Build from source on every push to main and publish dist/ to Pages.
+# dist/ is gitignored deliberately: the artifact is built here, not committed,
+# so the repo never carries a stale copy of the site.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# The three permissions deploy-pages needs. id-token is for the OIDC token it
+# exchanges for the deployment; without it the deploy step fails at the end of
+# an otherwise green build.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time, and never cancel one halfway: a cancelled deploy can
+# leave the site on a half-published version.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # npm ci, not npm install: it installs exactly what package-lock.json
+      # pins, and it resolves the native binaries for THIS machine - linux-x64
+      # here, darwin-arm64 on your Mac. The lockfile carries every platform's
+      # entry, which is what makes one lockfile work in both places.
+      - run: npm ci
+
+      - run: npm run build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
