@@ -391,15 +391,15 @@ export function Chessboard({ label }: { label: string }) {
                    *
                    * inset-0 and square, so the red fills exactly the king's
                    * square: the wrapper it sits in is the square, 12.5% of the
-                   * field. At 80% the wood grain still shows faintly through,
-                   * so it reads as the square turning red rather than a red
-                   * tile laid over the board.
+                   * field. At 50% the wood grain shows through, so it reads
+                   * as the square turning red rather than a red tile laid
+                   * over the board.
                    */
                   <span
                     ref={glow}
                     aria-hidden="true"
                     className="absolute inset-0 opacity-0"
-                    style={{ background: "rgba(255,59,48,0.8)" }}
+                    style={{ background: "rgba(255, 59, 48, 0.5)" }}
                   />
                 ) : null}
 

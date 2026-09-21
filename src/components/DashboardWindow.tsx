@@ -44,7 +44,7 @@ const CONFLICTS: { width: number; level: keyof typeof SEVERITY }[] = [
 
 function PanelTitle({ children }: { children: string }) {
   return (
-    <p className="text-[0.625rem] font-semibold uppercase tracking-[0.1em] text-secondary sm:tracking-[0.16em]">
+    <p className="text-[0.625rem] font-semibold uppercase tracking-[0.06em] text-secondary">
       {children}
     </p>
   );

@@ -167,40 +167,72 @@ export function DgtStudio({ content }: { content: Content }) {
           <div aria-hidden="true" className="h-16 lg:col-start-2 lg:h-auto lg:min-h-16" />
 
           {/*
-            lg:w-[56%] of the full row is about 1.2 times the board's column,
-            and justify-self-start keeps its left edge on the gutter, the same
-            line the text starts on. It comes in from the left to match the
-            side it sits on.
+            Row three is its own two-column grid: the Mac on the left at 56% of
+            the row, about 1.2 times the board's column, and the feature list
+            in what is left. A nested grid rather than more columns on the
+            outer one, because these two columns have nothing to do with the
+            text/board split above: the Mac is meant to be wider than the board.
+            items-center puts the list level with the middle of the screen. On
+            a phone it is one column, the Mac and then the list under it.
           */}
-          <Reveal
-            delay={160}
-            from="left"
-            distance="far"
-            className="lg:col-span-2 lg:w-[56%] lg:justify-self-start"
-          >
-            {/*
-              The screen carries the app itself now, composited into the glass
-              from a real screenshot, so this is no longer decorative and gets a
-              described alt. The notch comes from the supplied mask: the glass
-              is masked to that shape, so the screenshot stops at the notch and
-              the lid's own black shows through it.
+          <div className="grid items-center gap-12 lg:col-span-2 lg:grid-cols-[56%_1fr] lg:gap-16">
+            <Reveal delay={160} from="left" distance="far">
+              {/*
+                The screen carries the app itself now, composited into the glass
+                from a real screenshot, so this is no longer decorative and gets a
+                described alt. The notch comes from the supplied mask: the glass
+                is masked to that shape, so the screenshot stops at the notch and
+                the lid's own black shows through it.
 
-              The screenshot's own top strip was black, because macOS blacks out
-              the menu bar for a full-screen app on a notched display. Accurate,
-              and it hid the notch: a black tab on a black strip is nothing, and
-              it read as a second bezel above the real one. That strip now
-              carries the first row of the app's chrome smeared upward, so the
-              notch has something to be seen against.
-            */}
-            <img
-              src={macbook}
-              alt={dgt.screenAlt}
-              width={1400}
-              height={853}
-              loading="lazy"
-              className="block w-full"
-            />
-          </Reveal>
+                The screenshot's own top strip was black, because macOS blacks out
+                the menu bar for a full-screen app on a notched display. Accurate,
+                and it hid the notch: a black tab on a black strip is nothing, and
+                it read as a second bezel above the real one. That strip now
+                carries the first row of the app's chrome smeared upward, so the
+                notch has something to be seen against.
+              */}
+              <img
+                src={macbook}
+                alt={dgt.screenAlt}
+                width={1400}
+                height={853}
+                loading="lazy"
+                className="block w-full"
+              />
+            </Reveal>
+
+            <Reveal delay={260} from="right">
+              {/*
+                An h3, because it sits under the section's h2. Same max
+                gradient as the section title so the two read as one family,
+                but sentence case and a size down, so it reads as a subhead
+                rather than a second headline. The default vertical ramp, not
+                the sweep, because at phone width this can wrap.
+              */}
+              <h3 className="trim-cap gradient-text gradient-max mb-8 text-3xl font-bold leading-[1.1] tracking-[-0.02em] sm:text-4xl">
+                {dgt.featuresTitle}
+              </h3>
+              {/*
+                A description list, because each row is a term and what it means,
+                the same reasoning as Contact. The key is the title: titles are
+                unique within the list, and the index would tie each row's
+                identity to its position, so reordering the content would make
+                React reuse the wrong row.
+              */}
+              <dl className="space-y-6">
+                {dgt.features.map((feature) => (
+                  <div key={feature.title}>
+                    <dt className="text-base font-semibold text-primary">
+                      {feature.title}
+                    </dt>
+                    <dd className="mt-1 text-[0.9375rem] leading-relaxed text-secondary">
+                      {feature.body}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </Reveal>
+          </div>
         </div>
       </Container>
     </section>

@@ -75,6 +75,29 @@ export const nl: Content = {
     boardCaption: "Het narrenmat, schaakmat in 4 halve zetten",
     screenAlt:
       "DGT Studio Pro op een MacBook, met een partij die van een DGT-bord is gelezen, de PGN, de opening en de engine-evaluatie",
+    featuresTitle: "Elke zet, op je Mac.",
+    features: [
+      {
+        title: "Live vanaf het bord",
+        body: "Elke zet op het DGT-bord verschijnt in de app terwijl hij gespeeld wordt, via USB.",
+      },
+      {
+        title: "Herstel bij desync",
+        body: "Zijn het bord en de app het oneens over de stelling, dan zoekt de app uit wat er gebeurd is in plaats van te stoppen.",
+      },
+      {
+        title: "PGN in SAN",
+        body: "Elke partij exporteert als een standaard PGN-bestand, met de zetten in standaard algebraïsche notatie.",
+      },
+      {
+        title: "Een eigen bibliotheek",
+        body: "Partijen staan in een SwiftData-bibliotheek met zoeken, slimme tags zoals Timed, Draws en Not Analyzed, en vier weergaven.",
+      },
+      {
+        title: "Analyse met Stockfish",
+        body: "Een evaluatiegrafiek over de hele partij, naast de opening met ECO-code en variant.",
+      },
+    ],
   },
   education: [
     {

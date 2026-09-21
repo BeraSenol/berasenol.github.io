@@ -74,6 +74,29 @@ export const en: Content = {
     boardCaption: "The Fool\u2019s Mate, Checkmate in 4 halfmoves",
     screenAlt:
       "DGT Studio Pro on a MacBook, showing a game read off a DGT board with its PGN, opening and engine evaluation",
+    featuresTitle: "Every move, on your Mac.",
+    features: [
+      {
+        title: "Live from the board",
+        body: "Every move made on the DGT board shows up in the app as it is played, over USB.",
+      },
+      {
+        title: "Desync recovery",
+        body: "When the board and the app disagree about the position, the app works out what happened instead of stopping.",
+      },
+      {
+        title: "PGN in SAN",
+        body: "Every game exports as a standard PGN file, with the moves in Standard Algebraic Notation.",
+      },
+      {
+        title: "A library of your own",
+        body: "Games live in a SwiftData library with search, smart tags like Timed, Draws and Not Analyzed, and four view modes.",
+      },
+      {
+        title: "Stockfish analysis",
+        body: "An evaluation graph across the whole game, next to the opening by ECO code and variation.",
+      },
+    ],
   },
   education: [
     {

@@ -13,15 +13,19 @@ const AUDIENCE_TOTAL = 1247913;
  * Every node is the same size, so the flow reads as one kind of thing happening
  * five times rather than a hierarchy.
  *
- * The columns are not evenly spaced. API to script keeps a 50-unit gap
- * between node edges, audience to mail a tighter 30, so each audience reads as
- * paired with its own mail, and the split gets 94. Squeezed into the width of a straight hop, a split reads as a kink
- * rather than two lines peeling apart.
+ * The columns are not evenly spaced. API to script keeps a 58-unit gap
+ * between node edges, audience to mail a tighter 38, so each audience reads as
+ * paired with its own mail, and the split gets 102. Squeezed into the width of
+ * a straight hop, a split reads as a kink rather than two lines peeling apart.
  *
- * The rows are 50 apart, which leaves 36 between the two branches: enough to
+ * The rows are 50 apart, which leaves 44 between the two branches: enough to
  * read as two lanes, and it keeps the panel short.
+ *
+ * The centres are fixed and the node size is independent of them: shrinking
+ * the squircles only lengthens the connectors, which start and end on the
+ * node edges. Glyphs and labels keep their own sizes.
  */
-const NODE = 64;
+const NODE = 56;
 const ROW = 86;
 const TOP = 36;
 const BOTTOM = 136;
@@ -39,15 +43,15 @@ const MAIL_EN = { cx: 426, cy: BOTTOM };
  * them at runtime would mean a ref and a layout effect for a number that cannot
  * change. The straight ones are just their own length.
  */
-const LEN_HOP = 41;
-const LEN_SPLIT = 102.59;
-const LEN_MAIL = 21;
+const LEN_HOP = 49;
+const LEN_SPLIT = 109.45;
+const LEN_MAIL = 29;
 
 /**
  * One pen speed for every connector, in svg units per millisecond, so the short
  * straight hops and the long split curves draw at the same rate instead of all
- * taking the same time and making the curves look hurried. The 21-unit mail
- * hops take 145ms, the 41-unit first hop 283ms, the 103-unit curves 708ms.
+ * taking the same time and making the curves look hurried. The 29-unit mail
+ * hops take 200ms, the 49-unit first hop 338ms, the 109-unit curves 755ms.
  */
 const DRAW_SPEED = 0.145;
 const drawMs = (length: number) => Math.round(length / DRAW_SPEED);
@@ -73,9 +77,9 @@ const TIMELINE: [number, number][] = [
   [STEPS.firstArrow, 620],
   [STEPS.script, 1000],
   [STEPS.split, 1450],
-  [STEPS.audiences, 2240],
-  [STEPS.mailArrows, 2690],
-  [STEPS.mails, 2930],
+  [STEPS.audiences, 2290],
+  [STEPS.mailArrows, 2740],
+  [STEPS.mails, 3035],
 ];
 
 function squircle(
@@ -107,36 +111,36 @@ function squircle(
  */
 const CONNECTORS = [
   {
-    d: "M92 86H133",
+    d: "M88 86H137",
     length: LEN_HOP,
     at: STEPS.firstArrow,
-    head: { x: 133, y: 86 },
+    head: { x: 137, y: 86 },
   },
   {
     // Control points both at the horizontal midpoint, so the curve leaves the
     // script level, turns through the middle, and arrives level for its head.
-    d: "M206 86C248.5 86 248.5 36 291 36",
+    d: "M202 86C248.5 86 248.5 36 295 36",
     length: LEN_SPLIT,
     at: STEPS.split,
-    head: { x: 291, y: 36 },
+    head: { x: 295, y: 36 },
   },
   {
-    d: "M206 86C248.5 86 248.5 136 291 136",
+    d: "M202 86C248.5 86 248.5 136 295 136",
     length: LEN_SPLIT,
     at: STEPS.split,
-    head: { x: 291, y: 136 },
+    head: { x: 295, y: 136 },
   },
   {
-    d: "M364 36H385",
+    d: "M360 36H389",
     length: LEN_MAIL,
     at: STEPS.mailArrows,
-    head: { x: 385, y: 36 },
+    head: { x: 389, y: 36 },
   },
   {
-    d: "M364 136H385",
+    d: "M360 136H389",
     length: LEN_MAIL,
     at: STEPS.mailArrows,
-    head: { x: 385, y: 136 },
+    head: { x: 389, y: 136 },
   },
 ];
 
@@ -191,12 +195,16 @@ const AUDIENCE_PATHS = [
 
 const MAIL_PATH = MAIL_GLYPH.d;
 
+/** When the audiences land, and so how long the profile count runs. */
+const COUNT_MS =
+  TIMELINE.find(([value]) => value === STEPS.audiences)?.[1] ?? 2000;
+
 /** Dutch grouping, which is what the page's other locale uses. */
 const groupThousands = (value: number) =>
   String(Math.round(value)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
 /**
- * Counts up to the total, fast, once the panel is on screen.
+ * Counts up to the total once the panel is on screen.
  *
  * rAF rather than a CSS transition because the thing being animated is text
  * content, which CSS cannot interpolate. The effect cancels its own frame on
@@ -243,7 +251,13 @@ export function CampaignFlow() {
   const [step, setStep] = useState(() =>
     prefersReducedMotion() ? STEPS.mails : 0,
   );
-  const count = useCountUp(isVisible, AUDIENCE_TOTAL);
+  /*
+   * The count runs for as long as the flow takes to reach the audiences, so
+   * the number settles at the moment the two audience nodes land: the total
+   * is being split into them. Read off TIMELINE rather than written out, so
+   * retiming the flow retimes the count with it.
+   */
+  const count = useCountUp(isVisible, AUDIENCE_TOTAL, COUNT_MS);
 
   useEffect(() => {
     if (!isVisible || prefersReducedMotion()) return;
@@ -262,17 +276,23 @@ export function CampaignFlow() {
   return (
     <div ref={ref}>
       <WindowFrame address="campaign-builder">
-        <p className="flex items-baseline gap-2 text-primary">
-          <span className="text-lg font-semibold tabular-nums tracking-tight">
+        {/*
+          Stacked, the way a stat reads in Apple's own dashboards: the number
+          first, its unit under it. The spans are block-level through flex-col,
+          and leading-none on the number keeps its line box from pushing the
+          label away with half-leading.
+        */}
+        <p className="flex flex-col items-start gap-1 text-primary">
+          <span className="text-lg font-semibold leading-none tabular-nums tracking-tight">
             {groupThousands(count)}
           </span>
-          <span className="text-[0.625rem] font-semibold uppercase tracking-[0.1em] text-secondary sm:tracking-[0.16em]">
+          <span className="text-[0.625rem] font-semibold uppercase tracking-[0.06em] text-secondary">
             Profiles
           </span>
         </p>
 
         <svg
-          viewBox="0 0 486 172"
+          viewBox="0 0 486 186"
           className="mt-5 block w-full"
           aria-hidden="true"
         >
@@ -402,22 +422,29 @@ export function CampaignFlow() {
                 />
                 <g
                   className="fill-primary"
-                  // Every node has a label now, so every glyph sits 8 above
-                  // centre to leave the bottom of the squircle for its text.
-                  transform={place(art, node.cx, node.cy - 8, size)}
+                  // The label sits under the squircle now, so the glyph has the
+                  // whole node to itself and is centred in it.
+                  transform={place(art, node.cx, node.cy, size)}
                 >
                   {paths.map((d) => (
                     <path key={d.slice(0, 24)} d={d} />
                   ))}
                 </g>
+                {/*
+                  Under the node rather than inside it, like a Finder or Home
+                  Screen icon. The baseline is 13 below the node's edge (32 is
+                  half the node), which at this size leaves about 6 units of
+                  air between the squircle's stroke and the tops of the
+                  capitals.
+                */}
                 <text
                   x={node.cx}
-                  y={node.cy + 19}
+                  y={node.cy + NODE / 2 + 13}
                   className="fill-secondary"
-                  fontSize="10.5"
+                  fontSize="9"
                   fontWeight="400"
                   textAnchor="middle"
-                  letterSpacing="1"
+                  letterSpacing="0.8"
                 >
                   {label}
                 </text>

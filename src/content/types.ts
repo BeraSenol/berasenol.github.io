@@ -12,6 +12,8 @@ export type NuggetIcon = "note" | "leaf" | "star" | "cup" | "snap" | "japanese";
 
 export type Nugget = { icon: NuggetIcon; label: string };
 
+export type Feature = { title: string; body: string };
+
 export type Study = { title: string; org: string; period: string };
 
 export type Project = {
@@ -93,6 +95,10 @@ export type Content = {
     boardLabel: string;
     boardCaption: string;
     screenAlt: string;
+    /** Heading over the feature list beside the Mac. */
+    featuresTitle: string;
+    /** The feature list beside the Mac: a short name, then one sentence. */
+    features: readonly Feature[];
   };
   education: readonly Study[];
   projects: readonly Project[];
