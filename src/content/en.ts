@@ -29,7 +29,9 @@ export const en: Content = {
     scoreLabel: "Gault&Millau: 13 out of 20, two toques",
     paragraphs: [
       "From 2023 to 2024 I was sous-chef here, in Hasselt. A two-person kitchen: my 72-year-old head chef and me, working entirely in Italian and German. No brigade to absorb a mistake, and no shared first language to fall back on. You learn to read what someone needs from how they move, and to say the necessary thing in six words.",
+      "Before this I had interned at a Michelin-starred restaurant. Here there were two of us, so half of every service was mine.",
       "Service is a deadline that arrives whether or not you are ready for it. The only way through it is preparation you did hours earlier: every component portioned, labelled and within reach before the first ticket prints. Quality has to hold at the two hundredth plate as well as the first.",
+      "The kitchen’s signature is truffle, and truffle forgives nothing. Too much heat and the aroma is gone before the plate reaches the table. It is expensive, it does not keep, and a week’s delivery has to be used well. Timing matters more than the recipe.",
       "I build software the same way. Set things up so the work is boring, keep the state of everything visible, and never send out a plate that is nearly right.",
     ],
     exteriorAlt:
@@ -46,8 +48,9 @@ export const en: Content = {
     paragraphs: [
       "Marketing Automation Consultant in Genk, on campaign and data work for Bol.com and BNP Paribas Fortis. I joined as a Junior Developer and moved to Medior Consultant.",
       "The work was reusable SQL stored procedures for audience segmentation and reporting, and custom dashboards in JavaScript that gave stakeholders direct insight into campaign performance instead of a manual report.",
+      "The campaigns themselves ran in Selligent and Adobe Campaign Classic. For BNP Paribas Fortis I worked on site in Brussels, in Adobe Campaign, where a campaign is a flow of targeting, filters and deliveries, and a wrong join reaches real customers.",
+      "The certification track took me six weeks instead of eight, and I finished it with the highest score in two years.",
     ],
-    panelCaption: "Conceptual shape of a campaign.",
   },
   contact: {
     eyebrow: "Contact",
@@ -68,7 +71,7 @@ export const en: Content = {
     ctaLabel: "View on GitHub",
     boardLabel:
       "A chessboard playing Fool\u2019s Mate, the shortest checkmate there is: 1.f3 e5 2.g4 Qh4 mate",
-    boardCaption: "Fool\u2019s Mate. Four half-moves, and it is over.",
+    boardCaption: "The Fool\u2019s Mate, Checkmate in 4 halfmoves",
     screenAlt:
       "DGT Studio Pro on a MacBook, showing a game read off a DGT board with its PGN, opening and engine evaluation",
   },

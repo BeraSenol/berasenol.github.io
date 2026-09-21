@@ -30,7 +30,9 @@ export const nl: Content = {
     scoreLabel: "Gault&Millau: 13 op 20, twee koksmutsen",
     paragraphs: [
       "Van 2023 tot 2024 was ik hier sous-chef, in Hasselt. Een keuken met twee man: mijn chef van 72 en ik, we werkten volledig in het Italiaans en het Duits. Geen brigade om een fout op te vangen, en geen gedeelde moedertaal om op terug te vallen. Je leert aan iemands bewegingen zien wat hij nodig heeft, en het nodige in zes woorden te zeggen.",
+      "Daarvoor had ik stage gelopen in een restaurant met een Michelinster. Hier stonden we met twee, dus de helft van elke service was van mij.",
       "Service is een deadline die komt of je er nu klaar voor bent of niet. Je raakt er enkel door met voorbereiding van uren eerder: elk onderdeel geportioneerd, geëtiketteerd en binnen handbereik voor de eerste bon binnenloopt. De kwaliteit moet bij het tweehonderdste bord even goed zijn als bij het eerste.",
+      "Het handelsmerk van de keuken is truffel, en truffel vergeeft niets. Te veel hitte en het aroma is weg voor het bord op tafel staat. Het is duur, het blijft niet goed, en de levering van een week moet je goed benutten. Timing telt meer dan het recept.",
       "Ik bouw software op dezelfde manier. Zet alles zo op dat het werk saai wordt, houd de toestand van alles zichtbaar, en stuur nooit een bord door dat bijna juist is.",
     ],
     exteriorAlt:
@@ -47,8 +49,9 @@ export const nl: Content = {
     paragraphs: [
       "Marketing Automation Consultant in Genk, met campagne- en datawerk voor Bol.com en BNP Paribas Fortis. Ik begon als Junior Developer en groeide door naar Medior Consultant.",
       "Het werk bestond uit herbruikbare SQL stored procedures voor doelgroepsegmentatie en rapportering, en eigen dashboards in JavaScript die stakeholders rechtstreeks zicht gaven op campagneprestaties in plaats van een handmatig rapport.",
+      "De campagnes zelf liepen in Selligent en Adobe Campaign Classic. Voor BNP Paribas Fortis werkte ik ter plaatse in Brussel, in Adobe Campaign, waar een campagne een flow is van targeting, filters en verzendingen, en een verkeerde join echte klanten bereikt.",
+      "Het certificeringstraject deed ik in zes weken in plaats van acht, en ik sloot het af met de hoogste score in twee jaar.",
     ],
-    panelCaption: "Conceptuele vorm van een campagne.",
   },
   contact: {
     eyebrow: "Contact",
@@ -69,7 +72,7 @@ export const nl: Content = {
     ctaLabel: "Bekijk op GitHub",
     boardLabel:
       "Een schaakbord dat het narrenmat speelt, het kortste schaakmat dat bestaat: 1.f3 e5 2.g4 Dh4 mat",
-    boardCaption: "Narrenmat. Vier halve zetten en het is voorbij.",
+    boardCaption: "Het narrenmat, schaakmat in 4 halve zetten",
     screenAlt:
       "DGT Studio Pro op een MacBook, met een partij die van een DGT-bord is gelezen, de PGN, de opening en de engine-evaluatie",
   },

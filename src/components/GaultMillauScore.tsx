@@ -51,9 +51,9 @@ export function GaultMillauScore({ label }: { label: string }) {
       </svg>
 
       <p className="flex items-baseline gap-2 text-3xl leading-none" aria-hidden="true">
-        <span className="font-bold tabular-nums text-ink">13</span>
-        <span className="font-light text-ink-dim">|</span>
-        <span className="font-light tabular-nums text-ink-dim">20</span>
+        <span className="font-bold tabular-nums text-primary">13</span>
+        <span className="font-light text-secondary">|</span>
+        <span className="font-light tabular-nums text-secondary">20</span>
       </p>
 
       <div className="flex gap-1.5" aria-hidden="true">

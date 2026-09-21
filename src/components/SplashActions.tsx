@@ -11,7 +11,7 @@ import { GitHubMark } from "./Glyphs";
  * button; the whole capsule is the hit target.
  */
 const CAPSULE =
-  "group inline-flex h-12 items-center gap-3 rounded-full border border-white/10 bg-white/10 backdrop-blur-xl transition-colors hover:bg-white/15";
+  "group inline-flex h-12 items-center gap-3 rounded-full border border-separator bg-fill-tertiary backdrop-blur-xl transition-colors hover:bg-fill-secondary";
 
 export function SplashActions({ content }: { content: Content }) {
   return (
@@ -22,7 +22,7 @@ export function SplashActions({ content }: { content: Content }) {
             href="https://github.com/BeraSenol"
             target="_blank"
             rel="noreferrer"
-            className={`${CAPSULE} px-4 text-sm text-ink sm:px-5`}
+            className={`${CAPSULE} px-4 text-sm text-primary sm:px-5`}
           >
             <GitHubMark className="h-[18px] w-[18px] shrink-0" />
             <span className="hidden font-medium sm:inline">GitHub</span>
@@ -35,10 +35,10 @@ export function SplashActions({ content }: { content: Content }) {
             href="mailto:berasenol@icloud.com"
             className={`${CAPSULE} px-1.5 text-sm sm:pl-5`}
           >
-            <span className="hidden font-medium text-ink sm:inline">
+            <span className="hidden font-medium text-primary sm:inline">
               berasenol@icloud.com
             </span>
-            <span className="inline-flex h-9 items-center rounded-full bg-[#0071e3] px-5 font-medium text-white transition-colors group-hover:bg-[#0077ed]">
+            <span className="inline-flex h-9 items-center rounded-full bg-[#0071e3] px-5 font-medium text-primary transition-colors group-hover:bg-[#0077ed]">
               {content.splash.contactCta}
             </span>
           </a>

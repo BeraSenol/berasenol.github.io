@@ -12,29 +12,29 @@ export function Kitchen({ content }: { content: Content }) {
   return (
     // overflow-hidden clips the sideways travel: an off-screen transform still
     // counts toward document scroll width and would add a horizontal scrollbar.
-    <section id="kitchen" className="overflow-hidden border-t border-hairline py-28 sm:py-40">
+    <section id="kitchen" className="overflow-hidden border-t border-separator py-20 sm:py-28 lg:py-40">
       <Container>
         <div className="grid gap-12 lg:grid-cols-[1fr_1.05fr] lg:items-start lg:gap-16">
           {/* Left column, the slide's title block */}
           <div>
             <Reveal>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-dim">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-secondary">
                 {k.eyebrow}
               </p>
-              <h2 className="scrub-rise trim-cap gradient-text gradient-sweep mt-4 text-4xl font-bold uppercase leading-[1.05] tracking-[-0.02em] sm:text-5xl">
+              <h2 className="scrub-rise trim-cap gradient-text mt-4 text-4xl font-bold uppercase leading-[1.05] tracking-[-0.02em] sm:text-5xl">
                 {k.title}
               </h2>
-              <p className="mt-3 text-lg italic text-ink-dim">{k.tagline}</p>
+              <p className="mt-3 text-lg italic text-secondary">{k.tagline}</p>
             </Reveal>
 
             <Reveal delay={120}>
-              <div className="mt-10 border-t border-hairline pt-8 text-ink">
+              <div className="mt-10 border-t border-separator pt-8 text-primary">
                 <GaultMillauScore label={k.scoreLabel} />
               </div>
             </Reveal>
 
             <Reveal delay={220}>
-              <div className="mt-10 space-y-6 text-lg leading-relaxed text-ink-dim">
+              <div className="mt-10 space-y-6 text-[1.0625rem] leading-relaxed text-secondary sm:text-lg">
                 {k.paragraphs.map((paragraph) => (
                   <p key={paragraph.slice(0, 40)}>{paragraph}</p>
                 ))}
@@ -50,9 +50,9 @@ export function Kitchen({ content }: { content: Content }) {
               width={1000}
               height={1333}
               loading="lazy"
-              className="w-full object-cover grayscale"
+              className="max-h-[70svh] w-full object-cover grayscale lg:max-h-none"
             />
-            <p className="mt-3 text-right text-xs text-ink-dim">{k.exteriorCaption}</p>
+            <p className="mt-3 text-right text-xs text-secondary">{k.exteriorCaption}</p>
           </Reveal>
         </div>
 
@@ -82,7 +82,7 @@ export function Kitchen({ content }: { content: Content }) {
             </Reveal>
           </div>
 
-          <p className="mt-3 text-xs text-ink-dim sm:w-[58%]">{k.trufflesCaption}</p>
+          <p className="mt-3 text-xs text-secondary sm:w-[58%]">{k.trufflesCaption}</p>
         </div>
       </Container>
     </section>

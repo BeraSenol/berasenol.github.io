@@ -12,14 +12,14 @@ export function Header({ content }: { content: Content }) {
    * with every section heading below it at every width.
    */
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-hairline/80 bg-canvas/70 backdrop-blur-xl">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-separator bg-canvas/70 backdrop-blur-xl">
       <nav
         aria-label="Primary"
         className="flex h-12 w-full items-center justify-between px-6 sm:px-8 lg:px-12 xl:px-16"
       >
         <a
           href="#top"
-          className="text-sm font-semibold tracking-tight text-ink transition-opacity hover:opacity-70"
+          className="-mx-2 flex h-full items-center px-2 text-sm font-semibold tracking-tight text-primary transition-opacity hover:opacity-70"
         >
           Bera Senol
         </a>

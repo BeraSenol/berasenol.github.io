@@ -14,10 +14,10 @@ export function WindowFrame({
   children: ReactNode;
 }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-hairline bg-surface">
+    <div className="overflow-hidden rounded-xl border border-separator bg-surface">
       <div
         aria-hidden="true"
-        className="grid grid-cols-[auto_1fr_auto] items-center gap-2 border-b border-hairline bg-white/[0.04] px-4 py-3"
+        className="grid grid-cols-[auto_1fr_auto] items-center gap-2 border-b border-separator bg-fill-quaternary px-3 py-2.5 sm:px-4 sm:py-3"
       >
         {/*
           Three columns rather than a flex row with a spacer: the middle column is
@@ -38,7 +38,7 @@ export function WindowFrame({
             this way the label is centred on the pill and the lock is where a
             browser puts it.
           */}
-          <span className="relative flex w-full max-w-[15rem] items-center justify-center rounded-md bg-white/[0.07] px-7 py-1 text-[0.6875rem] text-ink-dim">
+          <span className="relative flex w-full max-w-[15rem] items-center justify-center rounded-md bg-fill-tertiary px-7 py-1 text-[0.6875rem] text-secondary">
             <svg
               viewBox="0 0 17.1387 24.5508"
               className="absolute left-2 top-1/2 h-3 w-auto -translate-y-1/2"
@@ -54,7 +54,7 @@ export function WindowFrame({
         <div className="w-[52px]" />
       </div>
 
-      <div className="p-6 sm:p-8">{children}</div>
+      <div className="p-4 sm:p-6 lg:p-8">{children}</div>
     </div>
   );
 }

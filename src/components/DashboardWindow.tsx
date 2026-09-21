@@ -31,7 +31,7 @@ const BARS = [38, 62, 47, 71, 55, 83, 66, 92, 74, 58];
 const SEVERITY = {
   high: "bg-[#ff5f57]",
   medium: "bg-[#febc2e]",
-  low: "bg-ink/25",
+  low: "bg-tertiary",
 } as const;
 
 const CONFLICTS: { width: number; level: keyof typeof SEVERITY }[] = [
@@ -44,7 +44,7 @@ const CONFLICTS: { width: number; level: keyof typeof SEVERITY }[] = [
 
 function PanelTitle({ children }: { children: string }) {
   return (
-    <p className="text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-ink-dim">
+    <p className="text-[0.625rem] font-semibold uppercase tracking-[0.1em] text-secondary sm:tracking-[0.16em]">
       {children}
     </p>
   );
@@ -56,14 +56,14 @@ export function DashboardWindow() {
   return (
     <div ref={ref}>
       <WindowFrame address="reporting">
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-3 gap-2 sm:gap-4">
           {STATS.map(({ label, value }) => (
             <div
               key={label}
-              className="rounded-lg border border-hairline bg-white/[0.02] p-4"
+              className="rounded-lg border border-separator bg-fill-quaternary p-3 sm:p-4"
             >
               <PanelTitle>{label}</PanelTitle>
-              <p className="mt-2 text-xl font-semibold tabular-nums tracking-tight text-ink">
+              <p className="mt-2 text-base font-semibold tabular-nums tracking-tight text-primary sm:text-xl">
                 {value}
               </p>
             </div>
@@ -71,7 +71,7 @@ export function DashboardWindow() {
         </div>
 
         <div className="mt-4 grid gap-4 lg:grid-cols-[1.6fr_1fr]">
-          <div className="rounded-lg border border-hairline bg-white/[0.02] p-4">
+          <div className="rounded-lg border border-separator bg-fill-quaternary p-3 sm:p-4">
             <PanelTitle>Sends per day</PanelTitle>
             <div className="mt-4 flex h-28 items-end gap-2">
               {BARS.map((height, index) => (
@@ -89,10 +89,10 @@ export function DashboardWindow() {
             </div>
           </div>
 
-          <div className="rounded-lg border border-hairline bg-white/[0.02] p-4">
+          <div className="rounded-lg border border-separator bg-fill-quaternary p-3 sm:p-4">
             <div className="flex items-baseline justify-between gap-3">
               <PanelTitle>Conflicts</PanelTitle>
-              <span className="text-xs tabular-nums text-ink-dim">
+              <span className="text-xs tabular-nums text-secondary">
                 {CONFLICTS.length}
               </span>
             </div>
@@ -115,7 +115,7 @@ export function DashboardWindow() {
                     className={`h-1.5 w-1.5 shrink-0 rounded-full ${SEVERITY[level]}`}
                   />
                   <span
-                    className="h-2 rounded-full bg-ink/15"
+                    className="h-2 rounded-full bg-fill"
                     style={{ width: `${width}%` }}
                   />
                 </li>

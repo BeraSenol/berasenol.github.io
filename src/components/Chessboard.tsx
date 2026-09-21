@@ -388,15 +388,18 @@ export function Chessboard({ label }: { label: string }) {
                    * mate: an element that appears already opaque has nothing to
                    * animate from. Its delay lets the queen finish her slide
                    * before the board lights up.
+                   *
+                   * inset-0 and square, so the red fills exactly the king's
+                   * square: the wrapper it sits in is the square, 12.5% of the
+                   * field. At 80% the wood grain still shows faintly through,
+                   * so it reads as the square turning red rather than a red
+                   * tile laid over the board.
                    */
                   <span
                     ref={glow}
                     aria-hidden="true"
-                    className="absolute inset-[-12%] rounded-full opacity-0"
-                    style={{
-                      background:
-                        "radial-gradient(circle, rgba(255,59,48,0.65) 0%, rgba(255,59,48,0.3) 42%, rgba(255,59,48,0) 70%)",
-                    }}
+                    className="absolute inset-0 opacity-0"
+                    style={{ background: "rgba(255,59,48,0.8)" }}
                   />
                 ) : null}
 

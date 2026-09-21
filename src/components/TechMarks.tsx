@@ -1,6 +1,6 @@
 import stockfishIcon from "../assets/stockfish-mark.webp";
 import swiftTestingIcon from "../assets/swift-testing.webp";
-import xcodeIcon from "../assets/xcode.webp";
+import xcodeIcon from "../assets/xcode-icon.webp";
 import swiftDataIcon from "../assets/swiftdata.webp";
 import swiftUiIcon from "../assets/swiftui.webp";
 
@@ -143,7 +143,7 @@ const DGT_RED = "#E1251B";
  * Two colours in the original: #54565A for the D and the T and the three squares
  * inside the D, and #E1251B for the G. The grey is a near-black meant for white
  * paper and disappears on this canvas, so it becomes currentColor and the row's
- * text-ink carries it, the same treatment the macOS wordmark gets above. The red
+ * text-primary carries it, the same treatment the macOS wordmark gets above. The red
  * G is the half anyone recognises, so it keeps its issued value.
  *
  * The viewBox is the artwork's own ink box, measured with getBBox rather than

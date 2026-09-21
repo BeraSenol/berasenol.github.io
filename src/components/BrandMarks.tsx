@@ -46,7 +46,7 @@ export function SelligentLogo({ className = '' }: { className?: string }) {
     <div className={`inline-grid text-[1.75rem] leading-none sm:text-[2rem] ${className}`}>
       <div className="flex items-baseline gap-[0.09em]">
         <span
-          className="font-semibold tracking-[-0.02em] text-ink"
+          className="font-semibold tracking-[-0.02em] text-primary"
           style={{ transform: 'skewX(-10deg)' }}
         >
           Selligent
@@ -56,7 +56,7 @@ export function SelligentLogo({ className = '' }: { className?: string }) {
         </svg>
       </div>
       <span
-        className="mt-[-0.37em] justify-self-end text-[0.26em] font-bold uppercase tracking-[0.02em] text-ink-dim"
+        className="mt-[-0.37em] justify-self-end text-[0.26em] font-bold uppercase tracking-[0.02em] text-secondary"
         style={{ transform: 'skewX(-10deg)' }}
       >
         Marketing Cloud
@@ -77,7 +77,7 @@ export function AdobeLogo({ className = '' }: { className?: string }) {
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
       <AdobeMark className="h-[2.0625rem] w-auto shrink-0 sm:h-[2.3125rem]" />
-      <span className="text-sm font-semibold leading-[1.15] text-ink">
+      <span className="text-sm font-semibold leading-[1.15] text-primary">
         Adobe
         <br />
         Campaign

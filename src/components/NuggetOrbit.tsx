@@ -124,7 +124,7 @@ export function NuggetOrbit({ nuggets }: { nuggets: readonly Nugget[] }) {
               }
             >
               <div className="orbit-upright">
-                <div className="orbit-unsquash flex w-40 flex-col items-center gap-2.5 text-center text-ink-dim xl:w-44">
+                <div className="orbit-unsquash flex w-40 flex-col items-center gap-2.5 text-center text-secondary xl:w-44">
                   <NuggetIconMark name={nugget.icon} />
                   <p className="text-xs leading-snug xl:text-sm">{nugget.label}</p>
                 </div>

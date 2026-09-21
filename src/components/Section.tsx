@@ -25,14 +25,14 @@ export function Section({ id, eyebrow, title, children }: SectionProps) {
     */
     <section
       id={id}
-      className="overflow-hidden border-t border-hairline py-28 sm:py-40"
+      className="overflow-hidden border-t border-separator py-20 sm:py-28 lg:py-40"
     >
       <Container>
         <Reveal>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-dim">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-secondary">
             {eyebrow}
           </p>
-          <h2 className="mt-4 text-4xl font-semibold tracking-[-0.02em] text-ink sm:text-5xl">
+          <h2 className="mt-4 text-4xl font-semibold tracking-[-0.02em] text-primary sm:text-5xl">
             {title}
           </h2>
         </Reveal>
@@ -42,7 +42,7 @@ export function Section({ id, eyebrow, title, children }: SectionProps) {
           is inside, because a section of prose and a section of lists want
           different widths, so children are not wrapped in one here.
         */}
-        <div className="mt-10">{children}</div>
+        <div className="mt-6">{children}</div>
       </Container>
     </section>
   )

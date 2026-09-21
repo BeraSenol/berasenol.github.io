@@ -76,14 +76,16 @@ export function LanguageMenu({ current, label }: LanguageMenuProps) {
         aria-haspopup="menu"
         aria-controls="language-menu"
         onClick={() => setOpen((wasOpen) => !wasOpen)}
-        className="flex items-center gap-1.5 rounded-full border border-white/15 px-2.5 py-1 text-xs font-medium text-ink-dim transition-colors hover:border-white/40 hover:text-ink aria-expanded:border-white/40 aria-expanded:text-ink"
+        className="group -m-2.5 flex items-center p-2.5"
       >
-        {currentLocale.label}
-        <ChevronMark
-          className={`h-1.5 w-2.5 transition-transform duration-200 ${
-            open ? "rotate-180" : ""
-          }`}
-        />
+        <span className="flex items-center gap-1.5 rounded-full border border-separator px-2.5 py-1 text-xs font-medium text-secondary transition-colors group-hover:border-tertiary group-hover:text-primary group-aria-expanded:border-tertiary group-aria-expanded:text-primary">
+          {currentLocale.label}
+          <ChevronMark
+            className={`h-1.5 w-2.5 transition-transform duration-200 ${
+              open ? "rotate-180" : ""
+            }`}
+          />
+        </span>
       </button>
 
       {/*
@@ -95,7 +97,7 @@ export function LanguageMenu({ current, label }: LanguageMenuProps) {
         <ul
           id="language-menu"
           role="menu"
-          className="absolute right-0 top-full z-50 mt-2 min-w-36 overflow-hidden rounded-xl border border-hairline bg-surface/95 py-1 shadow-xl shadow-black/40 backdrop-blur-xl"
+          className="absolute right-0 top-full z-50 mt-2 min-w-36 overflow-hidden rounded-xl border border-separator bg-surface/95 py-1 shadow-xl shadow-black/40 backdrop-blur-xl"
         >
           {LOCALES.map((locale) => {
             const isCurrent = locale.code === current;
@@ -114,7 +116,7 @@ export function LanguageMenu({ current, label }: LanguageMenuProps) {
                   <span
                     role="menuitem"
                     aria-current="true"
-                    className="flex items-center justify-between gap-3 px-3 py-1.5 text-xs font-medium text-ink"
+                    className="flex min-h-11 items-center justify-between gap-3 px-3.5 py-2 text-sm font-medium text-primary"
                   >
                     {locale.name}
                     <CheckMark className="h-2.5 w-3 text-accent" />
@@ -125,7 +127,7 @@ export function LanguageMenu({ current, label }: LanguageMenuProps) {
                     href={locale.href}
                     hrefLang={locale.code}
                     lang={locale.code}
-                    className="flex items-center justify-between gap-3 px-3 py-1.5 text-xs font-medium text-ink-dim transition-colors hover:bg-white/5 hover:text-ink focus-visible:bg-white/5 focus-visible:text-ink focus-visible:outline-none"
+                    className="flex min-h-11 items-center justify-between gap-3 px-3.5 py-2 text-sm font-medium text-secondary transition-colors hover:bg-fill-quaternary hover:text-primary focus-visible:bg-fill-quaternary focus-visible:text-primary focus-visible:outline-none"
                   >
                     {locale.name}
                   </a>

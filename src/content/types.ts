@@ -76,8 +76,6 @@ export type Content = {
     title: string;
     tagline: string;
     paragraphs: readonly string[];
-    /** The panel is decorative, so the caption has to say so. */
-    panelCaption: string;
   };
   contact: {
     eyebrow: string;

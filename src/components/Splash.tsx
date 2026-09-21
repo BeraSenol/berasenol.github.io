@@ -28,7 +28,7 @@ export function Splash({ content }: { content: Content }) {
         Bera Senol
       </h1>
 
-      <p className="animate-rise relative mt-1 text-lg text-ink-dim sm:text-xl [animation-delay:280ms]">
+      <p className="animate-rise relative mt-1 text-lg text-secondary sm:text-xl [animation-delay:280ms]">
         {content.splash.role}
       </p>
 

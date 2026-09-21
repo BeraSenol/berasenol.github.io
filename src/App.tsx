@@ -39,9 +39,9 @@ function App({ content }: { content: Content }) {
         </Section>
       </main>
 
-      <footer className="border-t border-hairline py-10">
+      <footer className="border-t border-separator py-10">
         <Container>
-          <p className="text-xs text-ink-dim">
+          <p className="text-xs text-secondary">
             &copy; {new Date().getFullYear()} {content.footer}
           </p>
         </Container>

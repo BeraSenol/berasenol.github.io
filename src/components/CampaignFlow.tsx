@@ -12,18 +12,26 @@ const AUDIENCE_TOTAL = 1247913;
 /**
  * Every node is the same size, so the flow reads as one kind of thing happening
  * five times rather than a hierarchy.
+ *
+ * The columns are not evenly spaced. API to script keeps a 50-unit gap
+ * between node edges, audience to mail a tighter 30, so each audience reads as
+ * paired with its own mail, and the split gets 94. Squeezed into the width of a straight hop, a split reads as a kink
+ * rather than two lines peeling apart.
+ *
+ * The rows are 50 apart, which leaves 36 between the two branches: enough to
+ * read as two lanes, and it keeps the panel short.
  */
-const NODE = 76;
-const ROW = 160;
-const TOP = 74;
-const BOTTOM = 246;
+const NODE = 64;
+const ROW = 86;
+const TOP = 36;
+const BOTTOM = 136;
 
-const API = { cx: 48, cy: ROW };
-const SCRIPT = { cx: 178, cy: ROW };
-const AUDIENCE_NL = { cx: 308, cy: TOP };
-const AUDIENCE_EN = { cx: 308, cy: BOTTOM };
-const MAIL_NL = { cx: 438, cy: TOP };
-const MAIL_EN = { cx: 438, cy: BOTTOM };
+const API = { cx: 60, cy: ROW };
+const SCRIPT = { cx: 174, cy: ROW };
+const AUDIENCE_NL = { cx: 332, cy: TOP };
+const AUDIENCE_EN = { cx: 332, cy: BOTTOM };
+const MAIL_NL = { cx: 426, cy: TOP };
+const MAIL_EN = { cx: 426, cy: BOTTOM };
 
 /*
  * Path lengths, for the draw-on. Measured by integrating each curve rather than
@@ -31,14 +39,15 @@ const MAIL_EN = { cx: 438, cy: BOTTOM };
  * them at runtime would mean a ref and a layout effect for a number that cannot
  * change. The straight ones are just their own length.
  */
-const LEN_STRAIGHT = 45;
-const LEN_SPLIT = 104.01;
+const LEN_HOP = 41;
+const LEN_SPLIT = 102.59;
+const LEN_MAIL = 21;
 
 /**
  * One pen speed for every connector, in svg units per millisecond, so the short
  * straight hops and the long split curves draw at the same rate instead of all
- * taking the same time and making the curves look hurried. 45 units takes 310ms,
- * the 104-unit curves take 717ms.
+ * taking the same time and making the curves look hurried. The 21-unit mail
+ * hops take 145ms, the 41-unit first hop 283ms, the 103-unit curves 708ms.
  */
 const DRAW_SPEED = 0.145;
 const drawMs = (length: number) => Math.round(length / DRAW_SPEED);
@@ -64,9 +73,9 @@ const TIMELINE: [number, number][] = [
   [STEPS.firstArrow, 620],
   [STEPS.script, 1000],
   [STEPS.split, 1450],
-  [STEPS.audiences, 2250],
-  [STEPS.mailArrows, 2700],
-  [STEPS.mails, 3100],
+  [STEPS.audiences, 2240],
+  [STEPS.mailArrows, 2690],
+  [STEPS.mails, 2930],
 ];
 
 function squircle(
@@ -98,34 +107,36 @@ function squircle(
  */
 const CONNECTORS = [
   {
-    d: "M86 160H131",
-    length: LEN_STRAIGHT,
+    d: "M92 86H133",
+    length: LEN_HOP,
     at: STEPS.firstArrow,
-    head: { x: 131, y: 160 },
+    head: { x: 133, y: 86 },
   },
   {
-    d: "M216 160C250 160 240 74 261 74",
+    // Control points both at the horizontal midpoint, so the curve leaves the
+    // script level, turns through the middle, and arrives level for its head.
+    d: "M206 86C248.5 86 248.5 36 291 36",
     length: LEN_SPLIT,
     at: STEPS.split,
-    head: { x: 261, y: 74 },
+    head: { x: 291, y: 36 },
   },
   {
-    d: "M216 160C250 160 240 246 261 246",
+    d: "M206 86C248.5 86 248.5 136 291 136",
     length: LEN_SPLIT,
     at: STEPS.split,
-    head: { x: 261, y: 246 },
+    head: { x: 291, y: 136 },
   },
   {
-    d: "M346 74H391",
-    length: LEN_STRAIGHT,
+    d: "M364 36H385",
+    length: LEN_MAIL,
     at: STEPS.mailArrows,
-    head: { x: 391, y: 74 },
+    head: { x: 385, y: 36 },
   },
   {
-    d: "M346 246H391",
-    length: LEN_STRAIGHT,
+    d: "M364 136H385",
+    length: LEN_MAIL,
     at: STEPS.mailArrows,
-    head: { x: 391, y: 246 },
+    head: { x: 385, y: 136 },
   },
 ];
 
@@ -251,17 +262,17 @@ export function CampaignFlow() {
   return (
     <div ref={ref}>
       <WindowFrame address="campaign-builder">
-        <p className="flex items-baseline gap-2 text-ink">
+        <p className="flex items-baseline gap-2 text-primary">
           <span className="text-lg font-semibold tabular-nums tracking-tight">
             {groupThousands(count)}
           </span>
-          <span className="text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-ink-dim">
+          <span className="text-[0.625rem] font-semibold uppercase tracking-[0.1em] text-secondary sm:tracking-[0.16em]">
             Profiles
           </span>
         </p>
 
         <svg
-          viewBox="0 0 486 296"
+          viewBox="0 0 486 172"
           className="mt-5 block w-full"
           aria-hidden="true"
         >
@@ -279,7 +290,7 @@ export function CampaignFlow() {
             </linearGradient>
           </defs>
 
-          <g transform="translate(0 -22)">
+          <g>
             {/*
              * Butt caps, the default, and deliberately not round ones. A cap is
              * drawn beyond the path's endpoint, half the stroke width of it, so a
@@ -331,23 +342,23 @@ export function CampaignFlow() {
                 node: API,
                 art: API_ART,
                 paths: API_PATHS,
-                size: 30,
+                size: 25,
                 at: STEPS.api,
-                label: null,
+                label: "API",
               },
               {
                 node: SCRIPT,
                 art: SCRIPT_ART,
                 paths: [SCRIPT_PATH],
-                size: 34,
+                size: 29,
                 at: STEPS.script,
-                label: null,
+                label: "Script",
               },
               {
                 node: AUDIENCE_NL,
                 art: AUDIENCE_ART,
                 paths: AUDIENCE_PATHS,
-                size: 21,
+                size: 18,
                 at: STEPS.audiences,
                 label: "NL",
               },
@@ -355,7 +366,7 @@ export function CampaignFlow() {
                 node: AUDIENCE_EN,
                 art: AUDIENCE_ART,
                 paths: AUDIENCE_PATHS,
-                size: 21,
+                size: 18,
                 at: STEPS.audiences,
                 label: "EN",
               },
@@ -363,7 +374,7 @@ export function CampaignFlow() {
                 node: MAIL_NL,
                 art: MAIL_ART,
                 paths: [MAIL_PATH],
-                size: 22,
+                size: 19,
                 at: STEPS.mails,
                 label: "NL",
               },
@@ -371,7 +382,7 @@ export function CampaignFlow() {
                 node: MAIL_EN,
                 art: MAIL_ART,
                 paths: [MAIL_PATH],
-                size: 22,
+                size: 19,
                 at: STEPS.mails,
                 label: "EN",
               },
@@ -386,35 +397,30 @@ export function CampaignFlow() {
               >
                 <path
                   d={squircle(node.cx, node.cy, NODE)}
-                  className="fill-ink/5 stroke-hairline"
+                  className="fill-fill-quaternary stroke-separator"
                   strokeWidth="2"
                 />
                 <g
-                  className="fill-ink/80"
-                  transform={place(
-                    art,
-                    node.cx,
-                    label ? node.cy - 9 : node.cy,
-                    size,
-                  )}
+                  className="fill-primary"
+                  // Every node has a label now, so every glyph sits 8 above
+                  // centre to leave the bottom of the squircle for its text.
+                  transform={place(art, node.cx, node.cy - 8, size)}
                 >
                   {paths.map((d) => (
                     <path key={d.slice(0, 24)} d={d} />
                   ))}
                 </g>
-                {label ? (
-                  <text
-                    x={node.cx}
-                    y={node.cy + 24}
-                    className="fill-ink-dim"
-                    fontSize="15"
-                    fontWeight="600"
-                    textAnchor="middle"
-                    letterSpacing="1.5"
-                  >
-                    {label}
-                  </text>
-                ) : null}
+                <text
+                  x={node.cx}
+                  y={node.cy + 19}
+                  className="fill-secondary"
+                  fontSize="10.5"
+                  fontWeight="400"
+                  textAnchor="middle"
+                  letterSpacing="1"
+                >
+                  {label}
+                </text>
               </g>
             ))}
           </g>

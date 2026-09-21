@@ -6,11 +6,44 @@
     -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial,
     sans-serif;
 
+  /*
+   * Apple's dark-appearance system colours, as UIKit/SwiftUI resolve them, so
+   * the page's greys are the same greys as a Mac or iPhone in Dark Mode.
+   * Apple does not publish these numbers in the HIG and says they can shift
+   * between releases; these are the values the SDK has resolved to since
+   * iOS 13. Colour stays colour: only the neutral scale lives here.
+   *
+   * Backgrounds: systemBackground, secondarySystemBackground,
+   * tertiarySystemBackground.
+   */
   --color-canvas: #000000;
-  --color-surface: #0b0b0d;
-  --color-hairline: #1c1c1f;
-  --color-ink: #f5f5f7;
-  --color-ink-dim: #86868b;
+  --color-surface: #1c1c1e;
+  --color-surface-elevated: #2c2c2e;
+
+  /*
+   * Foreground hierarchy: label, secondaryLabel, tertiaryLabel,
+   * quaternaryLabel, which SwiftUI exposes as .primary, .secondary, .tertiary
+   * and .quaternary. Translucent on purpose: they are a tint of the background
+   * rather than fixed greys, so the same token reads correctly on the black
+   * canvas and on a lighter window surface.
+   */
+  --color-primary: #ffffff;
+  --color-secondary: rgb(235 235 245 / 0.6);
+  --color-tertiary: rgb(235 235 245 / 0.3);
+  --color-quaternary: rgb(235 235 245 / 0.18);
+
+  /* separator: the hairline between sections and around cards. */
+  --color-separator: rgb(84 84 88 / 0.6);
+
+  /*
+   * systemFill through quaternarySystemFill: tinted backgrounds for controls
+   * and small shapes, strongest to faintest.
+   */
+  --color-fill: rgb(120 120 128 / 0.36);
+  --color-fill-secondary: rgb(120 120 128 / 0.32);
+  --color-fill-tertiary: rgb(118 118 128 / 0.24);
+  --color-fill-quaternary: rgb(118 118 128 / 0.18);
+
   --color-accent: #5e9eff;
 
   --animate-rise: rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -48,7 +81,7 @@
 
   body {
     background-color: var(--color-canvas);
-    color: var(--color-ink);
+    color: var(--color-primary);
     font-family: var(--font-display);
   }
 
@@ -134,7 +167,7 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: var(--color-ink);
+  color: var(--color-primary);
 
   /* M5, mint through slate. The default. */
   --text-gradient-stops: #e4f6f0, #9dcfca 31%, #6b95ac 68%, #45657d;
@@ -257,7 +290,7 @@
  */
 .orbit-slot:hover .orbit-unsquash {
   transform: scaleY(calc(1 / var(--k))) scale(1.18);
-  color: var(--color-ink);
+  color: var(--color-primary);
 }
 
 
