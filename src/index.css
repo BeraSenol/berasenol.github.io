@@ -134,6 +134,49 @@
 }
 
 /*
+ * Word by word, the headline brightens as it scrolls up the screen, from the
+ * tertiary grey to full white, the way Apple lights a sentence on its product
+ * pages. Scroll-linked like .scrub-rise, so it runs off the main thread and
+ * reverses if you scroll back.
+ *
+ * All the words follow one timeline, the heading's own position in the
+ * viewport (the named --words view timeline), rather than each word its own:
+ * words on the same line are at the same height, so their own timelines
+ * would light a whole line at once. Instead each word takes a slice of the
+ * range 30% to 50% of the heading's pass through the screen, the slice
+ * picked by its index (--i of --n), and the slices overlap a little so the
+ * light runs along the line instead of stepping. At 50% the heading is
+ * centred on screen and every word is lit.
+ *
+ * Without scroll timelines, or with reduced motion, the words are simply
+ * white: nothing here applies, and they inherit the heading's colour.
+ */
+@keyframes word-light {
+  from {
+    color: var(--color-tertiary);
+  }
+  to {
+    color: var(--color-primary);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scrub-words {
+      view-timeline-name: --words;
+    }
+
+    .scrub-words .word {
+      animation: word-light linear both;
+      animation-timeline: --words;
+      animation-range:
+        cover calc(30% + var(--i) * 20% / var(--n))
+        cover calc(36% + (var(--i) + 1) * 20% / var(--n));
+    }
+  }
+}
+
+/*
  * Gradient-filled headlines, the way Apple does it: a background image clipped to
  * the glyphs, with the text fill made transparent and a plain `color` underneath
  * as the fallback for anything that lacks -webkit-text-fill-color.
@@ -200,6 +243,18 @@
 @supports (text-box: trim-start cap alphabetic) {
   .trim-cap {
     text-box: trim-start cap alphabetic;
+  }
+
+  /*
+   * Both ends at once: the box runs from the cap line to the baseline and
+   * nothing else, so its middle is the middle of the capitals. Contact uses
+   * it twice over: a flex row centred on that box centres its icon on the
+   * text's cap height rather than on the line box (which carries descender
+   * room below and is off-centre by a font-dependent amount), and the last
+   * row's box ending on the baseline is what the memoji stands on.
+   */
+  .trim-text {
+    text-box: trim-both cap alphabetic;
   }
 }
 
@@ -300,62 +355,80 @@
 
 
 /*
- * Liquid Glass, as close as CSS gets. Apple's material bends the light behind
- * it through a lens; the browser can blur and tint a backdrop but cannot
- * refract it (backdrop-filter: url() with an SVG displacement map works only
- * in Chromium, and not in Safari, which is where this site is most looked at).
- * So this builds the parts of the look that do survive:
+ * Liquid Glass for the language menu and every pill, after the "Liquid Glass Distortion
+ * Card" in the freefrontend.com collection.
  *
- * - The body: a faint white tint over a heavily blurred, saturated backdrop,
- *   so whatever passes under it goes soft and a little more vivid, which is
- *   what makes glass read as glass rather than as a grey panel.
- * - The rim: a 1px gradient ring, bright at the top-left where the light
- *   catches and faint along the sides, drawn by ::before. A plain border is
- *   one flat colour all the way round, which is exactly the tell of a fake.
- *   The ring is a padded box masked down to its padding: the content-box
- *   layer is cut out of the full-box layer, leaving only the 1px edge.
- * - The specular: an inset highlight along the top inner edge and a softer
- *   glow inside, so the surface has thickness.
- * - The lift: a wide, soft shadow, so it floats above the page.
+ * What makes it liquid rather than frosted is refraction: the page behind
+ * the panel is pushed around by an SVG displacement map, in three colour
+ * channels by slightly different amounts, before it is shown. That is
+ * backdrop-filter: url(#liquid-glass-menu), or #liquid-glass-pill for the
+ * capsules, pointing at the <filter>s that LiquidGlassFilters renders once
+ * into the page; the maps and the chain are explained there.
  *
- * In @layer components so Tailwind's utilities still win on the element: the
- * caller sets position (relative or absolute) and radius, and ::before
- * inherits the radius. Unlayered, this would outrank every utility.
+ * Only Chromium applies an SVG filter as a backdrop filter. Safari and
+ * Firefox parse it and then draw nothing at all, not even a blur, so the
+ * @supports block below hands those two a plain blur instead. The tests are
+ * engine fingerprints, not features: only WebKit knows the -apple-system-body
+ * font keyword and only Gecko knows -moz-orient. (Not -moz-appearance: the
+ * build rewrites that to the standard appearance, which every engine
+ * supports, and the fallback would then switch the lens off in Chrome too.)
+ * Checking for url() in backdrop-filter itself would not work, because all
+ * three accept the syntax; they differ only in whether they draw it.
+ *
+ * The edge is a hair-thin rim with a directional shine, drawn by ::before
+ * below: 0.5px, one device pixel on a Retina screen. (The source's rim is a
+ * 2px blur spread 1px, which reads as a soft border about 3px wide.) The
+ * wide inner glow is turned down so it does not read as a second, blurrier
+ * border inside the rim. Then the source's three
+ * near-black inset shades on the upper inner face, and a drop shadow of
+ * ours so the panel floats.
+ *
+ * The one deliberate difference is the tint. The source frosts with 10%
+ * black, which is fine over a photo with nothing on top; a menu has text on
+ * it, so the base here is 45% dark to keep the labels readable over
+ * anything.
+ *
+ * In @layer components so Tailwind's utilities still win on the element.
  */
 @layer components {
   .liquid-glass {
-    /*
-     * Two layers: the white sheen on top, and under it a dark base at 45%.
-     * Without the base the glass is only as dark as what is behind it, and
-     * over a bright photograph the secondary-grey text went to almost no
-     * contrast. Dark-appearance glass on Apple platforms does the same: it
-     * keeps a dark tint so the label on it stays readable whatever scrolls
-     * beneath.
-     */
-    background:
-      linear-gradient(180deg, rgb(255 255 255 / 0.12), rgb(255 255 255 / 0.04)),
-      rgb(28 28 30 / 0.45);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    backdrop-filter: blur(24px) saturate(180%);
+    background: rgb(28 28 30 / 0.45);
+    backdrop-filter: url(#liquid-glass-menu) saturate(1.2);
     box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.28),
-      inset 0 -1px 0 rgb(255 255 255 / 0.06),
-      inset 0 0 16px rgb(255 255 255 / 0.05),
+      inset 0 0 10px 4px rgb(255 255 255 / 0.06),
+      inset 0 4px 16px rgb(17 17 26 / 0.05),
+      inset 0 8px 24px rgb(17 17 26 / 0.05),
+      inset 0 6px 56px rgb(17 17 26 / 0.05),
       0 16px 40px rgb(0 0 0 / 0.45);
   }
 
+  /*
+   * The rim, and its shine. A 0.5px padded box, masked down to just that
+   * padding: the content-box layer is cut out of the full-box layer, leaving
+   * a hairline ring in the element's own shape, since it inherits the radius.
+   *
+   * The ring is filled with a gradient at -15deg, so the light runs from the
+   * lower right up to the upper left, 15 degrees off vertical: brightest
+   * along the top-left, a softer glint at the bottom-right, and nearly
+   * nothing along the middle of the long edges. That is how
+   * light catches a curved glass edge from one direction, and it is what
+   * separates a lit rim from a drawn outline, which is one colour all round.
+   *
+   * The element needs a position (relative or absolute) for this to anchor
+   * to; every caller sets one.
+   */
   .liquid-glass::before {
     content: "";
     position: absolute;
     inset: 0;
-    padding: 1px;
+    padding: 0.5px;
     border-radius: inherit;
     background: linear-gradient(
-      155deg,
-      rgb(255 255 255 / 0.5),
-      rgb(255 255 255 / 0.1) 30%,
-      rgb(255 255 255 / 0.03) 60%,
-      rgb(255 255 255 / 0.2)
+      -15deg,
+      rgb(255 255 255 / 0.09),
+      rgb(255 255 255 / 0.015) 30%,
+      rgb(255 255 255 / 0.015) 70%,
+      rgb(255 255 255 / 0.18)
     );
     -webkit-mask:
       linear-gradient(#000 0 0) content-box,
@@ -365,5 +438,21 @@
       linear-gradient(#000 0 0) content-box exclude,
       linear-gradient(#000 0 0);
     pointer-events: none;
+  }
+
+  /*
+   * Pills get their own lens, drawn as a capsule. The panel map stretched onto
+   * a capsule would put its corner curves in the wrong place at the ends.
+   */
+  .liquid-glass-pill {
+    backdrop-filter: url(#liquid-glass-pill) saturate(1.2);
+  }
+
+  @supports (font: -apple-system-body) or (-moz-orient: inline) {
+    .liquid-glass,
+    .liquid-glass-pill {
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      backdrop-filter: blur(24px) saturate(180%);
+    }
   }
 }

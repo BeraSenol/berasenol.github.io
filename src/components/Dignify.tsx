@@ -5,6 +5,12 @@ import { CampaignFlow } from "./CampaignFlow";
 import { DashboardWindow } from "./DashboardWindow";
 import { Reveal } from "./Reveal";
 
+/** The two campaign platforms, each linked to its product page. */
+const BRAND_LINKS = [
+  { href: "https://www.zetaglobal.com/selligent/", Logo: SelligentLogo },
+  { href: "https://business.adobe.com/products/campaign.html", Logo: AdobeLogo },
+];
+
 export function Dignify({ content }: { content: Content }) {
   const { dignify } = content;
 
@@ -38,13 +44,28 @@ export function Dignify({ content }: { content: Content }) {
                 measured heights at its two text sizes. Changing its text size
                 moves the number the mark has to match.
               */}
+              {/*
+                Each lockup links to its product page. The link's accessible
+                name comes from what is inside it: Selligent's lockup is real
+                text, and the Adobe wordmark is an svg labelled "Adobe
+                Campaign", so neither needs an aria-label of its own. New tab,
+                because it is someone else's site and this page is a CV the
+                reader should not lose. noreferrer also implies noopener, so
+                the new tab gets no handle back to this one.
+              */}
               <ul className="mt-8 flex flex-wrap items-center gap-8 border-t border-separator pt-8">
-                <li>
-                  <SelligentLogo />
-                </li>
-                <li>
-                  <AdobeLogo />
-                </li>
+                {BRAND_LINKS.map(({ href, Logo }) => (
+                  <li key={href}>
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block rounded-md transition-opacity hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+                    >
+                      <Logo />
+                    </a>
+                  </li>
+                ))}
               </ul>
             </Reveal>
 

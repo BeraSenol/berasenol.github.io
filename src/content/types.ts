@@ -8,7 +8,7 @@
  */
 import type { LocaleCode } from "./locales";
 
-export type NuggetIcon = "note" | "leaf" | "star" | "cup" | "snap" | "japanese";
+export type NuggetIcon = "note" | "leaf" | "star" | "cup" | "cake" | "yen";
 
 export type Nugget = { icon: NuggetIcon; label: string };
 
@@ -65,8 +65,6 @@ export type Content = {
     eyebrow: string;
     headline: string;
     body: string;
-    primaryCta: string;
-    secondaryCta: string;
   };
   kitchen: {
     eyebrow: string;

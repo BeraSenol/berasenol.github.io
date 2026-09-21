@@ -143,7 +143,7 @@ export function DgtStudio({ content }: { content: Content }) {
                 href={dgt.href}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-10 inline-flex items-center gap-2 rounded-full border border-separator px-5 py-3 text-sm font-medium text-primary transition-colors hover:border-tertiary"
+                className="liquid-glass liquid-glass-pill relative mt-10 inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium text-primary transition-colors hover:bg-surface-elevated/60"
               >
                 <GitHubMark className="h-[18px] w-[18px] shrink-0" />
                 {dgt.ctaLabel}
@@ -213,8 +213,11 @@ export function DgtStudio({ content }: { content: Content }) {
               {/*
                 An h3, because it sits under the section's h2. Same max
                 gradient as the section title so the two read as one family,
-                but sentence case and a size down, so it reads as a subhead
-                rather than a second headline. The default vertical ramp, not
+                and set in capitals like it, a size down so it reads as a
+                subhead rather than a second headline. The copy is written in
+                sentence case and uppercased here: the case is styling, and a
+                screen reader reads "Mac" as a word rather than spelling out
+                M-A-C. The default vertical ramp, not
                 the sweep, because at phone width this can wrap.
 
                 lg:-mt-[0.06em] cancels .gradient-text's own 0.06em top
@@ -224,7 +227,7 @@ export function DgtStudio({ content }: { content: Content }) {
                 exactly; the offset that lines the cap up with the lid is on
                 the wrapper.
               */}
-              <h3 className="trim-cap gradient-text gradient-max mb-8 text-3xl lg:-mt-[0.06em] font-bold leading-[1.1] tracking-[-0.02em] sm:text-4xl">
+              <h3 className="trim-cap gradient-text gradient-max mb-8 text-3xl font-bold uppercase leading-[1.1] tracking-[-0.02em] sm:text-4xl lg:-mt-[0.06em]">
                 {dgt.featuresTitle}
               </h3>
               {/*

@@ -1,3 +1,4 @@
+import { ADOBE_CAMPAIGN_WORDMARK } from './adobeWordmark'
 /**
  * The two third-party marks used in the Dignify section.
  *
@@ -65,23 +66,34 @@ export function SelligentLogo({ className = '' }: { className?: string }) {
   )
 }
 
-/** Adobe's issued mark, for Adobe Campaign Classic. */
 /**
  * The mark with its product name beside it, the way Adobe sets its own product
  * lockups: corporate mark, then the product on two lines.
  *
- * The svg is aria-hidden and the name is real text, so a screen reader reads
- * "Adobe Campaign" once rather than hearing the mark labelled as well.
+ * The name is drawn, not typed. Adobe sets its lockups in Adobe Clean, which
+ * is not licensed for the web; Source Sans 3 is Adobe's own open-licence face
+ * from the same family of humanist sans designs, and with its single-storey g
+ * it matches the lockup closely. Outlined into paths at build time rather
+ * than loaded as a web font, so it costs no font download and renders the
+ * same on every machine, and it fills with currentColor so it takes the
+ * page's primary text colour.
+ *
+ * The wordmark is as tall as the mark, so ascender top and descender bottom
+ * line up with the mark's top and bottom edges. It carries the accessible
+ * name; the mark stays hidden, so a screen reader says "Adobe Campaign" once.
  */
 export function AdobeLogo({ className = '' }: { className?: string }) {
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
       <AdobeMark className="h-[2.0625rem] w-auto shrink-0 sm:h-[2.3125rem]" />
-      <span className="text-sm font-semibold leading-[1.15] text-primary">
-        Adobe
-        <br />
-        Campaign
-      </span>
+      <svg
+        viewBox={ADOBE_CAMPAIGN_WORDMARK.viewBox}
+        role="img"
+        aria-label="Adobe Campaign"
+        className="h-[2.0625rem] w-auto shrink-0 text-primary sm:h-[2.3125rem]"
+      >
+        <path fill="currentColor" d={ADOBE_CAMPAIGN_WORDMARK.d} />
+      </svg>
     </div>
   )
 }

@@ -79,11 +79,11 @@ export function LanguageMenu({ current, label }: LanguageMenuProps) {
         className="group -m-2.5 flex items-center p-2.5"
       >
         {/*
-          The pill is the same glass as the menu, so the control and what it
-          opens read as one object. relative because the glass's rim is an
-          absolutely positioned ::before that needs this as its box.
+          Deliberately not glass: the glass belongs to the menu it opens, and
+          a glass trigger sitting right above glass options reads as two
+          stacked panels. A plain outline keeps the control quiet.
         */}
-        <span className="liquid-glass relative flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium text-secondary transition-colors group-hover:text-primary group-aria-expanded:text-primary">
+        <span className="flex items-center gap-1.5 rounded-full border border-separator px-2.5 py-1 text-xs font-medium text-secondary transition-colors group-hover:border-tertiary group-hover:text-primary group-aria-expanded:border-tertiary group-aria-expanded:text-primary">
           {currentLocale.label}
           <ChevronMark
             className={`h-1.5 w-2.5 transition-transform duration-200 ${

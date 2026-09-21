@@ -15,11 +15,9 @@ export const en: Content = {
     contactCta: "Contact",
   },
   hero: {
-    eyebrow: "What I do",
-    headline: "I build software for Apple platforms.",
-    body: "macOS apps in Swift and SwiftUI, chess engines that have to be exactly right, and the occasional thing for the web.",
-    primaryCta: "See my work",
-    secondaryCta: "Get in touch",
+    eyebrow: "Today",
+    headline: "Now I build software for Apple platforms.",
+    body: "macOS apps in Swift and SwiftUI, chess software that has to be exactly right, and the occasional thing for the web.",
   },
   kitchen: {
     eyebrow: "2023",
@@ -74,7 +72,7 @@ export const en: Content = {
     boardCaption: "The Fool\u2019s Mate, Checkmate in 4 halfmoves",
     screenAlt:
       "DGT Studio Pro on a MacBook, showing a game read off a DGT board with its PGN, opening and engine evaluation",
-    featuresTitle: "Every move, on your Mac.",
+    featuresTitle: "From board to Mac",
     features: [
       {
         title: "Live from the board",
@@ -120,8 +118,8 @@ export const en: Content = {
     },
   ],
   languages: {
-    eyebrow: "Languages",
-    title: "Seven of each.",
+    eyebrow: "Seven of each",
+    title: "Languages",
     naturalLabel: "Natural",
     programmingLabel: "Programming",
     nativeNote: "mother tongue",
@@ -164,10 +162,10 @@ export const en: Content = {
   nuggets: [
     { icon: "note", label: "Collects Drum & Bass like Pokémon cards" },
     { icon: "leaf", label: "Coriander tastes like soap" },
-    { icon: "snap", label: "Cannot snap his fingers" },
+    { icon: "cake", label: "Sweet tooth" },
     { icon: "star", label: "Interned at a michelin starred restaurant" },
-    { icon: "cup", label: "Milk & Sugar" },
-    { icon: "japanese", label: "Learning Japanese" },
+    { icon: "cup", label: "Labor Nectar" },
+    { icon: "yen", label: "Has not visited Japan (yet)" },
   ],
   footer: "Bera Senol",
 };

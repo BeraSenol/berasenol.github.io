@@ -6,10 +6,18 @@ type SectionProps = {
   id: string
   eyebrow: string
   title: string
+  /** Set the title in capitals, as the feature sections' headlines are. */
+  uppercase?: boolean
   children: ReactNode
 }
 
-export function Section({ id, eyebrow, title, children }: SectionProps) {
+export function Section({
+  id,
+  eyebrow,
+  title,
+  uppercase = false,
+  children,
+}: SectionProps) {
   return (
     /*
       overflow-hidden for the same reason Kitchen, Dignify and DgtStudio carry
@@ -32,7 +40,18 @@ export function Section({ id, eyebrow, title, children }: SectionProps) {
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-secondary">
             {eyebrow}
           </p>
-          <h2 className="mt-4 text-4xl font-semibold tracking-[-0.02em] text-primary sm:text-5xl">
+          {/*
+            Two complete class strings rather than a fragment spliced in:
+            Tailwind finds classes by scanning the source, so a class built
+            at runtime would never make it into the stylesheet.
+          */}
+          <h2
+            className={
+              uppercase
+                ? "mt-4 text-4xl font-semibold uppercase tracking-[-0.02em] text-primary sm:text-5xl"
+                : "mt-4 text-4xl font-semibold tracking-[-0.02em] text-primary sm:text-5xl"
+            }
+          >
             {title}
           </h2>
         </Reveal>

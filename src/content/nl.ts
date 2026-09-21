@@ -15,11 +15,9 @@ export const nl: Content = {
     contactCta: "Contact",
   },
   hero: {
-    eyebrow: "Wat ik doe",
-    headline: "Ik bouw software voor Apple-platformen.",
-    body: "macOS-apps in Swift en SwiftUI, schaakengines die exact moeten kloppen, en af en toe iets voor het web.",
-    primaryCta: "Bekijk mijn werk",
-    secondaryCta: "Neem contact op",
+    eyebrow: "Vandaag",
+    headline: "Nu bouw ik software voor Apple-platformen.",
+    body: "macOS-apps in Swift en SwiftUI, schaaksoftware die exact moet kloppen, en af en toe iets voor het web.",
   },
   kitchen: {
     eyebrow: "2023",
@@ -75,7 +73,7 @@ export const nl: Content = {
     boardCaption: "Het narrenmat, schaakmat in 4 halve zetten",
     screenAlt:
       "DGT Studio Pro op een MacBook, met een partij die van een DGT-bord is gelezen, de PGN, de opening en de engine-evaluatie",
-    featuresTitle: "Elke zet, op je Mac.",
+    featuresTitle: "Van bord naar Mac",
     features: [
       {
         title: "Live vanaf het bord",
@@ -121,8 +119,8 @@ export const nl: Content = {
     },
   ],
   languages: {
-    eyebrow: "Talen",
-    title: "Zeven van elk.",
+    eyebrow: "Zeven van elk",
+    title: "Talen",
     naturalLabel: "Natuurlijke talen",
     programmingLabel: "Programmeertalen",
     nativeNote: "moedertaal",
@@ -168,10 +166,10 @@ export const nl: Content = {
       label: "Verzamelt Drum & Bass alsof het Pokémonkaarten zijn",
     },
     { icon: "leaf", label: "Koriander proeft naar zeep" },
-    { icon: "snap", label: "Kan niet met zijn vingers knippen" },
+    { icon: "cake", label: "Zoetekauw" },
     { icon: "star", label: "Stagiair in een sterrenzaak" },
-    { icon: "cup", label: "Milk & Sugar" },
-    { icon: "japanese", label: "Leert Japans" },
+    { icon: "cup", label: "Arbeidsnectar" },
+    { icon: "yen", label: "Is (nog) niet in Japan geweest" },
   ],
   footer: "Bera Senol",
 };

@@ -6,6 +6,7 @@ import { Header } from "./components/Header";
 import { Hero } from "./components/Hero";
 import { Kitchen } from "./components/Kitchen";
 import { Languages } from "./components/Languages";
+import { LiquidGlassFilters } from "./components/LiquidGlassFilters";
 import { Section } from "./components/Section";
 import { Splash } from "./components/Splash";
 import type { Content } from "./content/types";
@@ -18,6 +19,7 @@ import type { Content } from "./content/types";
 function App({ content }: { content: Content }) {
   return (
     <>
+      <LiquidGlassFilters />
       <Header content={content} />
       <main>
         <Splash content={content} />
@@ -31,6 +33,7 @@ function App({ content }: { content: Content }) {
           id="languages"
           eyebrow={content.languages.eyebrow}
           title={content.languages.title}
+          uppercase
         >
           <Languages
             naturalLabel={content.languages.naturalLabel}

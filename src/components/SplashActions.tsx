@@ -10,8 +10,12 @@ import { GitHubMark } from "./Glyphs";
  * HTML and browsers silently unnest them. The blue part is a <span> styled as a
  * button; the whole capsule is the hit target.
  */
+/*
+ * Liquid glass, the same as every pill on the page. No backdrop-blur utility
+ * any more: that would write its own backdrop-filter and replace the lens.
+ */
 const CAPSULE =
-  "group inline-flex h-12 items-center gap-3 rounded-full border border-separator bg-fill-tertiary backdrop-blur-xl transition-colors hover:bg-fill-secondary";
+  "liquid-glass liquid-glass-pill group relative inline-flex h-12 items-center gap-3 rounded-full transition-colors hover:bg-surface-elevated/60";
 
 export function SplashActions({ content }: { content: Content }) {
   return (
