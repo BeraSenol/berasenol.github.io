@@ -78,7 +78,12 @@ export function LanguageMenu({ current, label }: LanguageMenuProps) {
         onClick={() => setOpen((wasOpen) => !wasOpen)}
         className="group -m-2.5 flex items-center p-2.5"
       >
-        <span className="flex items-center gap-1.5 rounded-full border border-separator px-2.5 py-1 text-xs font-medium text-secondary transition-colors group-hover:border-tertiary group-hover:text-primary group-aria-expanded:border-tertiary group-aria-expanded:text-primary">
+        {/*
+          The pill is the same glass as the menu, so the control and what it
+          opens read as one object. relative because the glass's rim is an
+          absolutely positioned ::before that needs this as its box.
+        */}
+        <span className="liquid-glass relative flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium text-secondary transition-colors group-hover:text-primary group-aria-expanded:text-primary">
           {currentLocale.label}
           <ChevronMark
             className={`h-1.5 w-2.5 transition-transform duration-200 ${
@@ -97,7 +102,12 @@ export function LanguageMenu({ current, label }: LanguageMenuProps) {
         <ul
           id="language-menu"
           role="menu"
-          className="absolute right-0 top-full z-50 mt-2 min-w-36 overflow-hidden rounded-xl border border-separator bg-surface/95 py-1 shadow-xl shadow-black/40 backdrop-blur-xl"
+          /*
+            Concentric corners, the way Apple draws a menu: the panel is 22,
+            its padding 6, so each row's highlight is 16. A highlight with the
+            panel's own radius would pinch at the corners.
+          */
+          className="liquid-glass absolute right-0 top-full z-50 mt-2 min-w-40 rounded-[22px] p-1.5"
         >
           {LOCALES.map((locale) => {
             const isCurrent = locale.code === current;
@@ -116,7 +126,7 @@ export function LanguageMenu({ current, label }: LanguageMenuProps) {
                   <span
                     role="menuitem"
                     aria-current="true"
-                    className="flex min-h-11 items-center justify-between gap-3 px-3.5 py-2 text-sm font-medium text-primary"
+                    className="flex min-h-11 items-center justify-between gap-3 rounded-2xl px-3.5 py-2 text-sm font-medium text-primary"
                   >
                     {locale.name}
                     <CheckMark className="h-2.5 w-3 text-accent" />
@@ -127,7 +137,7 @@ export function LanguageMenu({ current, label }: LanguageMenuProps) {
                     href={locale.href}
                     hrefLang={locale.code}
                     lang={locale.code}
-                    className="flex min-h-11 items-center justify-between gap-3 px-3.5 py-2 text-sm font-medium text-secondary transition-colors hover:bg-fill-quaternary hover:text-primary focus-visible:bg-fill-quaternary focus-visible:text-primary focus-visible:outline-none"
+                    className="flex min-h-11 items-center justify-between gap-3 rounded-2xl px-3.5 py-2 text-sm font-medium text-secondary transition-colors hover:bg-fill-secondary hover:text-primary focus-visible:bg-fill-secondary focus-visible:text-primary focus-visible:outline-none"
                   >
                     {locale.name}
                   </a>

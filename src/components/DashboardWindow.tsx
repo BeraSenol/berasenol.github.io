@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { useReveal } from "../hooks/useReveal";
 import { WindowFrame } from "./WindowFrame";
 
@@ -13,10 +14,14 @@ import { WindowFrame } from "./WindowFrame";
  * transform-origin at the bottom, which costs no layout: animating a height
  * would reflow the row on every frame.
  */
+/**
+ * Held as numbers, not strings: the gauge needs the number, and the label is
+ * derived from it, so the two can never disagree.
+ */
 const STATS = [
-  { label: "Open rate", value: "42.8%" },
-  { label: "Click rate", value: "11.3%" },
-  { label: "Buy rate", value: "3.6%" },
+  { label: "Open rate", percent: 54.2 },
+  { label: "Click rate", percent: 17.8 },
+  { label: "Buy rate", percent: 5.4 },
 ];
 
 const BARS = [38, 62, 47, 71, 55, 83, 66, 92, 74, 58];
@@ -42,6 +47,77 @@ const CONFLICTS: { width: number; level: keyof typeof SEVERITY }[] = [
   { width: 74, level: "low" },
 ];
 
+/**
+ * A ring gauge for one rate, in the bars' gradient: #83a0ef at the bottom to
+ * #e1e5ff at the top, so the rings and the chart below read as one palette.
+ *
+ * The ring is open at the bottom, like a speedometer: a 270-degree arc with
+ * a 90-degree gap centred on six o'clock. It starts at the gap's left end
+ * (225 degrees clockwise from twelve) and runs clockwise over the top to the
+ * gap's right end (135 degrees). The round caps each reach 2 units past the
+ * ends, about 8 degrees at this radius, so the gap reads a little narrower
+ * than 90. The two end points are cx + r sin(t),
+ * cy - r cos(t) at those angles, and the arc flags are large-arc 1 (it is
+ * more than half a circle) and sweep 1 (clockwise).
+ *
+ * A path rather than a rotated circle, because rotating the shape would also
+ * rotate the gradient, which is mapped over the shape's own box, and the
+ * bottom-to-top ramp would come out running sideways.
+ *
+ * pathLength="100" makes the arc exactly 100 units long whatever its real
+ * length, so the percentage is the dash length directly: 54.2 of its 100
+ * units drawn, the rest gap. The track is the same arc, so a full gauge
+ * would close up to the gap and no further. The fill animates by transitioning stroke-dasharray from 0,
+ * in step with the bars.
+ *
+ * The gradient needs an id, and there are three gauges in one document. useId
+ * gives each instance its own, stable across renders, so each ring points at
+ * its own gradient rather than all three at whichever was defined first.
+ */
+function Gauge({ percent, active }: { percent: number; active: boolean }) {
+  const gradientId = useId();
+  const ring = "M7.393 28.607A15 15 0 1 1 28.607 28.607";
+
+  return (
+    <svg
+      viewBox="0 0 36 36"
+      aria-hidden="true"
+      className="h-8 w-8 shrink-0 sm:h-11 sm:w-11"
+    >
+      <defs>
+        <linearGradient id={gradientId} x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0%" stopColor="#83a0ef" />
+          <stop offset="100%" stopColor="#e1e5ff" />
+        </linearGradient>
+      </defs>
+      {/* The track: the whole arc, faint, so the fill reads as a share of it. */}
+      <path
+        d={ring}
+        fill="none"
+        className="stroke-fill"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+      <path
+        d={ring}
+        fill="none"
+        pathLength={100}
+        stroke={`url(#${gradientId})`}
+        strokeWidth="4"
+        strokeLinecap="round"
+        style={{
+          strokeDasharray: `${active ? percent : 0} 100`,
+          // A round cap on a zero-length dash still draws a dot, so the ring
+          // stays hidden until it starts to fill.
+          opacity: active ? 1 : 0,
+          transition:
+            "stroke-dasharray 900ms cubic-bezier(0.33,1,0.68,1) 150ms, opacity 150ms linear",
+        }}
+      />
+    </svg>
+  );
+}
+
 function PanelTitle({ children }: { children: string }) {
   return (
     <p className="text-[0.625rem] font-semibold uppercase tracking-[0.06em] text-secondary">
@@ -57,15 +133,19 @@ export function DashboardWindow() {
     <div ref={ref}>
       <WindowFrame address="reporting">
         <div className="grid grid-cols-3 gap-2 sm:gap-4">
-          {STATS.map(({ label, value }) => (
+          {STATS.map(({ label, percent }) => (
             <div
               key={label}
-              className="rounded-lg border border-separator bg-fill-quaternary p-3 sm:p-4"
+              // Gauge on the left, the figures pushed to the right edge.
+              className="flex items-center justify-between gap-2 rounded-lg border border-separator bg-fill-quaternary p-3 sm:gap-3 sm:p-4"
             >
-              <PanelTitle>{label}</PanelTitle>
-              <p className="mt-2 text-base font-semibold tabular-nums tracking-tight text-primary sm:text-xl">
-                {value}
-              </p>
+              <Gauge percent={percent} active={isVisible} />
+              <div className="text-right">
+                <PanelTitle>{label}</PanelTitle>
+                <p className="mt-2 text-base font-semibold tabular-nums tracking-tight text-primary sm:text-xl">
+                  {percent.toFixed(1)}%
+                </p>
+              </div>
             </div>
           ))}
         </div>

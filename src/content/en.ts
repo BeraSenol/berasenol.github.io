@@ -120,16 +120,30 @@ export const en: Content = {
     },
   ],
   languages: {
+    eyebrow: "Languages",
+    title: "Seven of each.",
+    naturalLabel: "Natural",
+    programmingLabel: "Programming",
+    nativeNote: "mother tongue",
+    // Levels read off the CV's bars: each fill's length over its track's.
     natural: [
-      "Dutch*",
-      "English",
-      "Turkish",
-      "French",
-      "German",
-      "Japanese",
-      "Italian",
+      { name: "Dutch", level: 100, native: true },
+      { name: "English", level: 91 },
+      { name: "Turkish", level: 64 },
+      { name: "French", level: 52 },
+      { name: "German", level: 52 },
+      { name: "Japanese", level: 39 },
+      { name: "Italian", level: 25 },
     ],
-    programming: ["JavaScript", "Swift", "Java*", "SQL", "C#", "Python", "C++"],
+    programming: [
+      { name: "JavaScript", level: 100 },
+      { name: "Swift", level: 91 },
+      { name: "Java", level: 64, native: true },
+      { name: "SQL", level: 64 },
+      { name: "C#", level: 39 },
+      { name: "Python", level: 26 },
+      { name: "C++", level: 26 },
+    ],
   },
   contactLinks: [
     {

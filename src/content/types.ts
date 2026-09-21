@@ -14,6 +14,14 @@ export type Nugget = { icon: NuggetIcon; label: string };
 
 export type Feature = { title: string; body: string };
 
+/**
+ * One language and how well it is known, 0 to 100, as the CV draws it.
+ * `native` replaces the old trailing asterisk in the name: the asterisk is a
+ * rendering decision, and a name with punctuation baked into it is a name you
+ * cannot use anywhere else, for instance as an accessible label.
+ */
+export type LanguageSkill = { name: string; level: number; native?: boolean };
+
 export type Study = { title: string; org: string; period: string };
 
 export type Project = {
@@ -102,8 +110,17 @@ export type Content = {
   };
   education: readonly Study[];
   projects: readonly Project[];
-  /** A trailing asterisk marks a mother tongue, including the joke one. */
-  languages: { natural: readonly string[]; programming: readonly string[] };
+  /** Mother tongues are flagged `native`, including the joke one (Java). */
+  languages: {
+    eyebrow: string;
+    title: string;
+    naturalLabel: string;
+    programmingLabel: string;
+    /** The footnote the asterisk points at. */
+    nativeNote: string;
+    natural: readonly LanguageSkill[];
+    programming: readonly LanguageSkill[];
+  };
   contactLinks: readonly ContactLink[];
   memojiAlt: string;
   /** Small asides that orbit the memoji on the splash. */

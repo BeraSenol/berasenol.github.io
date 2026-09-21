@@ -172,10 +172,18 @@ export function DgtStudio({ content }: { content: Content }) {
             in what is left. A nested grid rather than more columns on the
             outer one, because these two columns have nothing to do with the
             text/board split above: the Mac is meant to be wider than the board.
-            items-center puts the list level with the middle of the screen. On
-            a phone it is one column, the Mac and then the list under it.
+            On a phone it is one column, the Mac and then the list under it.
+
+            From lg up the title's cap top sits on the same line as the top of
+            the lid. The title's box already starts at its cap top (.trim-cap),
+            and the lid is not at the top of the image: the first lit row is 7
+            of the photo's 853, with black above it. So the list is aligned to
+            the start of the row and pushed down by exactly that much. 7 rows of
+            853 is 7/1400 of the image's width, the image is 56% of this grid,
+            and the grid is a size container, so 56cqw * 7 / 1400 is that
+            distance at every width with no measuring and no font involved.
           */}
-          <div className="grid items-center gap-12 lg:col-span-2 lg:grid-cols-[56%_1fr] lg:gap-16">
+          <div className="@container grid items-start gap-12 lg:col-span-2 lg:grid-cols-[56%_1fr] lg:gap-16">
             <Reveal delay={160} from="left" distance="far">
               {/*
                 The screen carries the app itself now, composited into the glass
@@ -201,15 +209,22 @@ export function DgtStudio({ content }: { content: Content }) {
               />
             </Reveal>
 
-            <Reveal delay={260} from="right">
+            <Reveal delay={260} from="right" className="lg:mt-[calc(56cqw*7/1400)]">
               {/*
                 An h3, because it sits under the section's h2. Same max
                 gradient as the section title so the two read as one family,
                 but sentence case and a size down, so it reads as a subhead
                 rather than a second headline. The default vertical ramp, not
                 the sweep, because at phone width this can wrap.
+
+                lg:-mt-[0.06em] cancels .gradient-text's own 0.06em top
+                padding, which is there so round letters get background above
+                the cap line but also pushes the cap line down by 2px at this
+                size. In em, so it is the h3's own font size and cancels
+                exactly; the offset that lines the cap up with the lid is on
+                the wrapper.
               */}
-              <h3 className="trim-cap gradient-text gradient-max mb-8 text-3xl font-bold leading-[1.1] tracking-[-0.02em] sm:text-4xl">
+              <h3 className="trim-cap gradient-text gradient-max mb-8 text-3xl lg:-mt-[0.06em] font-bold leading-[1.1] tracking-[-0.02em] sm:text-4xl">
                 {dgt.featuresTitle}
               </h3>
               {/*

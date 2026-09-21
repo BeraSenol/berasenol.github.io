@@ -297,3 +297,73 @@
 .orbit-slot {
   animation: nugget-emerge 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
+
+/*
+ * Liquid Glass, as close as CSS gets. Apple's material bends the light behind
+ * it through a lens; the browser can blur and tint a backdrop but cannot
+ * refract it (backdrop-filter: url() with an SVG displacement map works only
+ * in Chromium, and not in Safari, which is where this site is most looked at).
+ * So this builds the parts of the look that do survive:
+ *
+ * - The body: a faint white tint over a heavily blurred, saturated backdrop,
+ *   so whatever passes under it goes soft and a little more vivid, which is
+ *   what makes glass read as glass rather than as a grey panel.
+ * - The rim: a 1px gradient ring, bright at the top-left where the light
+ *   catches and faint along the sides, drawn by ::before. A plain border is
+ *   one flat colour all the way round, which is exactly the tell of a fake.
+ *   The ring is a padded box masked down to its padding: the content-box
+ *   layer is cut out of the full-box layer, leaving only the 1px edge.
+ * - The specular: an inset highlight along the top inner edge and a softer
+ *   glow inside, so the surface has thickness.
+ * - The lift: a wide, soft shadow, so it floats above the page.
+ *
+ * In @layer components so Tailwind's utilities still win on the element: the
+ * caller sets position (relative or absolute) and radius, and ::before
+ * inherits the radius. Unlayered, this would outrank every utility.
+ */
+@layer components {
+  .liquid-glass {
+    /*
+     * Two layers: the white sheen on top, and under it a dark base at 45%.
+     * Without the base the glass is only as dark as what is behind it, and
+     * over a bright photograph the secondary-grey text went to almost no
+     * contrast. Dark-appearance glass on Apple platforms does the same: it
+     * keeps a dark tint so the label on it stays readable whatever scrolls
+     * beneath.
+     */
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 0.12), rgb(255 255 255 / 0.04)),
+      rgb(28 28 30 / 0.45);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.28),
+      inset 0 -1px 0 rgb(255 255 255 / 0.06),
+      inset 0 0 16px rgb(255 255 255 / 0.05),
+      0 16px 40px rgb(0 0 0 / 0.45);
+  }
+
+  .liquid-glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      155deg,
+      rgb(255 255 255 / 0.5),
+      rgb(255 255 255 / 0.1) 30%,
+      rgb(255 255 255 / 0.03) 60%,
+      rgb(255 255 255 / 0.2)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    pointer-events: none;
+  }
+}

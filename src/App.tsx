@@ -5,6 +5,7 @@ import { Container } from "./components/Container";
 import { Header } from "./components/Header";
 import { Hero } from "./components/Hero";
 import { Kitchen } from "./components/Kitchen";
+import { Languages } from "./components/Languages";
 import { Section } from "./components/Section";
 import { Splash } from "./components/Splash";
 import type { Content } from "./content/types";
@@ -25,6 +26,20 @@ function App({ content }: { content: Content }) {
         <Hero content={content} />
 
         <DgtStudio content={content} />
+
+        <Section
+          id="languages"
+          eyebrow={content.languages.eyebrow}
+          title={content.languages.title}
+        >
+          <Languages
+            naturalLabel={content.languages.naturalLabel}
+            programmingLabel={content.languages.programmingLabel}
+            nativeNote={content.languages.nativeNote}
+            natural={content.languages.natural}
+            programming={content.languages.programming}
+          />
+        </Section>
 
         <Section
           id="contact"

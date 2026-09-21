@@ -121,16 +121,30 @@ export const nl: Content = {
     },
   ],
   languages: {
+    eyebrow: "Talen",
+    title: "Zeven van elk.",
+    naturalLabel: "Natuurlijke talen",
+    programmingLabel: "Programmeertalen",
+    nativeNote: "moedertaal",
+    // Levels read off the CV's bars: each fill's length over its track's.
     natural: [
-      "Nederlands*",
-      "Engels",
-      "Turks",
-      "Frans",
-      "Duits",
-      "Japans",
-      "Italiaans",
+      { name: "Nederlands", level: 100, native: true },
+      { name: "Engels", level: 91 },
+      { name: "Turks", level: 64 },
+      { name: "Frans", level: 52 },
+      { name: "Duits", level: 52 },
+      { name: "Japans", level: 39 },
+      { name: "Italiaans", level: 25 },
     ],
-    programming: ["JavaScript", "Swift", "Java*", "SQL", "C#", "Python", "C++"],
+    programming: [
+      { name: "JavaScript", level: 100 },
+      { name: "Swift", level: 91 },
+      { name: "Java", level: 64, native: true },
+      { name: "SQL", level: 64 },
+      { name: "C#", level: 39 },
+      { name: "Python", level: 26 },
+      { name: "C++", level: 26 },
+    ],
   },
   contactLinks: [
     {
