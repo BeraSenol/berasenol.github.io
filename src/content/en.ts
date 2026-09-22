@@ -21,11 +21,10 @@ export const en: Content = {
     toques: "two toques",
     scoreLabel: "Gault&Millau: 13 out of 20, two toques",
     paragraphs: [
-      "From 2023 to 2024 I was sous-chef here, in Hasselt. A two-person kitchen: my 72-year-old head chef and me, working entirely in Italian and German. No brigade to absorb a mistake, and no shared first language to fall back on. You learn to read what someone needs from how they move, and to say the necessary thing in six words.",
-      "Before this I had interned at a Michelin-starred restaurant. Here there were two of us, so half of every service was mine.",
-      "Service is a deadline that arrives whether or not you are ready for it. The only way through it is preparation you did hours earlier: every component portioned, labelled and within reach before the first ticket prints. Quality has to hold at the two hundredth plate as well as the first.",
-      "The kitchen’s signature is truffle, and truffle forgives nothing. Too much heat and the aroma is gone before the plate reaches the table. It is expensive, it does not keep, and a week’s delivery has to be used well. Timing matters more than the recipe.",
-      "I build software the same way. Set things up so the work is boring, keep the state of everything visible, and never send out a plate that is nearly right.",
+      "From 2023 to 2024 I was sous-chef here, in Hasselt. Call it my version of military service. A two-person kitchen serving 40 to 50 guests every evening, up to 200 plates: my 72-year-old head chef and me, working entirely in Italian and German, with no shared first language to fall back on. Share a forty-degree kitchen with someone every day and your mindsets start to fuse, like nuclei in a fusion reactor.",
+      "The turning point came the day I cut off the tip of my finger. I kept working through that service, was back in the kitchen the next day, and the day after that. From then on I had my chef’s respect, and our working relationship was a different one.",
+      "This is where I picked up the working attitude of a 72-year-old chef: work with integrity, stay calm under pressure, and make the last plate the same as the first.",
+      "That attitude came in surprisingly handy once I moved into IT. It turns out hospitality and consultancy have a lot in common.",
     ],
     exteriorAlt:
       "The street frontage of Entrepot del Tartufo, with terrace tables laid for service",
@@ -39,10 +38,11 @@ export const en: Content = {
     title: "Dignify",
     tagline: "Marketing automation for Bol.com and BNP Paribas Fortis",
     paragraphs: [
-      "Marketing Automation Consultant in Genk, on campaign and data work for Bol.com and BNP Paribas Fortis. I joined as a Junior Developer and moved to Medior Consultant.",
+      "I started at Dignify in Genk with a Selligent training course. The track was planned for eight weeks; I finished it in six, with the highest score in two years.",
+      "As a junior developer I then moved on to small and medium-sized projects for Bol.com, with my own direct contact with managers and stakeholders.",
       "The work was reusable SQL stored procedures for audience segmentation and reporting, and custom dashboards in JavaScript that gave stakeholders direct insight into campaign performance instead of a manual report.",
-      "The campaigns themselves ran in Selligent and Adobe Campaign Classic. For BNP Paribas Fortis I worked on site in Brussels, in Adobe Campaign, where a campaign is a flow of targeting, filters and deliveries, and a wrong join reaches real customers.",
-      "The certification track took me six weeks instead of eight, and I finished it with the highest score in two years.",
+      "This is where I learned a structured way of working: reuse code, build on a custom framework to automate different systems, and pick up some light system design along the way.",
+      "Later I worked on site at BNP Paribas Fortis in Brussels as a Medior Consultant, in Adobe Campaign Classic. There I learned how real-world solutions hold up on a gigantic database, sharded into many pieces: by department, by geographic region, by level of confidentiality.",
     ],
   },
   contact: {
@@ -158,7 +158,7 @@ export const en: Content = {
   nuggets: [
     { icon: "note", label: "Collects Drum & Bass like Pokémon cards" },
     { icon: "leaf", label: "Coriander tastes like soap" },
-    { icon: "cake", label: "Sweet tooth" },
+    { icon: "cake", label: "Has a dessert stomach" },
     { icon: "star", label: "Interned at a michelin starred restaurant" },
     { icon: "cup", label: "Labor Nectar" },
     { icon: "yen", label: "Has not visited Japan (yet)" },

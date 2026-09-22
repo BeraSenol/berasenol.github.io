@@ -90,8 +90,12 @@ const squareStyle = (square: string) => ({
   top: `${rankOf(square) * 12.5}%`,
 });
 
-/* The last piece lands at 420 + 14 x 45, so the first move is a second after that. */
-const APPEAR_BASE = 420;
+/*
+ * A second of stillness after the board has slid in, before the first piece
+ * appears. The last piece lands at 1420 + 14 x 45, so the first move is a
+ * second after that.
+ */
+const APPEAR_BASE = 1420;
 const APPEAR_STEP = 45;
 
 /*
@@ -111,7 +115,7 @@ const APPEAR_STEP = 45;
 const MOVE_BASE_MS = 210;
 const MOVE_PER_SQUARE_MS = 52;
 const THINK_MS = 320;
-const FIRST_MOVE_MS = 2050;
+const FIRST_MOVE_MS = 3050;
 const MATE_DELAY_MS = 140;
 const MATE_MS = 700;
 
