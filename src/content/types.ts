@@ -7,6 +7,13 @@
  * in JSON.
  */
 import type { LocaleCode } from "./locales";
+import type { StackTool } from "./stack";
+
+/**
+ * One run of the footer's credits: a piece of the sentence as plain text, or a
+ * tool, which the footer renders as its name linking to it. See stack.ts.
+ */
+export type Credit = string | { tool: StackTool };
 
 export type NuggetIcon = "note" | "leaf" | "star" | "cup" | "cake" | "yen";
 
@@ -61,11 +68,6 @@ export type Content = {
     githubLabel: string;
     contactCta: string;
   };
-  hero: {
-    eyebrow: string;
-    headline: string;
-    body: string;
-  };
   kitchen: {
     eyebrow: string;
     title: string;
@@ -100,6 +102,8 @@ export type Content = {
     ctaLabel: string;
     boardLabel: string;
     boardCaption: string;
+    /** Accessible name and tooltip for the replay button under the board. */
+    replayLabel: string;
     screenAlt: string;
     /** Heading over the feature list beside the Mac. */
     featuresTitle: string;
@@ -123,5 +127,12 @@ export type Content = {
   memojiAlt: string;
   /** Small asides that orbit the memoji on the splash. */
   nuggets: readonly Nugget[];
-  footer: string;
+  footer: {
+    /** Whose name follows the copyright sign. */
+    owner: string;
+    /** The credits sentence, as runs, so each language can order it its own way. */
+    credits: readonly Credit[];
+    /** The link to this site's repository. */
+    sourceLabel: string;
+  };
 };

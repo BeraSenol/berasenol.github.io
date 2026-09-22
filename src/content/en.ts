@@ -14,13 +14,8 @@ export const en: Content = {
     githubLabel: "GitHub profile",
     contactCta: "Contact",
   },
-  hero: {
-    eyebrow: "Today",
-    headline: "Now I build software for Apple platforms.",
-    body: "macOS apps in Swift and SwiftUI, chess software that has to be exactly right, and the occasional thing for the web.",
-  },
   kitchen: {
-    eyebrow: "2023",
+    eyebrow: "2023 – 2024",
     title: "Entrepot del Tartufo",
     tagline: "Italian food with a touch of truffle",
     toques: "two toques",
@@ -40,7 +35,7 @@ export const en: Content = {
     memojiAlt: "Memoji of Bera Senol, hand to his chin, considering something",
   },
   dignify: {
-    eyebrow: "2025",
+    eyebrow: "2025 – 2026",
     title: "Dignify",
     tagline: "Marketing automation for Bol.com and BNP Paribas Fortis",
     paragraphs: [
@@ -70,9 +65,10 @@ export const en: Content = {
     boardLabel:
       "A chessboard playing Fool\u2019s Mate, the shortest checkmate there is: 1.f3 e5 2.g4 Qh4 mate",
     boardCaption: "The Fool\u2019s Mate, Checkmate in 4 halfmoves",
+    replayLabel: "Replay the game",
     screenAlt:
       "DGT Studio Pro on a MacBook, showing a game read off a DGT board with its PGN, opening and engine evaluation",
-    featuresTitle: "From board to Mac",
+    featuresTitle: "Your personal arbiter",
     features: [
       {
         title: "Live from the board",
@@ -88,7 +84,7 @@ export const en: Content = {
       },
       {
         title: "A library of your own",
-        body: "Games live in a SwiftData library with search, smart tags like Timed, Draws and Not Analyzed, and four view modes.",
+        body: "Games live in a SwiftData library with search, smart tags and four view modes.",
       },
       {
         title: "Stockfish analysis",
@@ -167,5 +163,23 @@ export const en: Content = {
     { icon: "cup", label: "Labor Nectar" },
     { icon: "yen", label: "Has not visited Japan (yet)" },
   ],
-  footer: "Bera Senol",
+  footer: {
+    owner: "Bera Senol",
+    credits: [
+      "Made with ",
+      { tool: "react" },
+      ", ",
+      { tool: "typescript" },
+      ", ",
+      { tool: "vite" },
+      " and ",
+      { tool: "tailwind" },
+      ". Deployed to ",
+      { tool: "pages" },
+      " by ",
+      { tool: "actions" },
+      ".",
+    ],
+    sourceLabel: "View source",
+  },
 };

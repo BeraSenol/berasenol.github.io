@@ -134,49 +134,6 @@
 }
 
 /*
- * Word by word, the headline brightens as it scrolls up the screen, from the
- * tertiary grey to full white, the way Apple lights a sentence on its product
- * pages. Scroll-linked like .scrub-rise, so it runs off the main thread and
- * reverses if you scroll back.
- *
- * All the words follow one timeline, the heading's own position in the
- * viewport (the named --words view timeline), rather than each word its own:
- * words on the same line are at the same height, so their own timelines
- * would light a whole line at once. Instead each word takes a slice of the
- * range 30% to 50% of the heading's pass through the screen, the slice
- * picked by its index (--i of --n), and the slices overlap a little so the
- * light runs along the line instead of stepping. At 50% the heading is
- * centred on screen and every word is lit.
- *
- * Without scroll timelines, or with reduced motion, the words are simply
- * white: nothing here applies, and they inherit the heading's colour.
- */
-@keyframes word-light {
-  from {
-    color: var(--color-tertiary);
-  }
-  to {
-    color: var(--color-primary);
-  }
-}
-
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .scrub-words {
-      view-timeline-name: --words;
-    }
-
-    .scrub-words .word {
-      animation: word-light linear both;
-      animation-timeline: --words;
-      animation-range:
-        cover calc(30% + var(--i) * 20% / var(--n))
-        cover calc(36% + (var(--i) + 1) * 20% / var(--n));
-    }
-  }
-}
-
-/*
  * Gradient-filled headlines, the way Apple does it: a background image clipped to
  * the glyphs, with the text fill made transparent and a plain `color` underneath
  * as the fallback for anything that lacks -webkit-text-fill-color.

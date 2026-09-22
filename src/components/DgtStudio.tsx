@@ -158,10 +158,11 @@ export function DgtStudio({ content }: { content: Content }) {
             distance="far"
             className="@container mt-12 lg:mt-8"
           >
-            <Chessboard label={dgt.boardLabel} />
-            <p className="mt-3 text-right text-xs text-secondary">
-              {dgt.boardCaption}
-            </p>
+            <Chessboard
+              label={dgt.boardLabel}
+              caption={dgt.boardCaption}
+              replayLabel={dgt.replayLabel}
+            />
           </Reveal>
 
           <div aria-hidden="true" className="h-16 lg:col-start-2 lg:h-auto lg:min-h-16" />
@@ -211,23 +212,26 @@ export function DgtStudio({ content }: { content: Content }) {
 
             <Reveal delay={260} from="right" className="lg:mt-[calc(56cqw*7/1400)]">
               {/*
-                An h3, because it sits under the section's h2. Same max
-                gradient as the section title so the two read as one family,
-                and set in capitals like it, a size down so it reads as a
-                subhead rather than a second headline. The copy is written in
-                sentence case and uppercased here: the case is styling, and a
-                screen reader reads "Mac" as a word rather than spelling out
-                M-A-C. The default vertical ramp, not
-                the sweep, because at phone width this can wrap.
+                An h3, because it sits under the section's h2: the outline is
+                a matter of structure, not size. Visually it is the same title
+                as every other one on the page: the same size, and the same
+                weight and leading as the Kitchen, Dignify and DGT headings,
+                with the same max gradient as
+                DGT Studio Pro above it, so the two read as one family. The
+                copy is written in sentence case and uppercased here: the case
+                is styling, and a screen reader reads the words as words
+                rather than letters. The default vertical ramp, not the sweep,
+                because at this size the title wraps at most widths, and where
+                it breaks depends on the font.
 
                 lg:-mt-[0.06em] cancels .gradient-text's own 0.06em top
                 padding, which is there so round letters get background above
-                the cap line but also pushes the cap line down by 2px at this
+                the cap line but also pushes the cap line down by 3px at this
                 size. In em, so it is the h3's own font size and cancels
                 exactly; the offset that lines the cap up with the lid is on
                 the wrapper.
               */}
-              <h3 className="trim-cap gradient-text gradient-max mb-8 text-3xl font-bold uppercase leading-[1.1] tracking-[-0.02em] sm:text-4xl lg:-mt-[0.06em]">
+              <h3 className="trim-cap gradient-text gradient-max mb-8 text-4xl font-bold uppercase leading-[1.05] tracking-[-0.02em] sm:text-5xl lg:-mt-[0.06em]">
                 {dgt.featuresTitle}
               </h3>
               {/*

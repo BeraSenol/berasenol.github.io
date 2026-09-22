@@ -42,7 +42,14 @@ export function Languages({
           active={isVisible}
         />
       </div>
-      <p className="mt-10 text-xs text-tertiary">*{nativeNote}</p>
+      {/*
+        The key's asterisk is the same blue as the ones it explains, so the
+        eye matches them up; the note itself stays tertiary grey.
+      */}
+      <p className="mt-10 text-xs text-tertiary">
+        <span className="text-[#83a0ef]">*</span>
+        {nativeNote}
+      </p>
     </div>
   );
 }
@@ -81,8 +88,13 @@ function Column({
           >
             <span className="text-[0.9375rem] text-primary">
               {skill.name}
+              {/*
+                The blue is the deep end of the bar's gradient, #83a0ef, so
+                the mark reads as part of the meter beside it rather than as
+                punctuation in the name.
+              */}
               {skill.native ? (
-                <span className="text-tertiary" aria-hidden="true">
+                <span className="text-[#83a0ef]" aria-hidden="true">
                   *
                 </span>
               ) : null}

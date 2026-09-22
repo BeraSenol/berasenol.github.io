@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from "react";
+import { type CSSProperties, useLayoutEffect, useRef, useState } from "react";
 import board from "../assets/chessboard.webp";
 import bB from "../assets/pieces/bB.svg";
 import bK from "../assets/pieces/bK.svg";
@@ -14,6 +14,7 @@ import wQ from "../assets/pieces/wQ.svg";
 import wR from "../assets/pieces/wR.svg";
 import { prefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import { useReveal } from "../hooks/useReveal";
+import { ReplayMark } from "./Glyphs";
 
 /**
  * A board that sets itself up and then plays Fool's Mate.
@@ -189,6 +190,108 @@ const MATE_AT = LAST_MOVE
   ? LAST_MOVE.start + LAST_MOVE.duration + MATE_DELAY_MS
   : 0;
 
+/*
+ * The replay. Taking a move back is the same hand in reverse, so it costs what
+ * the move cost. The four go back together rather than one at a time, last move
+ * first and a beat apart, the way you sweep a finished game back to the start,
+ * and they begin while the red square is still fading.
+ */
+const GLOW_OUT_MS = 280;
+const TAKEBACK_START_MS = 140;
+const TAKEBACK_STEP_MS = 70;
+const REPLAY_REST_MS = 520;
+
+/** When each move is taken back on a replay, keyed by where it started. */
+const TAKEBACK_AT: ReadonlyMap<string, number> = new Map(
+  SCHEDULE.map((move, index) => [
+    move.from,
+    TAKEBACK_START_MS + (SCHEDULE.length - 1 - index) * TAKEBACK_STEP_MS,
+  ]),
+);
+
+/*
+ * The latest landing, not the last to start: the queen goes back first but has
+ * the longest trip, so which piece gets home last depends on the durations.
+ */
+const TAKEBACK_END = Math.max(
+  ...SCHEDULE.map((move) => (TAKEBACK_AT.get(move.from) ?? 0) + move.duration),
+);
+
+/*
+ * How much sooner everything happens on a replay. The first game waits for the
+ * set-up sweep before 1.f3; a replay only waits for the last piece to get home
+ * and a rest after it. One offset for every move and for the mate, so the game
+ * keeps exactly the rhythm it had the first time.
+ */
+const REPLAY_SOONER = FIRST_MOVE_MS - (TAKEBACK_END + REPLAY_REST_MS);
+
+type Travel = { keyframes: Keyframe[]; delay: number; duration: number };
+
+const HOME = "0px 0px";
+
+/**
+ * A piece's whole part in one run, as a single animation.
+ *
+ * On reveal: wait on the start square, then travel home. On a replay: travel
+ * back to the start square, wait there, then travel home again. The easing
+ * sits on each keyframe rather than on the animation as a whole, because a
+ * replay has two journeys with a wait between them and each needs the curve to
+ * itself. The overall timing stays linear, so an offset is simply a fraction
+ * of the time.
+ *
+ * `away` is the start square as an offset from home, in pixels.
+ */
+function travel(move: Scheduled, away: string, replay: boolean): Travel {
+  if (!replay) {
+    return {
+      delay: move.start,
+      duration: move.duration,
+      keyframes: [{ translate: away, easing: MOVE_EASE }, { translate: HOME }],
+    };
+  }
+
+  const back = TAKEBACK_AT.get(move.from) ?? 0;
+  const start = move.start - REPLAY_SOONER;
+  const total = start + move.duration - back;
+
+  return {
+    delay: back,
+    duration: total,
+    keyframes: [
+      { translate: HOME, easing: MOVE_EASE },
+      { translate: away, offset: move.duration / total },
+      { translate: away, offset: (start - back) / total, easing: MOVE_EASE },
+      { translate: HOME },
+    ],
+  };
+}
+
+/*
+ * The replay button's two states, as whole style objects for the same reason
+ * the pieces write a whole transform: a Tailwind scale utility would go through
+ * a custom property the browser cannot interpolate.
+ *
+ * visibility is what takes the hidden button out of the tab order and the
+ * accessibility tree, not just out of sight. It flips to visible at once and
+ * back to hidden only after the fade, via the delay, so the fade is seen both
+ * ways. Each state carries the transition used on the way INTO it.
+ */
+const REPLAY_SHOWN: CSSProperties = {
+  opacity: 1,
+  transform: "scale(1)",
+  visibility: "visible",
+  transition:
+    "opacity 300ms ease-out, transform 520ms cubic-bezier(0.16, 1, 0.3, 1), background-color 150ms",
+};
+
+const REPLAY_HIDDEN: CSSProperties = {
+  opacity: 0,
+  transform: "scale(0.6)",
+  visibility: "hidden",
+  transition:
+    "opacity 240ms ease-in, transform 240ms ease-in, visibility 0s linear 240ms, background-color 150ms",
+};
+
 type Piece = { square: string; code: string };
 
 /**
@@ -238,23 +341,44 @@ const PIECES = startingPieces(START);
 const FIELD_INSET = "10.45%";
 const FIELD_SIZE = "79.09%";
 
-export function Chessboard({ label }: { label: string }) {
+type ChessboardProps = {
+  label: string;
+  caption: string;
+  /** The replay button's accessible name and tooltip. */
+  replayLabel: string;
+};
+
+export function Chessboard({ label, caption, replayLabel }: ChessboardProps) {
   const { ref, isVisible } = useReveal<HTMLDivElement>();
   /*
-   * The board has no state. It used to keep a ply counter and re-derive the
-   * position from it, which meant four re-renders of thirty-two nodes and a
-   * transition fired by React changing an inline style. Nothing here changes
-   * after the reveal: the start position is rendered once and four animations
-   * own the rest, so the browser runs the game and React watches.
+   * The board still has no position state. The start position is rendered once
+   * and the animations own everything after it, so the browser runs the game
+   * and React watches.
+   *
+   * What it does have now is two facts about the game rather than the board.
+   * `run` counts how many times the game has been started: the effect below
+   * depends on it, so bumping it is how a click says "play it again". `mated`
+   * is whether the current run has reached its end, and it is the only thing
+   * React renders differently, because it decides whether the replay button
+   * shows. It cannot be derived from anything React has, since the moment the
+   * mate lands is reported by the browser, so it has to be stored.
    */
+  const [run, setRun] = useState(0);
+  const [mated, setMated] = useState(false);
   const squares = useRef(new Map<string, HTMLDivElement>());
   const glow = useRef<HTMLSpanElement>(null);
+  const spin = useRef<HTMLSpanElement>(null);
 
   /*
    * useLayoutEffect, not useEffect, because this positions elements and has to
    * do it before the browser paints. An effect runs after paint, which leaves
    * one frame where a piece about to move is drawn on its destination square.
    * The appearing delay hides that today; relying on it would be luck.
+   *
+   * On a replay it matters twice over. The cleanup cancels the last run's
+   * animations, which drops the red square's held opacity and puts it back to
+   * zero; the new run's fade-out starts it at full again. Both happen in the
+   * same commit, before paint, so the square never blinks off in between.
    */
   useLayoutEffect(() => {
     if (!isVisible) return;
@@ -267,7 +391,16 @@ export function Chessboard({ label }: { label: string }) {
      * path either way, which is the point of folding it into the timing.
      */
     const instant = prefersReducedMotion();
+    /* Run 0 is the game as it plays on reveal. Anything after is a replay. */
+    const isReplay = run > 0;
+    const sooner = isReplay ? REPLAY_SOONER : 0;
     const running: Animation[] = [];
+    /*
+     * Cleared by the cleanup. A finish event is queued rather than delivered on
+     * the spot, so one can still arrive after its run has been torn down, and
+     * this is what stops it showing the button halfway through the next one.
+     */
+    let live = true;
 
     for (const move of SCHEDULE) {
       const node = squares.current.get(move.from);
@@ -291,54 +424,109 @@ export function Chessboard({ label }: { label: string }) {
        */
       const dx = (fileOf(move.from) - fileOf(move.to)) * size;
       const dy = (rankOf(move.from) - rankOf(move.to)) * size;
-
-      running.push(
-        node.animate(
-          [{ translate: `${dx}px ${dy}px` }, { translate: "0px 0px" }],
-          {
-            duration: instant ? 0 : move.duration,
-            delay: instant ? 0 : move.start,
-            easing: MOVE_EASE,
-            /*
-             * backwards, and this is the part that matters. The animation moves
-             * the `translate` property, which composes on top of the wrapper's
-             * own `transform` instead of replacing it, so the two ends of the
-             * travel are: the offset, and nothing. A backwards fill applies the
-             * first keyframe during the delay, so the piece waits on its
-             * starting square, and applies nothing once it is over, so the piece
-             * falls back to its own style, which already puts it on the
-             * destination. There is no held value to hand back at the end,
-             * because the value before the handoff and after it are the same.
-             */
-            fill: "backwards",
-          },
-        ),
+      const { keyframes, delay, duration } = travel(
+        move,
+        `${dx}px ${dy}px`,
+        isReplay,
       );
-    }
 
-    if (glow.current) {
       running.push(
-        glow.current.animate([{ opacity: 0 }, { opacity: 1 }], {
-          duration: instant ? 0 : MATE_MS,
-          delay: instant ? 0 : MATE_AT,
-          easing: "ease-out",
-          fill: "forwards",
+        node.animate(keyframes, {
+          duration: instant ? 0 : duration,
+          delay: instant ? 0 : delay,
+          /*
+           * backwards, and this is the part that matters. The animation moves
+           * the `translate` property, which composes on top of the wrapper's
+           * own `transform` instead of replacing it, so home is simply no
+           * offset at all. A backwards fill applies the first keyframe during
+           * the delay: on reveal that holds the piece on its starting square,
+           * and on a replay the first keyframe is home, where it already is.
+           * Once the animation is over it applies nothing, and the piece falls
+           * back to its own style, which already puts it on the destination.
+           * The last keyframe is home in both runs, so there is no held value
+           * to hand back at the end.
+           */
+          fill: "backwards",
         }),
       );
     }
 
-    return () => running.forEach((animation) => animation.cancel());
-  }, [isVisible]);
+    if (glow.current) {
+      if (isReplay) {
+        running.push(
+          glow.current.animate([{ opacity: 1 }, { opacity: 0 }], {
+            duration: instant ? 0 : GLOW_OUT_MS,
+            easing: "ease-out",
+          }),
+        );
+      }
+
+      /*
+       * Made after the fade-out, so it sits above it in the composite order,
+       * but with a forwards fill only: during its delay it contributes nothing,
+       * and the fade-out underneath is what shows.
+       */
+      const mate = glow.current.animate([{ opacity: 0 }, { opacity: 1 }], {
+        duration: instant ? 0 : MATE_MS,
+        delay: instant ? 0 : MATE_AT - sooner,
+        easing: "ease-out",
+        fill: "forwards",
+      });
+
+      /*
+       * The button appears when the mate has finished lighting up. With reduced
+       * motion nothing plays, so there is nothing to replay and no listener: a
+       * zero-length animation still finishes, and would otherwise offer a
+       * button that does nothing you can see.
+       */
+      if (!instant) {
+        mate.onfinish = () => {
+          if (live) setMated(true);
+        };
+      }
+
+      running.push(mate);
+    }
+
+    return () => {
+      live = false;
+      running.forEach((animation) => animation.cancel());
+    };
+  }, [isVisible, run]);
+
+  /*
+   * A click does two things. The spin is a one-off flourish on an element React
+   * never renders differently, so it is started here, imperatively, in the
+   * handler that caused it; an effect is for keeping in step with state, and
+   * there is no state for "was just clicked". The replay itself is state: both
+   * setters run in one event, so React batches them into a single render, and
+   * that render's changed `run` is what re-runs the effect above.
+   */
+  function handleReplay() {
+    spin.current?.animate([{ rotate: "0deg" }, { rotate: "360deg" }], {
+      duration: 560,
+      easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+    });
+    setMated(false);
+    setRun((count) => count + 1);
+  }
 
   if (!PIECES) return null;
 
   return (
-    <figure className="w-full">
+    /*
+     * A grid, so the button and the caption can share the row under the board
+     * while the figcaption stays the figure's last child, which is where HTML
+     * wants it. The button's column is as wide as the button; the caption takes
+     * the rest and keeps its right alignment. The row is the button's height
+     * from the first paint, hidden or not, so nothing moves when it appears.
+     */
+    <figure className="grid w-full grid-cols-[auto_1fr] items-center gap-x-4 gap-y-3">
       <div
         ref={ref}
         role="img"
         aria-label={label}
-        className="relative aspect-square w-full"
+        className="relative col-span-2 aspect-square w-full"
       >
         <img
           src={board}
@@ -431,6 +619,41 @@ export function Chessboard({ label }: { label: string }) {
           })}
         </div>
       </div>
+
+      {/*
+        Rendered from the first paint and hidden, rather than mounted on mate:
+        like the red square, a button that arrives already visible has nothing
+        to fade in from. relative for the glass rim, which is an absolutely
+        positioned ::before.
+      */}
+      <button
+        type="button"
+        onClick={handleReplay}
+        title={replayLabel}
+        aria-label={replayLabel}
+        className="liquid-glass liquid-glass-pill relative flex size-8 items-center justify-center rounded-full text-primary hover:bg-surface-elevated/60"
+        style={mated ? REPLAY_SHOWN : REPLAY_HIDDEN}
+      >
+        {/*
+          Centred on the circle, not on the glyph's box. The arrowhead pokes out
+          above the ring, so the box's middle sits 2.44 units above the ring's
+          centre (15.91 against 13.47, of 26.94). Lifting the glyph by that
+          share of its own height, 9.04%, puts the ring in the middle of the
+          button, and the origin at the ring's centre (59.04% down) makes the
+          spin turn about the ring rather than wobble. Both in percentages of
+          the glyph itself, so they hold at any size.
+        */}
+        <span
+          ref={spin}
+          className="block origin-[50%_59.04%] -translate-y-[9.04%]"
+        >
+          <ReplayMark className="block h-[15px] w-auto" />
+        </span>
+      </button>
+
+      <figcaption className="text-right text-xs text-secondary">
+        {caption}
+      </figcaption>
     </figure>
   );
 }

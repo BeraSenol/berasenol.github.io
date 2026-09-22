@@ -14,13 +14,8 @@ export const nl: Content = {
     githubLabel: "GitHub-profiel",
     contactCta: "Contact",
   },
-  hero: {
-    eyebrow: "Vandaag",
-    headline: "Nu bouw ik software voor Apple-platformen.",
-    body: "macOS-apps in Swift en SwiftUI, schaaksoftware die exact moet kloppen, en af en toe iets voor het web.",
-  },
   kitchen: {
-    eyebrow: "2023",
+    eyebrow: "2023 – 2024",
     title: "Entrepot del Tartufo",
     // The restaurant's own tagline, their branding, left in English on purpose.
     tagline: "Italian food with a touch of truffle",
@@ -41,7 +36,7 @@ export const nl: Content = {
     memojiAlt: "Memoji van Bera Senol, hand aan zijn kin, in gedachten",
   },
   dignify: {
-    eyebrow: "2025",
+    eyebrow: "2025 – 2026",
     title: "Dignify",
     tagline: "Marketing automation voor Bol.com en BNP Paribas Fortis",
     paragraphs: [
@@ -71,9 +66,10 @@ export const nl: Content = {
     boardLabel:
       "Een schaakbord dat het narrenmat speelt, het kortste schaakmat dat bestaat: 1.f3 e5 2.g4 Dh4 mat",
     boardCaption: "Het narrenmat, schaakmat in 4 halve zetten",
+    replayLabel: "Speel de partij opnieuw af",
     screenAlt:
       "DGT Studio Pro op een MacBook, met een partij die van een DGT-bord is gelezen, de PGN, de opening en de engine-evaluatie",
-    featuresTitle: "Van bord naar Mac",
+    featuresTitle: "Je persoonlijke arbiter",
     features: [
       {
         title: "Live vanaf het bord",
@@ -89,7 +85,7 @@ export const nl: Content = {
       },
       {
         title: "Een eigen bibliotheek",
-        body: "Partijen staan in een SwiftData-bibliotheek met zoeken, slimme tags zoals Timed, Draws en Not Analyzed, en vier weergaven.",
+        body: "Partijen staan in een SwiftData-bibliotheek met zoeken, slimme tags en vier weergaven.",
       },
       {
         title: "Analyse met Stockfish",
@@ -171,5 +167,23 @@ export const nl: Content = {
     { icon: "cup", label: "Arbeidsnectar" },
     { icon: "yen", label: "Is (nog) niet in Japan geweest" },
   ],
-  footer: "Bera Senol",
+  footer: {
+    owner: "Bera Senol",
+    credits: [
+      "Gemaakt met ",
+      { tool: "react" },
+      ", ",
+      { tool: "typescript" },
+      ", ",
+      { tool: "vite" },
+      " en ",
+      { tool: "tailwind" },
+      ". Door ",
+      { tool: "actions" },
+      " gepubliceerd op ",
+      { tool: "pages" },
+      ".",
+    ],
+    sourceLabel: "Bekijk de broncode",
+  },
 };

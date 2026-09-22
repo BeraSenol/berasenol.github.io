@@ -1,9 +1,8 @@
 import { Contact } from "./components/Contact";
 import { DgtStudio } from "./components/DgtStudio";
 import { Dignify } from "./components/Dignify";
-import { Container } from "./components/Container";
+import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
-import { Hero } from "./components/Hero";
 import { Kitchen } from "./components/Kitchen";
 import { Languages } from "./components/Languages";
 import { LiquidGlassFilters } from "./components/LiquidGlassFilters";
@@ -25,8 +24,6 @@ function App({ content }: { content: Content }) {
         <Splash content={content} />
         <Kitchen content={content} />
         <Dignify content={content} />
-        <Hero content={content} />
-
         <DgtStudio content={content} />
 
         <Section
@@ -57,13 +54,7 @@ function App({ content }: { content: Content }) {
         </Section>
       </main>
 
-      <footer className="border-t border-separator py-10">
-        <Container>
-          <p className="text-xs text-secondary">
-            &copy; {new Date().getFullYear()} {content.footer}
-          </p>
-        </Container>
-      </footer>
+      <Footer content={content} />
     </>
   );
 }
