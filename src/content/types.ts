@@ -29,6 +29,25 @@ export type Feature = { title: string; body: string };
  */
 export type LanguageSkill = { name: string; level: number; native?: boolean };
 
+/**
+ * Which ambition a card is. Doubles as the card's React key and picks its
+ * gradient, so it is a closed union rather than a free string: a typo is a
+ * compile error, not a card that silently loses its colour.
+ */
+export type AmbitionKind = "music" | "game";
+
+/**
+ * One bucket list item. `goal` is what (the card's eyebrow), `tool` is what it
+ * gets made with (the card's title).
+ */
+export type Ambition = {
+  kind: AmbitionKind;
+  tool: string;
+  goal: string;
+  body: string;
+  tags: readonly string[];
+};
+
 export type Study = { title: string; org: string; period: string };
 
 export type Project = {
@@ -109,6 +128,12 @@ export type Content = {
     featuresTitle: string;
     /** The feature list beside the Mac: a short name, then one sentence. */
     features: readonly Feature[];
+  };
+  ambitions: {
+    eyebrow: string;
+    title: string;
+    intro: string;
+    items: readonly Ambition[];
   };
   education: readonly Study[];
   projects: readonly Project[];

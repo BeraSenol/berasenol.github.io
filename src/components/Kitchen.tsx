@@ -56,33 +56,48 @@ export function Kitchen({ content }: { content: Content }) {
           </Reveal>
         </div>
 
-        {/* Caption lives outside the row so both images share one bottom edge. */}
-        <div className="mt-12 lg:mt-20">
-          <div className="flex flex-col items-center gap-8 sm:flex-row sm:items-end">
-            <Reveal delay={120} from="left" distance="far" className="w-full sm:w-[58%]">
-              <img
-                src={truffles}
-                alt={k.trufflesAlt}
-                width={1400}
-                height={699}
-                loading="lazy"
-                className="block w-full object-cover grayscale"
-              />
-            </Reveal>
+        {/*
+          A grid rather than a flex row with the caption outside it. The caption
+          used to sit after the whole row so that, side by side, the photo and
+          the memoji could share one bottom edge. On a phone the row stacks,
+          and that put the memoji between the photo and its own caption.
 
-            <Reveal delay={260} from="right" className="shrink-0 sm:ml-auto">
-              <img
-                src={memojiThinking}
-                alt={k.memojiAlt}
-                width={402}
-                height={455}
-                loading="lazy"
-                className="block w-32 sm:w-40 lg:w-48"
-              />
-            </Reveal>
-          </div>
+          Now the DOM order is the reading order: photo, its caption, memoji.
+          On a phone that is simply the stacking order. From sm up the grid has
+          two columns, and sm:order-last sends the caption after the memoji,
+          so auto-placement puts photo and memoji on row one and the caption
+          under the photo on row two. The memoji is self-end, so its feet
+          still meet the photo's bottom edge. `order` only moves the boxes;
+          a screen reader still reads photo, caption, memoji.
+        */}
+        <div className="mt-12 grid sm:grid-cols-[58%_1fr] sm:gap-x-8 lg:mt-20">
+          <Reveal delay={120} from="left" distance="far">
+            <img
+              src={truffles}
+              alt={k.trufflesAlt}
+              width={1400}
+              height={699}
+              loading="lazy"
+              className="block w-full object-cover grayscale"
+            />
+          </Reveal>
 
-          <p className="mt-3 text-xs text-secondary sm:w-[58%]">{k.trufflesCaption}</p>
+          <p className="mt-3 text-xs text-secondary sm:order-last">{k.trufflesCaption}</p>
+
+          <Reveal
+            delay={260}
+            from="right"
+            className="mt-8 justify-self-center sm:mt-0 sm:self-end sm:justify-self-end"
+          >
+            <img
+              src={memojiThinking}
+              alt={k.memojiAlt}
+              width={402}
+              height={455}
+              loading="lazy"
+              className="block w-32 sm:w-40 lg:w-48"
+            />
+          </Reveal>
         </div>
       </Container>
     </section>

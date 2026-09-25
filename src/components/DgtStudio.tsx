@@ -1,7 +1,6 @@
 import macbook from "../assets/macbook-dgt.webp";
 import { Chessboard } from "./Chessboard";
 import {
-  DgtMark,
   MacOsMark,
   StockfishMark,
   SwiftDataMark,
@@ -55,11 +54,6 @@ const MARKS = [
     label: "Stockfish",
     href: "https://stockfishchess.org",
     node: <StockfishMark className="h-11 w-auto" />,
-  },
-  {
-    label: "Digital Game Technology",
-    href: "https://www.digitalgametechnology.com",
-    node: <DgtMark className="h-7 w-auto" />,
   },
 ];
 

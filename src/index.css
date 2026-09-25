@@ -310,6 +310,93 @@
   animation: nugget-emerge 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/*
+ * The orbit's geometry: --r is the horizontal radius, --k the vertical squash,
+ * so the vertical radius is r times k. Order matters and is the reason these
+ * are media queries here rather than variants on the element: the phone's
+ * height steps come first, the width steps after them, so from sm up the
+ * width alone decides. These rules are unlayered, which in cascade-layer
+ * terms beats every Tailwind utility, so nothing on the element can override
+ * them by accident.
+ *
+ * Phone, from the measured splash at 390 wide. The name is 236px wide and the
+ * memoji-to-role block runs 142px above and below the section's centre. The
+ * 96px labels sit at 136px out horizontally, which keeps them inside the
+ * viewport. Vertically the top of the orbit has to stay under the 49px header,
+ * so the vertical radius can be at most half the height minus about 90px.
+ * Hence three steps by height, each the largest that fits the shortest screen
+ * in its range: 234px from 648px tall, 258px from 700, 286px from 780. Real
+ * iPhones in Safari land in the first two, not at the 844 of the spec sheet,
+ * because the toolbars take their share.
+ *
+ * sm to lg (tablets): the name is 354px wide at text-7xl and the labels 128px,
+ * so 248px across by 310px down.
+ */
+.orbit-field {
+  --r: 8.5rem;
+  --k: 1.72;
+}
+
+@media (height >= 700px) {
+  .orbit-field {
+    --k: 1.9;
+  }
+}
+
+@media (height >= 780px) {
+  .orbit-field {
+    --k: 2.1;
+  }
+}
+
+@media (width >= 40rem) {
+  .orbit-field {
+    --r: 15.5rem;
+    --k: 1.25;
+  }
+}
+
+@media (width >= 64rem) {
+  .orbit-field {
+    --r: 26rem;
+    --k: 0.75;
+  }
+}
+
+@media (width >= 80rem) {
+  .orbit-field {
+    --r: 30rem;
+    --k: 0.58;
+  }
+}
+
+/*
+ * Below lg, where there is not room for an orbit at all: phones shorter than
+ * 648px and tablet-width windows shorter than 700px (a phone on its side),
+ * where the top of the orbit would run under the header. And anyone who asked
+ * for reduced motion: with motion reduced every label parks at its starting
+ * angle, and two of those are level with the name, so they would sit half
+ * hidden behind it for good instead of passing behind it for a moment.
+ */
+@media (width < 64rem) and (height < 648px),
+  (width >= 40rem) and (width < 64rem) and (height < 700px),
+  (width < 64rem) and (prefers-reduced-motion: reduce) {
+  .orbit-field {
+    display: none;
+  }
+}
+
+/*
+ * Below lg there is no fade and no hiding: all six labels stay on the ellipse
+ * the whole way round. At 390 the name is 236px of the 342px between the
+ * gutters, so no text label can pass the sides without crossing it; the labels
+ * go behind it instead. That falls out of paint order with nothing extra: the
+ * orbit is positioned and comes first in the splash, and the memoji, the name
+ * and the role are positioned (relative) and come after it, so they paint on
+ * top. The GitHub and Contact pills sit at z-10, so over the bottom of the
+ * orbit the labels pass behind those too.
+ */
+
 
 /*
  * Liquid Glass for the language menu and every pill, after the "Liquid Glass Distortion

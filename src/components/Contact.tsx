@@ -36,45 +36,45 @@ export function Contact({
 }) {
   return (
     /*
-     * The measure stays on the text column rather than moving to the grid: the
-     * memoji should be able to sit wherever the column ends up, but a line of
-     * prose still has a width past which it stops being readable.
+     * The measure stays on the text column: a line of prose still has a width
+     * past which it stops being readable, and the memoji now lives inside that
+     * column, beside the rows, rather than out at the grid's far edge.
      */
-    /*
-     * From lg up the memoji's bottom pixel sits on the baseline of the last
-     * row, "Hasselt, Belgium". Two pieces make that exact without measuring:
-     *
-     * - Every row's value is trimmed to cap line and baseline (.trim-text),
-     *   so the last row, and with it the text column, ends exactly on the
-     *   baseline, for any font.
-     * - The memoji is taken out of the grid's flow and pinned to the grid's
-     *   bottom edge, which is now that baseline. Its image has figure right
-     *   down to its last row of pixels, so box bottom and ink bottom agree.
-     *
-     * Pinned rather than bottom-aligned in the grid, because the memoji is
-     * taller than the text. As a grid item it would set the row's height, and
-     * either the text would sink away from the heading (the 108px gap this
-     * section used to have) or the memoji's feet would float above the line.
-     * Out of the flow it simply rises beside the heading from the baseline,
-     * and the text keeps its place.
-     *
-     * The comma in "Hasselt, Belgium" dips a hair below the baseline, as
-     * commas do; the letters are what the feet stand on.
-     */
-    <div className="grid gap-12 lg:relative lg:grid-cols-[minmax(0,42rem)_auto]">
-      <div className="max-w-2xl self-start">
-        <p className="text-[1.0625rem] leading-relaxed text-secondary sm:text-lg">
-          {intro}
-        </p>
+    <div className="max-w-2xl">
+      <p className="text-[1.0625rem] leading-relaxed text-secondary sm:text-lg">
+        {intro}
+      </p>
 
+      {/*
+        The rows and the memoji share one flex row from sm up, top-aligned, and
+        the memoji is exactly as tall as the three rows. So its top meets the
+        first row's hairline and its feet stand on the baseline of "Hasselt,
+        Belgium", with no absolute positioning.
+
+        The rows' height is fixed by their markup, so it can be written down:
+        three pt-6 (4.5rem), two space-y-6 gaps (3rem), three 1px top borders,
+        and three values each trimmed to cap line and baseline by .trim-text,
+        so each is exactly one cap height tall. calc(7.5rem + 3px + 3cap).
+        The cap unit is the cap height of the element's own font, and the img
+        carries text-lg so that font is the same size as the values. That
+        makes the match hold for any font, SF Pro here or Arial elsewhere,
+        with nothing measured in a screenshot. If the row spacing or the value
+        size ever changes, this calc has to change with it.
+
+        Below sm the memoji goes under the rows, right-aligned, at the same
+        height. Side by side does not fit a phone: the email row alone needs
+        about 245px, and beside a 116px memoji plus the gap that leaves the
+        rows too narrow at 390, so the address would wrap under its icon.
+      */}
+      <div className="mt-10 flex flex-col gap-8 sm:flex-row sm:items-start">
         {/* A description list, because each row really is a term and its value. */}
         {/*
-          The rows' spacing is pt-6 and space-y-6 now that each value is
-          trimmed to its capitals: the line box used to add about 8px of
-          half-leading above the caps and some below the baseline, and the
-          larger padding puts that space back, so the rhythm is unchanged.
-        */}
-        <dl className="mt-10 space-y-6">
+            The rows' spacing is pt-6 and space-y-6 now that each value is
+            trimmed to its capitals: the line box used to add about 8px of
+            half-leading above the caps and some below the baseline, and the
+            larger padding puts that space back, so the rhythm is unchanged.
+          */}
+        <dl className="min-w-0 flex-1 space-y-6">
           {links.map((link) => {
             const Mark = MARK[link.icon];
 
@@ -89,27 +89,27 @@ export function Contact({
                 className="flex flex-wrap items-center gap-x-[34px] gap-y-1 border-t border-separator pt-6"
               >
                 {/*
-                  A fixed column, because the three glyphs are different widths
-                  and the values have to start on the same line whichever row
-                  you are looking at. The label is still the row's name, it just
-                  reaches a screen reader now instead of the page.
-                */}
+                    A fixed column, because the three glyphs are different widths
+                    and the values have to start on the same line whichever row
+                    you are looking at. The label is still the row's name, it just
+                    reaches a screen reader now instead of the page.
+                  */}
                 {/*
-                  Each glyph is sized by width (MARK_WIDTH), and centred in a
-                  column as wide as the widest, 22px, so all three share one
-                  vertical centre line down the column. Their viewBoxes are
-                  their ink boxes, so the widths are the ink's, not a box's.
-                  22px plus the 34px gap puts the values at the same x as
-                  before (the old 32px column plus 24px gap). The dt is a flex box so the svg is laid out
-                  as a block, not sat on a text baseline with a gap under it.
+                    Each glyph is sized by width (MARK_WIDTH), and centred in a
+                    column as wide as the widest, 22px, so all three share one
+                    vertical centre line down the column. Their viewBoxes are
+                    their ink boxes, so the widths are the ink's, not a box's.
+                    22px plus the 34px gap puts the values at the same x as
+                    before (the old 32px column plus 24px gap). The dt is a flex box so the svg is laid out
+                    as a block, not sat on a text baseline with a gap under it.
 
-                  h-0 so the icons never set a row's height: the text alone
-                  does, and the icon overflows its zero-height box evenly
-                  above and below, centred on the same line. Without it the
-                  20px-tall location pin, taller than the trimmed text, made
-                  the last row end below the baseline, and the memoji, which
-                  stands on the bottom of that row, sank with it.
-                */}
+                    h-0 so the icons never set a row's height: the text alone
+                    does, and the icon overflows its zero-height box evenly
+                    above and below, centred on the same line. Without it the
+                    20px-tall location pin, taller than the trimmed text, made
+                    the last row end below the baseline, and the memoji, which
+                    stands on the bottom of that row, sank with it.
+                  */}
                 <dt className="flex h-0 w-[22px] shrink-0 items-center justify-center text-secondary">
                   <Mark
                     className={`h-auto ${MARK_WIDTH[link.icon]}`}
@@ -135,22 +135,18 @@ export function Contact({
             );
           })}
         </dl>
-      </div>
 
-      <Reveal
-        from="right"
-        delay={120}
-        className="justify-self-start lg:absolute lg:right-0 lg:bottom-0"
-      >
-        <img
-          src={memojiHeart}
-          alt={memojiAlt}
-          width={309}
-          height={420}
-          loading="lazy"
-          className="w-40 sm:w-48 lg:w-56"
-        />
-      </Reveal>
+        <Reveal from="right" delay={120} className="self-end sm:self-start">
+          <img
+            src={memojiHeart}
+            alt={memojiAlt}
+            width={309}
+            height={420}
+            loading="lazy"
+            className="block h-[calc(7.5rem+3px+3cap)] w-auto text-lg"
+          />
+        </Reveal>
+      </div>
     </div>
   );
 }

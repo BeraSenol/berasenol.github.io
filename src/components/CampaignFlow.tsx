@@ -293,7 +293,7 @@ export function CampaignFlow() {
 
         <svg
           viewBox="0 0 486 186"
-          className="mt-5 block w-full"
+          className="block w-full"
           aria-hidden="true"
         >
           <defs>

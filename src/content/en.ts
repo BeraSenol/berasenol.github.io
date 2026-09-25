@@ -92,6 +92,28 @@ export const en: Content = {
       },
     ],
   },
+  ambitions: {
+    eyebrow: "What's next",
+    title: "Bucket list items",
+    intro:
+      "Two things I have started on in my own time and want to take a lot further.",
+    items: [
+      {
+        kind: "music",
+        tool: "Logic Pro",
+        goal: "Drum and bass",
+        body: "I collect drum and bass, and now I want to make it. I have been finding my way around Logic Pro, and the aim is a finished track that holds its own next to the ones I collect.",
+        tags: ["174 BPM", "Breaks", "Bass design", "Mixdown"],
+      },
+      {
+        kind: "game",
+        tool: "Unreal Engine",
+        goal: "Video game",
+        body: "I have started experimenting in Unreal Engine. A game pulls together a lot of what I enjoy: code, systems, sound, and something you can actually play. I want to build one small game from start to finish and ship it, ideally with a soundtrack I made myself.",
+        tags: ["Unreal Engine 5", "C++", "Blueprints"],
+      },
+    ],
+  },
   education: [
     {
       title: "Applied Computer Science",

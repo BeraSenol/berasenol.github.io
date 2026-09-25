@@ -93,6 +93,28 @@ export const nl: Content = {
       },
     ],
   },
+  ambitions: {
+    eyebrow: "Wat nog komt",
+    title: "Bucketlist",
+    intro:
+      "Twee dingen waar ik in mijn vrije tijd mee begonnen ben en die ik veel verder wil brengen.",
+    items: [
+      {
+        kind: "music",
+        tool: "Logic Pro",
+        goal: "Drum and bass",
+        body: "Ik verzamel drum and bass, en nu wil ik het zelf maken. Ik ben mijn weg aan het zoeken in Logic Pro, met als doel een afgewerkte track die niet onderdoet voor de tracks die ik verzamel.",
+        tags: ["174 BPM", "Breaks", "Basdesign", "Mixdown"],
+      },
+      {
+        kind: "game",
+        tool: "Unreal Engine",
+        goal: "Videogame",
+        body: "Ik ben begonnen met experimenteren in Unreal Engine. In een game komt veel samen van wat ik graag doe: code, systemen, geluid, en iets wat je echt kan spelen. Ik wil één kleine game van begin tot eind bouwen en uitbrengen, liefst met een soundtrack die ik zelf gemaakt heb.",
+        tags: ["Unreal Engine 5", "C++", "Blueprints"],
+      },
+    ],
+  },
   education: [
     {
       title: "Toegepaste Informatica",

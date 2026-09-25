@@ -85,7 +85,7 @@ function NuggetIconMark({ name }: { name: NuggetIcon }) {
   return (
     <svg
       viewBox={icon.viewBox}
-      className={`h-7 w-auto lg:h-8 ${icon.className ?? ''}`}
+      className={`h-5 w-auto sm:h-6 lg:h-8 ${icon.className ?? ''}`}
       fill="currentColor"
       aria-hidden="true"
     >
@@ -99,21 +99,35 @@ export function NuggetOrbit({ nuggets }: { nuggets: readonly Nugget[] }) {
   const { ref: ringRef, slow, resume } = useSpinRamp<HTMLDivElement>()
 
   return (
-    // Capped at max-w-6xl (72rem). That sets the horizontal semi-axis: 2A plus a
-    // 176px label must fit inside it, so A <= 30.5rem. Feeding A = 30rem back into
-    // the clearance inequality below gives the minimum ratio, k >= 0.567, so k is
-    // 0.58, a slightly less flat ellipse than before but one that still fits.
+    // Capped at max-w-6xl (72rem). That sets the horizontal semi-axis on desktop:
+    // 2A plus a 176px label must fit inside it, so A <= 30.5rem, and feeding that
+    // back into the clearance inequality gives k >= 0.567, hence 0.58 at xl.
     //
-    // Hidden below lg: six labels on a ring need room, and on a phone they would
-    // sit on top of the name. Rendered before the memoji so it paints behind it, and
-    // the labels emerge from under the figure rather than in front of it.
+    // The geometry itself (--r, the horizontal radius, and --k, the squash) lives
+    // in index.css under .orbit-field rather than in classes here: below lg it
+    // depends on the viewport's HEIGHT as well as its width, and the height
+    // steps have to be ordered against the width steps. Plain media queries in
+    // one place make that order explicit; utility variants would leave it to
+    // Tailwind's sort. On a phone --k is above 1, which stretches the circle
+    // into an ellipse taller than it is wide.
+    //
+    // Rendered before the memoji so it paints behind it, and the labels emerge
+    // from under the figure rather than in front of it. On a phone the same
+    // order is what lets a label pass behind the name at the sides of the
+    // ellipse: there is not room for it to pass beside.
     //
     // The container ignores the pointer so it cannot swallow a click meant for the
     // contact pill; each label re-enables it for itself, which is what makes the
     // hover work. No aria-hidden: the labels are real content and now interactive.
-    <div className="pointer-events-none absolute inset-0 mx-auto hidden max-w-6xl place-items-center [--k:0.75] [--r:26rem] lg:grid xl:[--k:0.58] xl:[--r:30rem]">
+    <div className="orbit-field pointer-events-none absolute inset-0 mx-auto grid max-w-6xl place-items-center">
       <div className="orbit-squash">
-        <div ref={ringRef} className="orbit-ring relative h-[40rem] w-[40rem]">
+        {/*
+          The ring's box only fixes the centre it turns about: the labels are
+          absolutely positioned from its middle. Below lg it is zero-sized. At
+          40rem it was wider than a phone, the grid track grew to fit it, and
+          the whole orbit sat 125px right of centre at 390.
+        */}
+        <div ref={ringRef} className="orbit-ring relative size-0 lg:size-[40rem]">
           {nuggets.map((nugget, i) => (
             <div
               key={nugget.label}
@@ -129,9 +143,9 @@ export function NuggetOrbit({ nuggets }: { nuggets: readonly Nugget[] }) {
               }
             >
               <div className="orbit-upright">
-                <div className="orbit-unsquash flex w-40 flex-col items-center gap-2.5 text-center text-secondary xl:w-44">
+                <div className="orbit-unsquash flex w-24 flex-col items-center gap-2 text-center text-secondary sm:w-32 lg:w-40 lg:gap-2.5 xl:w-44">
                   <NuggetIconMark name={nugget.icon} />
-                  <p className="text-xs leading-snug xl:text-sm">{nugget.label}</p>
+                  <p className="text-[11px] leading-snug sm:text-xs xl:text-sm">{nugget.label}</p>
                 </div>
               </div>
             </div>

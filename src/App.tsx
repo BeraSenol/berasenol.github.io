@@ -1,3 +1,4 @@
+import { Ambitions } from "./components/Ambitions";
 import { Contact } from "./components/Contact";
 import { DgtStudio } from "./components/DgtStudio";
 import { Dignify } from "./components/Dignify";
@@ -25,6 +26,17 @@ function App({ content }: { content: Content }) {
         <Kitchen content={content} />
         <Dignify content={content} />
         <DgtStudio content={content} />
+
+        <Section
+          id="next"
+          eyebrow={content.ambitions.eyebrow}
+          title={content.ambitions.title}
+        >
+          <Ambitions
+            intro={content.ambitions.intro}
+            items={content.ambitions.items}
+          />
+        </Section>
 
         <Section
           id="languages"
