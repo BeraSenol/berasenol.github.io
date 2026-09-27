@@ -133,11 +133,11 @@ export function Ambitions({ intro, items }: AmbitionsProps) {
               centred inside the strut, which puts it on the middle of the
               first line's capitals for any font, with nothing measured.
 
-              mb-2 puts back the space the trim takes away. The plain title's
-              box ends below the descenders; this one ends on the baseline, so
-              the body text came up 8px closer, with the mark overhanging into
-              the gap. No collapse to worry about: the card is a flex column,
-              and margins between flex items add rather than collapse.
+              The row ends on the title's baseline, because the trim takes away
+              the room a plain title keeps below its letters. So the body's
+              mt-4 is measured from the baseline itself: the same 16px step as
+              from the eyebrow down to the title, with the mark overhanging a
+              few pixels into it.
 
               -mt-[0.06em] cancels .gradient-text's top padding, which would
               otherwise push the name's cap line 0.06em below the strut's.
@@ -148,7 +148,7 @@ export function Ambitions({ intro, items }: AmbitionsProps) {
               the cap height, and overhangs the strut evenly above and below.
             */}
               {mark ? (
-                <div className="mt-4 mb-2 flex items-start gap-3 text-3xl font-bold uppercase leading-[1.05] tracking-[-0.02em] sm:text-4xl">
+                <div className="mt-4 flex items-start gap-3 text-3xl font-bold uppercase leading-[1.05] tracking-[-0.02em] sm:text-4xl">
                   <h3
                     className={`trim-text gradient-text ${TITLE_GRADIENT[item.kind]} -mt-[0.06em]`}
                   >
@@ -191,7 +191,7 @@ export function Ambitions({ intro, items }: AmbitionsProps) {
               */}
               <p
                 data-scene-clear
-                className="mt-5 text-[0.9375rem] leading-relaxed text-secondary sm:text-base"
+                className="mt-4 text-[0.9375rem] leading-relaxed text-secondary sm:text-base"
               >
                 {item.body}
               </p>

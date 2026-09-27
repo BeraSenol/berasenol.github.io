@@ -17,7 +17,7 @@ const FRAMES = 40;
 const SAMPLES = 128;
 
 /** One sweep of the lit frame from front to back and front again. */
-const SWEEP_SECONDS = 14;
+const SWEEP_SECONDS = 10;
 
 /*
  * A basic sine at the front of the table and a basic saw at the back, with
@@ -41,7 +41,7 @@ function draw(ctx: CanvasRenderingContext2D, { width, height, time, palette }: S
    * width or 1.35 times its height, whichever is smaller.
    */
   const unit = Math.min(width * 0.62, height * 1.35);
-  const cycle = 0.95 * unit;
+  const cycle = 1.15 * unit;
   const amplitude = 0.13 * unit;
   const depthX = 0.1 * unit;
   const depthY = -0.3 * unit;
