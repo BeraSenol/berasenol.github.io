@@ -1,17 +1,20 @@
-import memoji from '../assets/memoji-wave.png'
+import memoji from '../assets/memoji-wave.webp'
 import type { Content } from '../content/types'
 import { NuggetOrbit } from './NuggetOrbit'
 import { SplashActions } from './SplashActions'
 
 export function Splash({ content }: { content: Content }) {
   return (
+    // splash and splash-memoji are hooks for the height-dependent rules in
+    // index.css: a short screen gets a smaller memoji and, on a phone on its
+    // side, the content laid out top-down instead of centred.
     <section
       id="top"
-      className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden px-6 text-center"
+      className="splash relative flex min-h-svh flex-col items-center justify-center overflow-hidden px-6 text-center"
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[46rem] w-[46rem] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle,rgba(94,158,255,0.13),rgba(94,158,255,0.04)_45%,transparent_70%)]"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[46rem] w-[46rem] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle,rgba(94,158,255,0.13),rgba(94,158,255,0.04)_45%,transparent_70%)] print:hidden"
       />
 
       <NuggetOrbit nuggets={content.nuggets} />
@@ -21,7 +24,7 @@ export function Splash({ content }: { content: Content }) {
         alt={content.memojiAlt}
         width={385}
         height={409}
-        className="animate-rise relative w-40 drop-shadow-[0_30px_60px_rgba(0,0,0,0.65)] sm:w-52"
+        className="splash-memoji animate-rise relative w-40 drop-shadow-[0_30px_60px_rgba(0,0,0,0.65)] sm:w-52 print:hidden"
       />
 
       <h1 className="animate-rise gradient-text gradient-pro gradient-sweep relative mt-8 text-5xl font-semibold tracking-[-0.03em] sm:text-7xl [animation-delay:140ms]">

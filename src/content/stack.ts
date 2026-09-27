@@ -1,3 +1,5 @@
+import { GITHUB_URL } from "./profile";
+
 /**
  * What the site is made with, for the credits in the footer.
  *
@@ -25,4 +27,4 @@ export const STACK: Record<StackTool, { name: string; href: string }> = {
 };
 
 /** This site's own repository, for "View source". */
-export const SOURCE_HREF = "https://github.com/BeraSenol/berasenol.github.io";
+export const SOURCE_HREF = `${GITHUB_URL}/berasenol.github.io`;

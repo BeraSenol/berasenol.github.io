@@ -2,11 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!--
+      The .ico first with its sizes, then the SVG: browsers that read SVG
+      favicons prefer it, and Safari before 26, which does not, takes the .ico.
+      The touch icon is what iOS puts on a home screen and in share sheets.
+    -->
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark" />
-    <meta name="robots" content="noindex, nofollow" />
     <meta name="theme-color" content="#000000" />
+    <title>Bera Senol | Software Developer</title>
     <meta
       name="description"
       content="Bera Senol, software developer building for Apple platforms in Swift and SwiftUI."
@@ -14,12 +21,26 @@
     <link rel="canonical" href="https://berasenol.github.io/en/" />
     <link rel="alternate" hreflang="en" href="https://berasenol.github.io/en/" />
     <link rel="alternate" hreflang="nl" href="https://berasenol.github.io/nl/" />
-    <link rel="alternate" hreflang="x-default" href="https://berasenol.github.io/en/" />
+    <link rel="alternate" hreflang="x-default" href="https://berasenol.github.io/" />
+    <!--
+      Link previews. LinkedIn, Slack, WhatsApp and iMessage read these without
+      running any JavaScript, so they have to be in the HTML itself.
+    -->
     <meta property="og:type" content="website" />
-    <meta property="og:locale" content="en" />
+    <meta property="og:site_name" content="Bera Senol" />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:locale:alternate" content="nl_BE" />
     <meta property="og:title" content="Bera Senol | Software Developer" />
+    <meta
+      property="og:description"
+      content="Software developer building for Apple platforms in Swift and SwiftUI. Before that, sous-chef in Hasselt and marketing automation for Bol.com and BNP Paribas Fortis at Dignify."
+    />
     <meta property="og:url" content="https://berasenol.github.io/en/" />
-    <title>Bera Senol | Software Developer</title>
+    <meta property="og:image" content="https://berasenol.github.io/og-en.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Bera Senol, Software Developer, beside his waving memoji" />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
     <div id="root"></div>

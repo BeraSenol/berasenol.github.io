@@ -12,7 +12,7 @@ import wN from "../assets/pieces/wN.svg";
 import wP from "../assets/pieces/wP.svg";
 import wQ from "../assets/pieces/wQ.svg";
 import wR from "../assets/pieces/wR.svg";
-import { prefersReducedMotion } from "../hooks/usePrefersReducedMotion";
+import { prefersReducedMotion } from "../lib/prefersReducedMotion";
 import { useReveal } from "../hooks/useReveal";
 import { ReplayMark } from "./Glyphs";
 

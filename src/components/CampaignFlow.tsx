@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { prefersReducedMotion } from "../hooks/usePrefersReducedMotion";
+import type { LocaleCode } from "../content/locales";
 import { useReveal } from "../hooks/useReveal";
+import { prefersReducedMotion } from "../lib/prefersReducedMotion";
 import { MAIL_GLYPH } from "./glyph-data";
 import { WindowFrame } from "./WindowFrame";
 
@@ -199,9 +200,13 @@ const MAIL_PATH = MAIL_GLYPH.d;
 const COUNT_MS =
   TIMELINE.find(([value]) => value === STEPS.audiences)?.[1] ?? 2000;
 
-/** Dutch grouping, which is what the page's other locale uses. */
-const groupThousands = (value: number) =>
-  String(Math.round(value)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+/**
+ * Grouped the way the page's own language groups thousands: 1,247,913 on the
+ * English page, 1.247.913 on the Dutch one. Intl knows both, so the component
+ * only has to say which locale it is in.
+ */
+const groupThousands = (value: number, locale: LocaleCode) =>
+  new Intl.NumberFormat(locale).format(Math.round(value));
 
 /**
  * Counts up to the total once the panel is on screen.
@@ -245,8 +250,17 @@ function useCountUp(active: boolean, total: number, duration = 850) {
  * point, which is the only way to draw an SVG stroke over time without running
  * JavaScript every frame. The dash lengths are the paths' real lengths, so the
  * gap covers the whole line and nothing is visible before the draw starts.
+ *
+ * `locale` and `profilesLabel` come from the page's content, so the Dutch page
+ * shows "Profielen" and a Dutch-grouped total.
  */
-export function CampaignFlow() {
+export function CampaignFlow({
+  locale,
+  profilesLabel,
+}: {
+  locale: LocaleCode;
+  profilesLabel: string;
+}) {
   const { ref, isVisible } = useReveal<HTMLDivElement>();
   const [step, setStep] = useState(() =>
     prefersReducedMotion() ? STEPS.mails : 0,
@@ -284,10 +298,10 @@ export function CampaignFlow() {
         */}
         <p className="flex flex-col items-start gap-1 text-primary">
           <span className="text-lg font-semibold leading-none tabular-nums tracking-tight">
-            {groupThousands(count)}
+            {groupThousands(count, locale)}
           </span>
           <span className="text-[0.625rem] font-semibold uppercase tracking-[0.06em] text-secondary">
-            Profiles
+            {profilesLabel}
           </span>
         </p>
 
@@ -305,8 +319,9 @@ export function CampaignFlow() {
               x2="486"
               y2="0"
             >
-              <stop offset="7%" stopColor="#83a0ef" />
-              <stop offset="80%" stopColor="#e1e5ff" />
+              {/* The Pro tokens from index.css, deep end first. */}
+              <stop offset="7%" style={{ stopColor: "var(--color-pro-deep)" }} />
+              <stop offset="80%" style={{ stopColor: "var(--color-pro-light)" }} />
             </linearGradient>
           </defs>
 
@@ -432,10 +447,10 @@ export function CampaignFlow() {
                 </g>
                 {/*
                   Under the node rather than inside it, like a Finder or Home
-                  Screen icon. The baseline is 13 below the node's edge (32 is
-                  half the node), which at this size leaves about 6 units of
-                  air between the squircle's stroke and the tops of the
-                  capitals.
+                  Screen icon. The baseline is 13 below the node's edge
+                  (NODE / 2, 28, is half the node), which at this size leaves
+                  about 6 units of air between the squircle's stroke and the
+                  tops of the capitals.
                 */}
                 <text
                   x={node.cx}

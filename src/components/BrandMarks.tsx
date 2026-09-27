@@ -2,17 +2,15 @@ import { ADOBE_CAMPAIGN_WORDMARK } from './adobeWordmark'
 /**
  * The two third-party marks used in the Dignify section.
  *
- * A Vite SVG import resolves to a URL, and inside an <img> the file is an opaque
- * document: its fill cannot be reached from the page, so it cannot pick up a
- * theme colour or a hover state. Inlined, each path is an ordinary element.
+ * Both are inline elements rather than <img> tags. A Vite SVG import resolves
+ * to a URL, and inside an <img> the file is an opaque document: nothing on the
+ * page can reach inside it, so its fill can never respond to a theme, a hover
+ * state or a print stylesheet. Inline, every path is an ordinary DOM node.
  *
- * Both are inline elements rather than <img> tags. An <img> renders the file as
- * an opaque document: nothing on the page can reach inside it, so the fill can
- * never respond to a theme, a hover state or a print stylesheet. Inline, every
- * path is an ordinary DOM node.
- *
- * Both fills are hard-coded brand colours today; currentColor would work on
- * either one now that they are inline.
+ * The coloured parts (Selligent's loop, Adobe's red mark) keep their issued
+ * brand colours. The type in both lockups takes the page's text colour:
+ * Selligent's name is live text, and the Adobe Campaign wordmark fills with
+ * currentColor.
  */
 
 /**

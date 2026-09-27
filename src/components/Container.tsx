@@ -8,7 +8,7 @@ type ContainerProps = {
 /**
  * The page's one horizontal measure. Full-bleed: there is no max width, so a
  * section spans whatever the viewport gives it. What the container still owns
- * is the gutter — the distance from the viewport edge — and every section uses
+ * is the gutter, the distance from the viewport edge, and every section uses
  * the same one, so their left edges line up down the page.
  *
  * The gutter grows with the viewport rather than staying at 24px: on a wide

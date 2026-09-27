@@ -4,8 +4,10 @@ import { useId } from "react";
  * The Unreal Engine mark, filled with .gradient-pro's two stops.
  *
  * It sits beside a gradient heading, and background-clip: text cannot reach an
- * SVG fill, so the same colours are written out a second time here. If
- * .gradient-pro's stops move, these move with them. The ramp runs top to bottom
+ * SVG fill, so the mark reads the same two colours from the Pro tokens in
+ * index.css, in `style` because var() belongs in CSS rather than in a
+ * presentation attribute. Retune the tokens and the heading and the mark move
+ * together. The ramp runs top to bottom
  * over the mark's own box (objectBoundingBox, the default), which is the same
  * direction .gradient-text runs over the heading's box, so the two read as one
  * treatment.
@@ -39,8 +41,8 @@ export function UnrealMark({
     >
       <defs>
         <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="7%" stopColor="#e1e5ff" />
-          <stop offset="80%" stopColor="#83a0ef" />
+          <stop offset="7%" style={{ stopColor: "var(--color-pro-light)" }} />
+          <stop offset="80%" style={{ stopColor: "var(--color-pro-deep)" }} />
         </linearGradient>
       </defs>
       <path

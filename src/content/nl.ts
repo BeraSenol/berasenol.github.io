@@ -1,16 +1,11 @@
+import { EMAIL, GITHUB_DISPLAY, GITHUB_URL } from "./profile";
 import type { Content } from "./types";
 
 export const nl: Content = {
   lang: "nl",
   languageMenuLabel: "Taal wijzigen",
-  meta: {
-    title: "Bera Senol | Software Developer",
-    description:
-      "Bera Senol, softwareontwikkelaar voor Apple-platformen in Swift en SwiftUI.",
-  },
   splash: {
     role: "Softwareontwikkelaar",
-    scrollLabel: "Scroll naar de inhoud",
     githubLabel: "GitHub-profiel",
     contactCta: "Contact",
   },
@@ -18,13 +13,13 @@ export const nl: Content = {
     eyebrow: "2023 – 2024",
     title: "Entrepot del Tartufo",
     // The restaurant's own tagline, their branding, left in English on purpose.
+    // Kitchen marks it lang="en" so a screen reader pronounces it as English.
     tagline: "Italian food with a touch of truffle",
-    toques: "twee koksmutsen",
     scoreLabel: "Gault&Millau: 13 op 20, twee koksmutsen",
     paragraphs: [
       "Van 2023 tot 2024 was ik hier sous-chef, in Hasselt. Ik noem het graag mijn legerdienst. Een keuken met twee man, elke avond 40 tot 50 gasten, tot 200 borden: mijn chef van 72 en ik, we werkten volledig in het Italiaans en het Duits, zonder gedeelde moedertaal om op terug te vallen. Sta elke dag met iemand in een keuken van veertig graden en jullie denkwijzen beginnen te versmelten, zoals kernen in een fusiereactor.",
       "Het keerpunt kwam op de dag dat ik een topje van mijn vinger afsneed. Ik werkte die service gewoon door, stond de dag erna terug in de keuken, en de dag daarna ook. Vanaf dan had ik het respect van mijn chef, en was onze samenwerking een andere.",
-      "Hier leerde ik de werkhouding van een chef van 72: integer werken, kalm blijven onder druk, en het laatste bord even goed maken als het eerste.",
+      "Hier leerde ik zijn werkhouding: integer werken, kalm blijven onder druk, en het laatste bord even goed maken als het eerste.",
       "Die houding kwam verrassend goed van pas toen ik de IT in ging. Het blijkt dat horeca en consultancy veel met elkaar gemeen hebben.",
     ],
     exteriorAlt:
@@ -45,6 +40,17 @@ export const nl: Content = {
       "Hier leerde ik gestructureerd werken: code hergebruiken, verder bouwen op een eigen framework om verschillende systemen te automatiseren, en gaandeweg wat lichte systeemarchitectuur.",
       "Daarna werkte ik ter plaatse bij BNP Paribas Fortis in Brussel als Medior Consultant, in Adobe Campaign Classic. Daar leerde ik hoe oplossingen in de praktijk werken op een gigantische database, gesharded in vele stukken: per afdeling, per regio, per vertrouwelijkheidsniveau.",
     ],
+    mock: {
+      profiles: "Profielen",
+      // Short on purpose: the stat cards are narrow, and "Openingsratio"
+      // ran past its card on a phone.
+      openRate: "Geopend",
+      clickRate: "Geklikt",
+      buyRate: "Gekocht",
+      sendsPerDay: "Verzendingen per dag",
+      conflicts: "Conflicten",
+    },
+    mockCaption: "Illustratieve mock-ups, geen echte klantgegevens.",
   },
   contact: {
     eyebrow: "Contact",
@@ -56,12 +62,12 @@ export const nl: Content = {
     eyebrow: "Eigen project",
     title: "DGT Studio Pro",
     tagline: "Een echt schaakbord, in gesprek met een Mac",
+    // Same split as en.ts: what it is and why here, the features beside the Mac.
     paragraphs: [
       "Een native macOS-app die via USB-serieel verbinding maakt met een fysiek DGT-schaakbord en de partij live reconstrueert, met een seriële stack die ik zelf geschreven heb.",
-      "Hij houdt de volledige partijstaat bij en exporteert PGN’s in SAN. Als bord en app het oneens zijn over de stelling, zoekt het desync-herstel uit wat er gebeurd is in plaats van af te haken.",
-      "Daarbovenop zit een SwiftData-bibliotheek met zoekfunctie, smart tags, vier weergavemodi en Stockfish-analyse. Ik heb hem gebouwd omdat de software die bij het bord zat niet de ervaring gaf die ik wilde.",
+      "Ik heb hem gebouwd omdat de software die bij het bord zat niet de ervaring gaf die ik wilde.",
     ],
-    href: "https://github.com/BeraSenol/DGTStudioPro",
+    href: `${GITHUB_URL}/DGTStudioPro`,
     ctaLabel: "Bekijk op GitHub",
     boardLabel:
       "Een schaakbord dat het narrenmat speelt, het kortste schaakmat dat bestaat: 1.f3 e5 2.g4 Dh4 mat",
@@ -104,7 +110,7 @@ export const nl: Content = {
         tool: "Logic Pro",
         goal: "Drum and bass",
         body: "Ik verzamel drum and bass, en nu wil ik het zelf maken. Ik ben mijn weg aan het zoeken in Logic Pro, met als doel een afgewerkte track die niet onderdoet voor de tracks die ik verzamel.",
-        tags: ["174 BPM", "Breaks", "Basdesign", "Mixdown"],
+        tags: ["174 BPM", "Klanksynthese", "Serum 2"],
       },
       {
         kind: "game",
@@ -115,27 +121,6 @@ export const nl: Content = {
       },
     ],
   },
-  education: [
-    {
-      title: "Toegepaste Informatica",
-      org: "PXL Hasselt",
-      period: "2017 – 2022",
-    },
-    { title: "Fysica", org: "UHasselt", period: "2016 – 2017" },
-  ],
-  projects: [
-    {
-      name: "DGTStudioPro",
-      stack: ["macOS", "Swift", "SwiftUI", "SwiftData", "Stockfish"],
-      href: "https://github.com/BeraSenol/DGTStudioPro",
-      bullets: [
-        "Native macOS-app die via USB-serieel verbinding maakt met een fysiek DGT-schaakbord en de partij live reconstrueert, met een zelfgeschreven seriële stack.",
-        "Houdt de volledige partijstaat bij met desync-herstel, en exporteert PGN’s via SAN.",
-        "SwiftData-bibliotheek met zoekfunctie, smart tags, vier weergavemodi en Stockfish-analyse.",
-        "Gebouwd omdat de originele software niet de ervaring bood die ik wilde.",
-      ],
-    },
-  ],
   languages: {
     eyebrow: "Zeven van elk",
     title: "Talen",
@@ -166,14 +151,14 @@ export const nl: Content = {
     {
       icon: "email",
       label: "E-mail",
-      value: "berasenol@icloud.com",
-      href: "mailto:berasenol@icloud.com",
+      value: EMAIL,
+      href: `mailto:${EMAIL}`,
     },
     {
       icon: "github",
       label: "GitHub",
-      value: "github.com/BeraSenol",
-      href: "https://github.com/BeraSenol",
+      value: GITHUB_DISPLAY,
+      href: GITHUB_URL,
     },
     { icon: "location", label: "Gevestigd in", value: "Hasselt, België" },
   ],
@@ -181,7 +166,7 @@ export const nl: Content = {
   nuggets: [
     {
       icon: "note",
-      label: "Verzamelt Drum & Bass alsof het Pokémonkaarten zijn",
+      label: "Verzamelt drum and bass alsof het Pokémonkaarten zijn",
     },
     { icon: "leaf", label: "Koriander proeft naar zeep" },
     { icon: "cake", label: "Heeft een dessertmaag" },

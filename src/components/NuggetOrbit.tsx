@@ -109,7 +109,8 @@ export function NuggetOrbit({ nuggets }: { nuggets: readonly Nugget[] }) {
     // steps have to be ordered against the width steps. Plain media queries in
     // one place make that order explicit; utility variants would leave it to
     // Tailwind's sort. On a phone --k is above 1, which stretches the circle
-    // into an ellipse taller than it is wide.
+    // into an ellipse taller than it is wide, and it is worked out there from
+    // a vertical radius of its own. So is where the orbit starts.
     //
     // Rendered before the memoji so it paints behind it, and the labels emerge
     // from under the figure rather than in front of it. On a phone the same
@@ -136,6 +137,8 @@ export function NuggetOrbit({ nuggets }: { nuggets: readonly Nugget[] }) {
               onPointerLeave={resume}
               style={
                 {
+                  // Its place in the list. index.css adds where the orbit
+                  // starts, a quarter turn on from 3 o'clock on a phone.
                   '--a': `${step * i}deg`,
                   // staggered so they leave one at a time, not as a burst
                   animationDelay: `${0.25 + i * 0.13}s`,

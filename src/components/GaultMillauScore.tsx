@@ -4,18 +4,23 @@ const GRADIENT_ID = 'gm-gradient'
  * One gradient definition, referenced by every shape in the row.
  *
  * CSS background-clip:text paints text but cannot reach an SVG fill, so the marks
- * use an SVG <linearGradient> with the same stops. Both map the ramp over their own
- * bounding box top-to-bottom, so the separate elements still read as one treatment.
+ * use an SVG <linearGradient> with the same stops, read from the M5 tokens in
+ * index.css. Both map the ramp over their own bounding box top-to-bottom, so the
+ * separate elements still read as one treatment.
+ *
+ * The stop colours go in `style`, not the stopColor attribute: a custom property
+ * is a CSS value, and presentation attributes are not reliably allowed to hold
+ * var() in every browser.
  */
 function GradientDef() {
   return (
     <svg width="0" height="0" aria-hidden="true" className="absolute">
       <defs>
         <linearGradient id={GRADIENT_ID} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#e4f6f0" />
-          <stop offset="31%" stopColor="#9dcfca" />
-          <stop offset="68%" stopColor="#6b95ac" />
-          <stop offset="100%" stopColor="#45657d" />
+          <stop offset="0%" style={{ stopColor: 'var(--color-m5-mint)' }} />
+          <stop offset="31%" style={{ stopColor: 'var(--color-m5-aqua)' }} />
+          <stop offset="68%" style={{ stopColor: 'var(--color-m5-steel)' }} />
+          <stop offset="100%" style={{ stopColor: 'var(--color-m5-slate)' }} />
         </linearGradient>
       </defs>
     </svg>

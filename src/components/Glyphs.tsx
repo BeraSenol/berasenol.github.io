@@ -70,7 +70,7 @@ export function LocationMark({ className = "", label }: GlyphProps) {
  * Stroked rather than filled, unlike the marks above: those are traced artwork
  * with a real outline, this is two straight lines, and a stroke keeps its
  * weight even when the caller sizes it at 6px tall. Non-scaling stroke is not
- * wanted here — it should thicken with the glyph if it is ever used larger.
+ * wanted here: it should thicken with the glyph if it is ever used larger.
  */
 export function ChevronMark({ className = "", label }: GlyphProps) {
   return (

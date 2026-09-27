@@ -82,9 +82,14 @@ export function Reveal({
     // The wrapper carries the caller's layout classes, because it is the box the
     // surrounding grid or flex row sizes. The child carries the motion.
     <div ref={ref} className={className}>
+      {/*
+        `reveal` is a hook for the print stylesheet in index.css, which puts
+        every Reveal in its end state: paper never scrolls, so an element
+        waiting to be scrolled into view would otherwise print as nothing.
+      */}
       <div
         style={{ transitionDelay: `${delay}ms` }}
-        className={`transition-[opacity,transform] duration-[1100ms] ease-[cubic-bezier(0.33,1,0.68,1)] ${
+        className={`reveal transition-[opacity,transform] duration-[1100ms] ease-[cubic-bezier(0.33,1,0.68,1)] ${
           isVisible
             ? `${REST} opacity-100`
             : `${OFFSET[from][distance]} opacity-0`

@@ -37,8 +37,12 @@ export function WindowFrame({
             which put the label itself off centre by half the lock plus the gap;
             this way the label is centred on the pill and the lock is where a
             browser puts it.
+
+            The pill is the faintest fill, not fill-tertiary: on the stronger
+            fill the secondary label measured 4.39:1, just under the 4.5:1 that
+            11px text needs, and quaternary brings it to about 4.9:1.
           */}
-          <span className="relative flex w-full max-w-[15rem] items-center justify-center rounded-md bg-fill-tertiary px-7 py-1 text-[0.6875rem] text-secondary">
+          <span className="relative flex w-full max-w-[15rem] items-center justify-center rounded-md bg-fill-quaternary px-7 py-1 text-[0.6875rem] text-secondary">
             <svg
               viewBox="0 0 17.1387 24.5508"
               className="absolute left-2 top-1/2 h-3 w-auto -translate-y-1/2"

@@ -31,7 +31,7 @@ export function Footer({ content }: { content: Content }) {
   const { footer } = content;
 
   return (
-    <footer className="border-t border-separator py-6">
+    <footer className="border-t border-separator py-6 print:hidden">
       <Container className="flex flex-col gap-2 text-[0.6875rem] leading-4 text-secondary sm:flex-row sm:items-baseline sm:justify-between sm:gap-8">
         {/*
           The credits come from the content file as a list of runs: plain text,

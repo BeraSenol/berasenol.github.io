@@ -7,7 +7,7 @@
  * if you missed one. Content holds what differs per locale; this holds what
  * doesn't.
  *
- * Each language is named in its own language — "Nederlands", not "Dutch". A
+ * Each language is named in its own language: "Nederlands", not "Dutch". A
  * visitor who cannot read the current page can still recognise their own
  * language, and it saves translating every language name into every locale.
  */

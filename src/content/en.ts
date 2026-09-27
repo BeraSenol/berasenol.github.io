@@ -1,16 +1,11 @@
+import { EMAIL, GITHUB_DISPLAY, GITHUB_URL } from "./profile";
 import type { Content } from "./types";
 
 export const en: Content = {
   lang: "en",
   languageMenuLabel: "Change language",
-  meta: {
-    title: "Bera Senol | Software Developer",
-    description:
-      "Bera Senol, software developer building for Apple platforms in Swift and SwiftUI.",
-  },
   splash: {
     role: "Software Developer",
-    scrollLabel: "Scroll to content",
     githubLabel: "GitHub profile",
     contactCta: "Contact",
   },
@@ -18,12 +13,11 @@ export const en: Content = {
     eyebrow: "2023 – 2024",
     title: "Entrepot del Tartufo",
     tagline: "Italian food with a touch of truffle",
-    toques: "two toques",
     scoreLabel: "Gault&Millau: 13 out of 20, two toques",
     paragraphs: [
       "From 2023 to 2024 I was sous-chef here, in Hasselt. Call it my version of military service. A two-person kitchen serving 40 to 50 guests every evening, up to 200 plates: my 72-year-old head chef and me, working entirely in Italian and German, with no shared first language to fall back on. Share a forty-degree kitchen with someone every day and your mindsets start to fuse, like nuclei in a fusion reactor.",
       "The turning point came the day I cut off the tip of my finger. I kept working through that service, was back in the kitchen the next day, and the day after that. From then on I had my chef’s respect, and our working relationship was a different one.",
-      "This is where I picked up the working attitude of a 72-year-old chef: work with integrity, stay calm under pressure, and make the last plate the same as the first.",
+      "This is where I picked up his working attitude: work with integrity, stay calm under pressure, and make the last plate the same as the first.",
       "That attitude came in surprisingly handy once I moved into IT. It turns out hospitality and consultancy have a lot in common.",
     ],
     exteriorAlt:
@@ -44,6 +38,15 @@ export const en: Content = {
       "This is where I learned a structured way of working: reuse code, build on a custom framework to automate different systems, and pick up some light system design along the way.",
       "Later I worked on site at BNP Paribas Fortis in Brussels as a Medior Consultant, in Adobe Campaign Classic. There I learned how real-world solutions hold up on a gigantic database, sharded into many pieces: by department, by geographic region, by level of confidentiality.",
     ],
+    mock: {
+      profiles: "Profiles",
+      openRate: "Open rate",
+      clickRate: "Click rate",
+      buyRate: "Buy rate",
+      sendsPerDay: "Sends per day",
+      conflicts: "Conflicts",
+    },
+    mockCaption: "Illustrative mock-ups, not real client data.",
   },
   contact: {
     eyebrow: "Contact",
@@ -55,16 +58,18 @@ export const en: Content = {
     eyebrow: "Side project",
     title: "DGT Studio Pro",
     tagline: "A real chess board, talking to a Mac",
+    // What the app does, feature by feature, is the list beside the Mac.
+    // These two paragraphs say what it is and why it exists, so the section
+    // does not describe the same four features twice.
     paragraphs: [
       "A native macOS app that connects to a physical DGT electronic chess board over USB serial and reconstructs the game live, through a serial stack I wrote by hand.",
-      "It holds the full game state and exports PGNs in SAN. If the board and the app ever disagree about the position, the desync recovery works out what happened instead of giving up.",
-      "On top of that sits a SwiftData library with search, smart tags, four view modes and Stockfish analysis. I built it because the software that shipped with the board did not give me the experience I wanted.",
+      "I built it because the software that shipped with the board did not give me the experience I wanted.",
     ],
-    href: "https://github.com/BeraSenol/DGTStudioPro",
+    href: `${GITHUB_URL}/DGTStudioPro`,
     ctaLabel: "View on GitHub",
     boardLabel:
       "A chessboard playing Fool\u2019s Mate, the shortest checkmate there is: 1.f3 e5 2.g4 Qh4 mate",
-    boardCaption: "The Fool\u2019s Mate, Checkmate in 4 halfmoves",
+    boardCaption: "The Fool\u2019s Mate, checkmate in 4 half-moves",
     replayLabel: "Replay the game",
     screenAlt:
       "DGT Studio Pro on a MacBook, showing a game read off a DGT board with its PGN, opening and engine evaluation",
@@ -93,7 +98,7 @@ export const en: Content = {
     ],
   },
   ambitions: {
-    eyebrow: "What's next",
+    eyebrow: "What’s next",
     title: "Bucket list items",
     intro:
       "Two things I have started on in my own time and want to take a lot further.",
@@ -103,7 +108,7 @@ export const en: Content = {
         tool: "Logic Pro",
         goal: "Drum and bass",
         body: "I collect drum and bass, and now I want to make it. I have been finding my way around Logic Pro, and the aim is a finished track that holds its own next to the ones I collect.",
-        tags: ["174 BPM", "Breaks", "Bass design", "Mixdown"],
+        tags: ["174 BPM", "Sound synthesis", "Serum 2"],
       },
       {
         kind: "game",
@@ -114,27 +119,6 @@ export const en: Content = {
       },
     ],
   },
-  education: [
-    {
-      title: "Applied Computer Science",
-      org: "PXL Hasselt",
-      period: "2017 – 2022",
-    },
-    { title: "Physics", org: "UHasselt", period: "2016 – 2017" },
-  ],
-  projects: [
-    {
-      name: "DGTStudioPro",
-      stack: ["macOS", "Swift", "SwiftUI", "SwiftData", "Stockfish"],
-      href: "https://github.com/BeraSenol/DGTStudioPro",
-      bullets: [
-        "Native macOS app that connects to a physical DGT electronic chess board over USB serial and reconstructs the game live, through a hand-built serial stack.",
-        "Maintains full game state with desync recovery, and exports PGNs using SAN.",
-        "SwiftData game library with search, smart tags, four view modes and Stockfish analysis.",
-        "Built because the original software did not deliver the experience I wanted.",
-      ],
-    },
-  ],
   languages: {
     eyebrow: "Seven of each",
     title: "Languages",
@@ -165,23 +149,23 @@ export const en: Content = {
     {
       icon: "email",
       label: "Email",
-      value: "berasenol@icloud.com",
-      href: "mailto:berasenol@icloud.com",
+      value: EMAIL,
+      href: `mailto:${EMAIL}`,
     },
     {
       icon: "github",
       label: "GitHub",
-      value: "github.com/BeraSenol",
-      href: "https://github.com/BeraSenol",
+      value: GITHUB_DISPLAY,
+      href: GITHUB_URL,
     },
     { icon: "location", label: "Based in", value: "Hasselt, Belgium" },
   ],
   memojiAlt: "Memoji of Bera Senol waving",
   nuggets: [
-    { icon: "note", label: "Collects Drum & Bass like Pokémon cards" },
+    { icon: "note", label: "Collects drum and bass like Pokémon cards" },
     { icon: "leaf", label: "Coriander tastes like soap" },
     { icon: "cake", label: "Has a dessert stomach" },
-    { icon: "star", label: "Interned at a michelin starred restaurant" },
+    { icon: "star", label: "Interned at a Michelin-starred restaurant" },
     { icon: "cup", label: "Labor Nectar" },
     { icon: "yen", label: "Has not visited Japan (yet)" },
   ],

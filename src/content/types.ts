@@ -48,13 +48,18 @@ export type Ambition = {
   tags: readonly string[];
 };
 
-export type Study = { title: string; org: string; period: string };
-
-export type Project = {
-  name: string;
-  stack: readonly string[];
-  bullets: readonly string[];
-  href?: string;
+/**
+ * The words inside the two Dignify mock-ups. They are part of the page, so
+ * they follow its language like everything else; the numbers beside them are
+ * formatted for the page's locale too.
+ */
+export type MockLabels = {
+  profiles: string;
+  openRate: string;
+  clickRate: string;
+  buyRate: string;
+  sendsPerDay: string;
+  conflicts: string;
 };
 
 /** Which glyph stands in for the row's label. */
@@ -73,17 +78,20 @@ export type ContactLink = {
 };
 
 export type Content = {
-  /** Goes into <html lang>, and into the hreflang pair. */
+  /**
+   * Which locale this dictionary is. The html files carry their own lang
+   * attribute; this is what components read: the language menu, to mark the
+   * current language, and the mock-ups, to format numbers.
+   */
   lang: LocaleCode;
   /**
-   * Accessible name for the header's language button. The list of languages
-   * itself lives in locales.ts, because it is the same on every page.
+   * Spoken after the visible locale code on the header's language button, so
+   * it reads "EN, Change language". The list of languages itself lives in
+   * locales.ts, because it is the same on every page.
    */
   languageMenuLabel: string;
-  meta: { title: string; description: string };
   splash: {
     role: string;
-    scrollLabel: string;
     githubLabel: string;
     contactCta: string;
   };
@@ -91,7 +99,6 @@ export type Content = {
     eyebrow: string;
     title: string;
     tagline: string;
-    toques: string;
     scoreLabel: string;
     paragraphs: readonly string[];
     exteriorAlt: string;
@@ -105,6 +112,9 @@ export type Content = {
     title: string;
     tagline: string;
     paragraphs: readonly string[];
+    mock: MockLabels;
+    /** Under the two windows: says outright that they are not real data. */
+    mockCaption: string;
   };
   contact: {
     eyebrow: string;
@@ -135,8 +145,6 @@ export type Content = {
     intro: string;
     items: readonly Ambition[];
   };
-  education: readonly Study[];
-  projects: readonly Project[];
   /** Mother tongues are flagged `native`, including the joke one (Java). */
   languages: {
     eyebrow: string;

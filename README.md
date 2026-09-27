@@ -1,32 +1,27 @@
-# React + TypeScript + Vite
+# berasenol.github.io
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+The source of my personal site, [berasenol.github.io](https://berasenol.github.io), which stands in for my CV. It is one page in two languages: [English](https://berasenol.github.io/en/) and [Dutch](https://berasenol.github.io/nl/).
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- [Vite](https://vite.dev), [React](https://react.dev) 19 and [TypeScript](https://www.typescriptlang.org) in strict mode
+- [Tailwind CSS](https://tailwindcss.com) v4, with the design tokens in `src/index.css`
+- Built and deployed to GitHub Pages by the workflow in `.github/workflows/deploy.yml` on every push to `main`
 
-## React Compiler
+No router, no state library and no component library. I am learning React with this project, so the plain version of each thing comes first.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## How it is put together
 
-## Expanding the Oxlint configuration
+- `en/index.html` and `nl/index.html` are two entry points built from the same components. Each hands `App` its own dictionary from `src/content/`, so the URL decides the language and there is no locale state.
+- `index.html` at the root sends a visitor to their browser's language.
+- `src/content/types.ts` describes the copy. Both dictionaries are typed against it, so a string missing from one language is a compile error.
+- The greys are Apple's Dark Mode system colours, named after SwiftUI's `.primary` to `.quaternary`.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## Running it
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```sh
+npm install
+npm run dev      # local server with hot reload
+npm run build    # type-check, then build to dist/
+npm run lint     # oxlint
 ```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.

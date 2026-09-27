@@ -44,10 +44,11 @@ export function Languages({
       </div>
       {/*
         The key's asterisk is the same blue as the ones it explains, so the
-        eye matches them up; the note itself stays tertiary grey.
+        eye matches them up. The note is secondary grey, not tertiary: at 12px
+        tertiary measures 2.26:1 on black, and small text needs 4.5:1.
       */}
-      <p className="mt-10 text-xs text-tertiary">
-        <span className="text-[#83a0ef]">*</span>
+      <p className="mt-10 text-xs text-secondary">
+        <span className="text-pro-deep">*</span>
         {nativeNote}
       </p>
     </div>
@@ -89,12 +90,12 @@ function Column({
             <span className="text-[0.9375rem] text-primary">
               {skill.name}
               {/*
-                The blue is the deep end of the bar's gradient, #83a0ef, so
+                The blue is the deep end of the bar's gradient, pro-deep, so
                 the mark reads as part of the meter beside it rather than as
                 punctuation in the name.
               */}
               {skill.native ? (
-                <span className="text-[#83a0ef]" aria-hidden="true">
+                <span className="text-pro-deep" aria-hidden="true">
                   *
                 </span>
               ) : null}
@@ -124,7 +125,7 @@ function Column({
                 deeper at the root and paler at the tip.
               */}
               <div
-                className="h-full rounded-full bg-gradient-to-r from-[#83a0ef] to-[#e1e5ff] transition-transform duration-700 ease-[cubic-bezier(0.33,1,0.68,1)]"
+                className="h-full rounded-full bg-gradient-to-r from-pro-deep to-pro-light transition-transform duration-700 ease-[cubic-bezier(0.33,1,0.68,1)]"
                 style={{
                   width: `${skill.level}%`,
                   transformOrigin: "left",

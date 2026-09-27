@@ -46,20 +46,37 @@
 
   --color-accent: #5e9eff;
 
-  --animate-rise: rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
-  --animate-nudge: nudge 2s ease-in-out infinite;
+  /*
+   * The solid blue of the splash's Contact button, Apple's own button blue
+   * and its hover. A second blue next to --color-accent on purpose: accent is
+   * for text and focus rings on black, this one is a filled control with white
+   * text on it, and it needs the deeper value to hold that text.
+   */
+  --color-action: #0071e3;
+  --color-action-hover: #0077ed;
 
-  @keyframes nudge {
-    0%,
-    100% {
-      transform: translateY(0);
-      opacity: 0.6;
-    }
-    50% {
-      transform: translateY(0.3rem);
-      opacity: 1;
-    }
-  }
+  /*
+   * The stops of the page's three gradients, after Apple's M5 family. They are
+   * tokens rather than values typed where they are used because the same
+   * colours are drawn in two ways that cannot share a class: .gradient-text
+   * paints them into headings through background-clip, and the SVG marks,
+   * gauges and connectors beside those headings need them as stop colours.
+   * Written once here, a change reaches both.
+   *
+   * M5: mint through slate, the default heading ramp.
+   */
+  --color-m5-mint: #e4f6f0;
+  --color-m5-aqua: #9dcfca;
+  --color-m5-steel: #6b95ac;
+  --color-m5-slate: #45657d;
+  /* M5 Pro: pale periwinkle into blue. Also the bars, gauges and connectors. */
+  --color-pro-light: #e1e5ff;
+  --color-pro-deep: #83a0ef;
+  /* M5 Max: blush into violet. */
+  --color-max-light: #ffe1fc;
+  --color-max-deep: #c683ef;
+
+  --animate-rise: rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
 
   @keyframes rise {
     from {
@@ -170,17 +187,19 @@
   color: var(--color-primary);
 
   /* M5, mint through slate. The default. */
-  --text-gradient-stops: #e4f6f0, #9dcfca 31%, #6b95ac 68%, #45657d;
+  --text-gradient-stops:
+    var(--color-m5-mint), var(--color-m5-aqua) 31%, var(--color-m5-steel) 68%,
+    var(--color-m5-slate);
 }
 
 /* M5 Pro, pale periwinkle into blue. */
 .gradient-pro {
-  --text-gradient-stops: #e1e5ff 7%, #83a0ef 80%;
+  --text-gradient-stops: var(--color-pro-light) 7%, var(--color-pro-deep) 80%;
 }
 
 /* M5 Max, blush into violet. */
 .gradient-max {
-  --text-gradient-stops: #ffe1fc 7%, #c683ef 79%;
+  --text-gradient-stops: var(--color-max-light) 7%, var(--color-max-deep) 79%;
 }
 
 /* Apple's literal angle. Single-line headlines only, see the note above. */
@@ -251,13 +270,13 @@
 @keyframes nugget-emerge {
   from {
     opacity: 0;
-    transform: translate(-50%, -50%) rotate(var(--a)) translateX(0)
-      rotate(calc(-1 * var(--a))) scale(0.6);
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateX(0)
+      rotate(calc(-1 * var(--angle))) scale(0.6);
   }
   to {
     opacity: 1;
-    transform: translate(-50%, -50%) rotate(var(--a)) translateX(var(--r))
-      rotate(calc(-1 * var(--a))) scale(1);
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateX(var(--r))
+      rotate(calc(-1 * var(--angle))) scale(1);
   }
 }
 
@@ -306,7 +325,13 @@
 }
 
 
+/*
+ * A slot's angle is its place in the list (--a, set inline by NuggetOrbit)
+ * plus where the whole orbit starts (--orbit-start, set with the geometry
+ * below). 0deg is 3 o'clock and angles run clockwise, as rotate() does.
+ */
 .orbit-slot {
+  --angle: calc(var(--a) + var(--orbit-start));
   animation: nugget-emerge 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
@@ -320,39 +345,61 @@
  * them by accident.
  *
  * Phone, from the measured splash at 390 wide. The name is 236px wide and the
- * memoji-to-role block runs 142px above and below the section's centre. The
- * 96px labels sit at 136px out horizontally, which keeps them inside the
- * viewport. Vertically the top of the orbit has to stay under the 49px header,
- * so the vertical radius can be at most half the height minus about 90px.
+ * memoji-to-role block runs 142px above and below the section's centre.
+ *
+ * On a phone the two radii are set separately, because each has its own limit.
+ * The horizontal one, --r, is the width's: 47% of the viewport minus half a
+ * 96px label, so a label passing 3 or 9 o'clock stops 3% of the screen short
+ * of its edge. 135px on a 390 phone, 200px in a 528px window, 252px just
+ * under sm. The vertical one, --ry, is the height's: the top of the orbit has to stay under
+ * the 49px header, so it can be at most half the height minus about 90px.
  * Hence three steps by height, each the largest that fits the shortest screen
  * in its range: 234px from 648px tall, 258px from 700, 286px from 780. Real
  * iPhones in Safari land in the first two, not at the 844 of the spec sheet,
  * because the toolbars take their share.
  *
+ * --k, the squash, is then --ry over --r. CSS cannot divide one length by
+ * another, but atan2() takes two lengths and returns an angle, and the tangent
+ * of that angle is their ratio as a plain number: tan(atan2(y, x)) = y / x.
+ *
+ * The orbit also starts a quarter turn on from 3 o'clock on a phone, so the
+ * fourth label sits at 12 o'clock, straight above the memoji, and the first
+ * at 6 o'clock, straight below it, with the other four in mirrored pairs on
+ * the diagonals. The ring still turns, so a pair lines up on the centre line
+ * again every sixth of a turn. Which label starts where is chosen, not
+ * incidental: the Dutch first label runs to four lines and fits under the
+ * name better than under the header, and the two that start lowest beside the
+ * name, Japan and coriander, have the narrowest icons, so at rest they clear
+ * the ends of the name instead of tucking under them.
+ *
  * sm to lg (tablets): the name is 354px wide at text-7xl and the labels 128px,
  * so 248px across by 310px down.
  */
 .orbit-field {
-  --r: 8.5rem;
-  --k: 1.72;
+  --r: calc(47vw - 3rem);
+  --ry: 234px;
+  --k: tan(atan2(var(--ry), var(--r)));
+  --orbit-start: 90deg;
 }
 
 @media (height >= 700px) {
   .orbit-field {
-    --k: 1.9;
+    --ry: 258px;
   }
 }
 
 @media (height >= 780px) {
   .orbit-field {
-    --k: 2.1;
+    --ry: 286px;
   }
 }
 
+/* From sm up the squash is set directly again, and the orbit starts at 3 o'clock. */
 @media (width >= 40rem) {
   .orbit-field {
     --r: 15.5rem;
     --k: 1.25;
+    --orbit-start: 0deg;
   }
 }
 
@@ -371,18 +418,122 @@
 }
 
 /*
- * Below lg, where there is not room for an orbit at all: phones shorter than
+ * Short windows. The width steps above were sized for tall screens, and on a
+ * laptop the top of the orbit ran under the header: 38px at 1366x657, the
+ * most common Windows laptop viewport, and 42px at 1280x650. The vertical
+ * radius has three limits at once. Its top must clear the 48px header and its
+ * bottom the viewport, both of which shrink with the height; and from lg up
+ * every label must clear the memoji, the name and the role at every angle,
+ * which sets a floor on k. On a short screen the floor and the ceiling cross,
+ * so the memoji gets smaller too: a smaller centre block lowers the floor.
+ *
+ * Each step's k was found by sweeping the height in 20px steps and simulating
+ * a full turn of the ring against the rendered boxes, with 8px to spare on all
+ * three limits; each value is inside the feasible range for every height in
+ * its step. Measured with Arial metrics, so SF Pro's slightly narrower name
+ * only adds room.
+ *
+ * sm to lg (a laptop browser in split view, 700 to 800 tall): only the header
+ * limits it, since below lg the labels pass behind the name by design. At
+ * 1.25 the top labels reach the header below about 800px tall; at 1, a
+ * circle, they stay about 20px clear of it at 700.
+ */
+@media (width >= 40rem) and (width < 64rem) and (height < 800px) {
+  .orbit-field {
+    --k: 1;
+  }
+}
+
+/* lg: 26rem across. k from 0.61 up clears the full-size memoji. */
+@media (width >= 64rem) and (width < 80rem) and (height < 820px) {
+  .orbit-field {
+    --k: 0.64;
+  }
+}
+
+@media (width >= 64rem) and (width < 80rem) and (height < 740px) {
+  .orbit-field {
+    --k: 0.56;
+  }
+
+  .splash-memoji {
+    width: 10rem;
+  }
+}
+
+@media (width >= 64rem) and (width < 80rem) and (height < 680px) {
+  .orbit-field {
+    --k: 0.52;
+  }
+
+  .splash-memoji {
+    width: 9rem;
+  }
+}
+
+/* xl: 30rem across. */
+@media (width >= 80rem) and (height < 760px) {
+  .orbit-field {
+    --k: 0.5;
+  }
+
+  .splash-memoji {
+    width: 10rem;
+  }
+}
+
+@media (width >= 80rem) and (height < 700px) {
+  .orbit-field {
+    --k: 0.45;
+  }
+
+  .splash-memoji {
+    width: 9rem;
+  }
+}
+
+/*
+ * Where there is not room for an orbit at all. Below lg: phones shorter than
  * 648px and tablet-width windows shorter than 700px (a phone on its side),
- * where the top of the orbit would run under the header. And anyone who asked
- * for reduced motion: with motion reduced every label parks at its starting
- * angle, and two of those are level with the name, so they would sit half
- * hidden behind it for good instead of passing behind it for a moment.
+ * where the top of the orbit would run under the header. From lg up: windows
+ * shorter than 640px, where no squash clears both the header and the name.
+ * And, below lg, anyone who asked for reduced motion: with motion reduced
+ * every label parks at its starting angle, and on a phone two of those
+ * overlap the ends of the name, so they would sit half hidden behind it for
+ * good instead of passing behind it for a moment.
  */
 @media (width < 64rem) and (height < 648px),
   (width >= 40rem) and (width < 64rem) and (height < 700px),
+  (width >= 64rem) and (height < 640px),
   (width < 64rem) and (prefers-reduced-motion: reduce) {
   .orbit-field {
     display: none;
+  }
+}
+
+/*
+ * A phone on its side: 390 or so tall, and the splash's pills, pinned 64px
+ * off the bottom, landed on the name (at 844x390 the email pill covered
+ * "Senol") while the memoji's head went under the header. Below 540px the
+ * splash stops centring in the viewport: its content runs top-down from under
+ * the header, the memoji shrinks, and the pills join the flow under the role,
+ * so the section grows as tall as it needs and scrolls like any other.
+ * Last in the file's orbit and splash rules, so it wins over the laptop steps
+ * for the rare window that is both wide and this short.
+ */
+@media (height < 540px) {
+  .splash {
+    justify-content: flex-start;
+    padding-block: 4.5rem 2.5rem;
+  }
+
+  .splash-memoji {
+    width: 7rem;
+  }
+
+  .splash-actions {
+    position: static;
+    margin-top: 2rem;
   }
 }
 
@@ -498,5 +649,155 @@
       -webkit-backdrop-filter: blur(24px) saturate(180%);
       backdrop-filter: blur(24px) saturate(180%);
     }
+  }
+}
+
+/*
+ * Print. The site replaces a PDF CV, so Cmd+P has to give something that
+ * reads like one. Before this block it gave ten nearly blank A4 pages: white
+ * text on white paper (browsers drop backgrounds when printing), gradient
+ * headings that vanished (their fill is transparent and the gradient is a
+ * background), the fixed header on every page, and every section still at
+ * opacity 0 because Reveal only fires on scroll.
+ *
+ * The decoration that only means something on a screen (photographs, the
+ * memoji, the board, the mock-ups, the orbit, the buttons) is hidden in the
+ * markup with print:hidden, next to the element it hides. What is here is the
+ * part that has to reach everything at once.
+ */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 16mm;
+  }
+
+  /*
+   * Paper is light. Flipping the tokens flips every utility that reads them,
+   * so text-primary, text-secondary, border-separator and the rest become ink
+   * on white without a print variant on each element. Unlayered, so it beats
+   * the theme layer the tokens are declared in.
+   */
+  :root {
+    --color-canvas: #ffffff;
+    --color-surface: #ffffff;
+    --color-surface-elevated: #ffffff;
+    --color-primary: #111111;
+    --color-secondary: #3f3f46;
+    --color-tertiary: #71717a;
+    --color-quaternary: #a1a1aa;
+    --color-separator: #d4d4d8;
+    --color-fill: #e4e4e7;
+    --color-fill-secondary: #e4e4e7;
+    --color-fill-tertiary: #e4e4e7;
+    --color-fill-quaternary: #f4f4f5;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  /* What is left of the screen furniture that print:hidden does not reach. */
+  .liquid-glass,
+  .orbit-field,
+  .splash-actions {
+    display: none !important;
+  }
+
+  /*
+   * Reveal, the splash's rise and the scroll-scrubbed headings all start
+   * invisible and wait for a scroll or a clock. Paper gets their end state.
+   * !important because Reveal's hidden state is a utility on the same element
+   * and the language bars set theirs inline.
+   */
+  .reveal,
+  .animate-rise,
+  .scrub-rise,
+  [role='meter'] > div {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  /* A gradient heading is a clipped background, and backgrounds do not print. */
+  .gradient-text {
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    color: var(--color-primary);
+  }
+
+  /* The splash becomes a letterhead: name and role, top left. */
+  #top {
+    min-height: 0;
+    padding: 0 0 6mm;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  #top h1 {
+    margin-top: 0;
+    font-size: 26pt;
+    line-height: 1.1;
+  }
+
+  #top p {
+    font-size: 13pt;
+  }
+
+  /*
+   * A hairline and a little air between sections, not a screen of it. The
+   * page margin is the gutter on paper, so the sections drop Container's
+   * padding and line up with the letterhead.
+   */
+  main section:not(#top) {
+    padding-block: 7mm;
+  }
+
+  main section:not(#top) > div {
+    padding-inline: 0;
+  }
+
+  main h2 {
+    margin-top: 1.5mm;
+    font-size: 17pt;
+  }
+
+  main h3 {
+    font-size: 12pt;
+  }
+
+  main p,
+  main li,
+  main dt,
+  main dd {
+    font-size: 10.5pt;
+    line-height: 1.45;
+  }
+
+  main .eyebrow {
+    font-size: 8pt;
+  }
+
+  .eyebrow,
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+
+  li,
+  dl > div {
+    break-inside: avoid;
+  }
+
+  /* Short enough to keep whole: a heading on one page and its rows on the next reads as a mistake. */
+  #contact {
+    break-inside: avoid;
+  }
+
+  /* The language levels are drawn as backgrounds; print them anyway. */
+  [role='meter'],
+  [role='meter'] > div {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 }

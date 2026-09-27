@@ -1,7 +1,12 @@
 import type { ComponentType } from "react";
 import type { Ambition, AmbitionKind } from "../content/types";
+import type { Scene } from "../scenes/scene";
+import { wavetable } from "../scenes/wavetable";
+import { wireframe } from "../scenes/wireframe";
 import { LogicProMark } from "./LogicProMark";
 import { Reveal } from "./Reveal";
+import { SceneCanvas } from "./SceneCanvas";
+import { Eyebrow } from "./Section";
 import { UnrealMark } from "./UnrealMark";
 
 type AmbitionsProps = {
@@ -44,6 +49,16 @@ const TITLE_MARK: Partial<
 };
 
 /**
+ * What plays behind each card, drawn in hairlines on a canvas: a wavetable
+ * behind the music, a wireframe viewport behind the game. Keyed by kind like
+ * the gradients above, and Partial, so a card without a scene just has none.
+ */
+const CARD_SCENE: Partial<Record<AmbitionKind, Scene>> = {
+  music: wavetable,
+  game: wireframe,
+};
+
+/**
  * Two cards, side by side from lg up, stacked on a phone.
  *
  * Rendered inside Section, like Languages, so the eyebrow and the h2 come from
@@ -62,20 +77,33 @@ export function Ambitions({ intro, items }: AmbitionsProps) {
         {intro}
       </p>
 
-      <ul className="mt-10 grid gap-6 lg:grid-cols-2 lg:gap-8">
+      <ul className="mt-10 grid gap-6 lg:grid-cols-2 lg:gap-8 print:mt-4 print:gap-3">
         {items.map((item) => {
-          // Capitalised so JSX treats it as a component, not an HTML tag.
+          // Rendered below as <mark.Mark />. JSX treats a dotted name as a
+          // component whatever its case; only a bare lowercase name is read as
+          // an HTML tag, and <mark /> on its own would be the <mark> element.
           const mark = TITLE_MARK[item.kind];
+          const scene = CARD_SCENE[item.kind];
 
           return (
             // `kind` is unique by type: there is one music card and one game card.
+            //
+            // relative, so the canvas can fill the card; isolate, so the
+            // canvas's negative z-index stops at the card's background
+            // instead of going behind it; overflow-hidden, so the drawing is
+            // cut to the rounded corners.
             <li
               key={item.kind}
-              className="flex flex-col rounded-3xl border border-separator bg-surface p-8 sm:p-10"
+              className="relative isolate flex flex-col overflow-hidden rounded-3xl border border-separator bg-surface p-8 sm:p-10 print:break-inside-avoid print:p-5"
             >
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-secondary">
-                {item.goal}
-              </p>
+              {scene && (
+                <SceneCanvas
+                  scene={scene}
+                  className="[mask-image:linear-gradient(to_bottom,transparent_10%,black_62%)] print:hidden"
+                />
+              )}
+
+              <Eyebrow>{item.goal}</Eyebrow>
 
               {/*
               An h3 under the section's h2. Same treatment as the page's other
@@ -156,7 +184,15 @@ export function Ambitions({ intro, items }: AmbitionsProps) {
                 </h3>
               )}
 
-              <p className="mt-5 text-[0.9375rem] leading-relaxed text-secondary sm:text-base">
+              {/*
+                data-scene-clear: the canvas behind the card rubs itself out
+                behind these lines, so a hairline never runs behind a letter
+                and costs it contrast.
+              */}
+              <p
+                data-scene-clear
+                className="mt-5 text-[0.9375rem] leading-relaxed text-secondary sm:text-base"
+              >
                 {item.body}
               </p>
 
@@ -164,12 +200,17 @@ export function Ambitions({ intro, items }: AmbitionsProps) {
               mt-auto on the tag row pins it to the bottom of the card, so when
               one card's copy is longer the two rows of tags still line up.
               pt-8 is the minimum gap above it when the card is not stretched.
+
+              The pill's fill is translucent, and the card's canvas now draws
+              right behind this row. So the pill gets two background layers:
+              the same fill, over the card's own colour. It looks exactly as
+              it did, and nothing behind shows through the text.
             */}
               <ul className="mt-auto flex flex-wrap gap-2 pt-8">
                 {item.tags.map((tag) => (
                   <li
                     key={tag}
-                    className="rounded-full bg-fill-tertiary px-3 py-1 text-xs font-medium text-secondary"
+                    className="rounded-full [background:linear-gradient(var(--color-fill-tertiary),var(--color-fill-tertiary)),var(--color-surface)] px-3 py-1 text-xs font-medium text-secondary"
                   >
                     {tag}
                   </li>
